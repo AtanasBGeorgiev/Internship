@@ -52,6 +52,7 @@ export function Dashboard() {
 
     //array with dependencies [navigate] - if navigate changes, the useEffect will run again
     //useEffect runs when the component is executed
+
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
 
@@ -65,6 +66,7 @@ export function Dashboard() {
             const decoded = jwtDecode<jwtPayload>(token);//reads content of the token without verifying it'signature
 
             const currentTime = Date.now() / 1000;//current time in seconds
+
             if (currentTime > decoded.exp) {
                 localStorage.removeItem('jwtToken');
                 navigate('/Login');

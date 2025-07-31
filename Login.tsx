@@ -58,12 +58,14 @@ export const LoginForm: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} noValidate
           id="login-form" className="border-2 border-gray-300 rounded-sm p-3 w-full">
           <h3 className="text-base md:text-xl pb-1">Виртуален банков клон (e-fibank)</h3>
+
           <FormFieldWithIcon id="username" label="Потребител"
             register={register("username", {
               required: "Моля, въедете потребител!",
               pattern: { value: /^[a-zA-Z0-9_-]+$/, message: "Смволи на кирилица!" }
             })} error={errors.username}
             icon={<FaUser />} isVisible="block" />
+
           <FormFieldWithIcon id="password" label="Парола" type="password"
             register={register("password", {
               required: "Моля, въедете парола!",

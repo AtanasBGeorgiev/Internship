@@ -93,6 +93,7 @@ export const RegisterForm: React.FC = () => {
         <div className="p-3">
           <h2 className="text-base md:text-2xl">Регистрация на нов потребител</h2>
           <p className="text-xs md:text-sm text-gray-700">
+
             Тази регистрационна форма се попълва само ако нямате потребител и парола за Виртуален банков клон (e-fibank) на ПИБ. Ако вече имате потребител и парола, добавянето на достъп до ново физическо или юридическо лице става в банката.
             Ако сте забравили своя потребител и/или парола, заповядайте в банката, за да ги получите.
           </p>
@@ -101,6 +102,7 @@ export const RegisterForm: React.FC = () => {
           <div id="personal-data" className="border-t-2 border-b-2 border-gray-300 p-5">
             <p className="text-sm text-gray-700 pb-3"><span className="text-red-500">*</span> Задължителни полета</p>
             <div id="display-grid" className="grid grid-cols-2 gap-4 text-xs md:text-basic">
+
               <FormField id="egn" label="ЕГН" register={register("egn", {
                 required: "Невалидно ЕГН!",
                 pattern: { value: /^[0-9]{10}$/, message: "Невалидно ЕГН!" }
@@ -176,7 +178,6 @@ export const RegisterForm: React.FC = () => {
                     </ul>
                   </div>
                 </>
-
               }
             />
             <div className="col-span-2 grid grid-cols-2 gap-4">
@@ -189,6 +190,7 @@ export const RegisterForm: React.FC = () => {
                   ></div>
                 </div>
                 <p className="text-xs md:text-sm mt-1">{getStrengthLabel()}</p>
+
               </div>
             </div>
             <FormField id="confirm-password" label="Повторете паролата:" type="password"

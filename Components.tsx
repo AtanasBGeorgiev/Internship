@@ -105,8 +105,6 @@ export const FormFieldWithIcon: React.FC<FormFieldWithIconProps> = ({ id, label,
                     <span className="text-red-500">*</span> Задължителни полета
                 </span>
             </label>
-
-
             <div className="relative">
                 <input id={id} type={type} required={required} {...register}
                     className={`w-full pl-10 border-2 ${error ? "border-red-500" : "border-gray-300"} rounded-sm p-1 focus:border-blue-800 focus:outline-none mt-1`}
@@ -421,4 +419,5 @@ export const Arrow: React.FC<ArrowProps> = ({ position }) => {
             border-red-500 rotate-45 z-10"></div>
         );
     }
+
 };
