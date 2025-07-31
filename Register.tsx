@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { hideMessag, ShowMessage } from "./Components";
 import { useNavigate } from 'react-router-dom';
 
+
 type FormValues = {
   egn: string;
   passport: string;
@@ -45,7 +46,7 @@ export const RegisterForm: React.FC = () => {
     }
     catch (error: any) {
       console.error('Грешка при регистрация:', error);
-
+            
       //if the error is from the server
       const serverMessage = error.response.data?.error;
       setMessage(serverMessage || "Възникна непредвидена грешка при регистрацията.");
@@ -146,6 +147,7 @@ export const RegisterForm: React.FC = () => {
                 pattern: {
                   value: /^[a-zA-Z0-9_-]+$/,
                   message: "Използвайте само латински букви, цифри, тире или долна черта."
+
                 }
               })} error={errors.username} />
 

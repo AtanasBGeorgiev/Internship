@@ -34,7 +34,6 @@ export const Header: React.FC = () => {
                     {location.pathname === "/Dashboard" &&
                         <Link onClick={handleLogout} to="/Login" className="bg-red-600 text-white py-2 px-8 mx-5 hover:cursor-pointer">ИЗХОД</Link>
                     }
-
                 </div>
             </nav>
         </div>

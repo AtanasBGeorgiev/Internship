@@ -10,6 +10,7 @@ import { hideMessag } from "./Components";
 import { useState } from "react";
 import { ShowMessage } from "./Components";
 
+
 type FormValues = {
   username: string;
   password: string;
@@ -69,6 +70,7 @@ export const LoginForm: React.FC = () => {
             src="/icon-padlock.png" alt="padlock" />
           <a href="" className="text-xs text-gray-700 hover:underline hover:cursor-pointer">Забравена парола?</a>
           <ShowMessage message={message} messageType={messageType} />
+
           <ButtonForm type="submit" text="ВХОД" />
         </form>
 

@@ -112,6 +112,7 @@ app.post('/Register', async (req: Request, res: Response) => {
 
 //POST route for checking login
 app.post('/Login', loginLimiter, async (req: Request, res: Response) => {
+
   console.log('POST /Login получена!');
   try {
     const { username, password } = req.body;
