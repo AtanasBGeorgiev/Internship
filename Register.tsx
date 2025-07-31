@@ -1,9 +1,11 @@
-import { FormField, ButtonForm, Arrow } from "./Components";
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
-import { hideMessag, ShowMessage } from "./Components";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
+import { FormField, ButtonForm } from "./Components/InputForms";
+import { Arrow, hideMessage, ShowMessage } from "./Components/Common";
 
 type FormValues = {
   egn: string;
@@ -21,6 +23,7 @@ export const RegisterForm: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -33,9 +36,9 @@ export const RegisterForm: React.FC = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/Register`, data);
 
-      setMessage("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход.");
+      setMessage(t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."));
       setMessageType("success");
-      hideMessag(setMessage, setMessageType);
+      hideMessage(setMessage, setMessageType);
 
       setTimeout(() => {
         navigate('/Login');
@@ -44,13 +47,13 @@ export const RegisterForm: React.FC = () => {
       console.log('Server response:', response.data);
     }
     catch (error: any) {
-      console.error('Грешка при регистрация:', error);
+      console.error('Registration error:', error);
 
       //if the error is from the server
-      const serverMessage = error.response.data?.error;
-      setMessage(serverMessage || "Възникна непредвидена грешка при регистрацията.");
+      const errorKey = error.response?.data?.errorKey;
+      setMessage(errorKey ? t(errorKey) : t("Възникна непредвидена грешка при регистрацията."));
       setMessageType("error");
-      hideMessag(setMessage, setMessageType);
+      hideMessage(setMessage, setMessageType);
     }
   };
 
@@ -59,9 +62,9 @@ export const RegisterForm: React.FC = () => {
   const getPasswordStrength = (password: string): number => {
     let score = 0;
     if (password.length >= 6) score++;
-    if (password.length >= 11) score++;
-    if (/[A-Za-z]/.test(password) && /\d/.test(password) && password.length >= 15) score++;
-    if (password.length >= 22) score++;
+    if (/[A-Za-z]/.test(password) && /\d/.test(password)) score++;
+    if (password.length >= 15) score++;
+    if (password.length >= 20) score++;
     return score;
   };
 
@@ -79,11 +82,11 @@ export const RegisterForm: React.FC = () => {
 
   const getStrengthLabel = () => {
     switch (passwordStrength) {
-      case 1: return "Паролата е твърде слаба.";
-      case 2: return "Паролата е средно сигурна.";
-      case 3: return "Паролата е с високо ниво на сигурност.";
-      case 4: return "Паролата е максимално сигурна.";
-      default: return "Сигурност на парола.";
+      case 1: return t("Паролата е твърде слаба.");
+      case 2: return t("Паролата е средно сигурна.");
+      case 3: return t("Паролата е с високо ниво на сигурност.");
+      case 4: return t("Паролата е максимално сигурна.");
+      default: return t("Сигурност на парола.");
     }
   };
 
@@ -91,76 +94,82 @@ export const RegisterForm: React.FC = () => {
     <div id="wrapper" className="min-h-screen flex items-center justify-center p-4">
       <div id="register-form" className="w-4/5 md:w-2/3 border-2 border-gray-300 rounded-sm lg:w-1/2 xl:w-4/10 2xl:w-1/3">
         <div className="p-3">
-          <h2 className="text-base md:text-2xl">Регистрация на нов потребител</h2>
+          <h2 className="text-base md:text-2xl">{t("Регистрация на нов потребител")}</h2>
           <p className="text-xs md:text-sm text-gray-700">
-
-            Тази регистрационна форма се попълва само ако нямате потребител и парола за Виртуален банков клон (e-fibank) на ПИБ. Ако вече имате потребител и парола, добавянето на достъп до ново физическо или юридическо лице става в банката.
-            Ако сте забравили своя потребител и/или парола, заповядайте в банката, за да ги получите.
+            {t("Тази регистрационна форма се попълва само ако нямате потребител и парола за Виртуален банков клон (e-fibank) на ПИБ. Ако вече имате потребител и парола, добавянето на достъп до ново физическо или юридическо лице става в банката. Ако сте забравили своя потребител и/или парола, заповядайте в банката, за да ги получите.")}
           </p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div id="personal-data" className="border-t-2 border-b-2 border-gray-300 p-5">
-            <p className="text-sm text-gray-700 pb-3"><span className="text-red-500">*</span> Задължителни полета</p>
-            <div id="display-grid" className="grid grid-cols-2 gap-4 text-xs md:text-basic">
-
-              <FormField id="egn" label="ЕГН" register={register("egn", {
-                required: "Невалидно ЕГН!",
-                pattern: { value: /^[0-9]{10}$/, message: "Невалидно ЕГН!" }
+            <p className="text-sm text-gray-700 pb-3"><span className="text-red-500">*</span> {t("Задължителни полета")}</p>
+            <div id="display-grid" className="grid grid-cols-2 gap-4 text-xs md:text-base">
+              <FormField id="egn" label={t("ЕГН")} register={register("egn", {
+                required: t("Невалидно ЕГН!"),
+                pattern: { value: /^[0-9]{10}$/, message: t("Невалидно ЕГН!") }
               })} error={errors.egn} />
-              <FormField id="passport" label="ЛНЧ или паспорт" required={false}
+              <FormField id="passport" label={t("ЛНЧ или паспорт")} required={false}
                 register={register("passport")} error={errors.passport}
                 tooltipContent={
                   <>
                     <Arrow position="bottom" />
-
-                    <p>Попълва се само от чуждестранни граждани.</p>
+                    <p>{t("Попълва се само от чуждестранни граждани.")}</p>
                   </>
                 }
               />
               {/* Cyrillic letters only.Allows spaces and dashes.*/}
-              <FormField id="name-cyrillic" label="Име и фамилия на кирилица"
+              <FormField id="name-cyrillic" label={t("Име и фамилия на кирилица")}
                 register={register("nameCyrillic", {
-                  required: "Моля, въведете име!", pattern: {
+                  required: t("Моля, въведете име!"),
+                  pattern: {
                     value: /^[А-Яа-я\s\-]+$/,
-                    message: "Използвай само символи на кирилица!",
+                    message: t("Използвай само символи на кирилица!"),
                   },
                 })} error={errors.nameCyrillic} />
-              <FormField id="name-latin" label="Име и фамилия на латиница"
-                register={register("nameLatin", {
-                  required: "Въведеното име съдържа символи на кирилица!",
-                  pattern: { value: /^[A-Za-z\s\-]+$/, message: "Въведеното име съдържа символи на кирилица!" }
-                })} error={errors.nameLatin} />
-              <FormField id="email" label="E-mail" type="email"
+              <FormField id="name-latin" label={t("Име и фамилия на латиница")} register={register("nameLatin", {
+                required: t("Въведеното име съдържа символи на кирилица!"),
+                pattern: {
+                  value: /^[A-Za-z\s\-]+$/,
+                  message: t("Въведеното име съдържа символи на кирилица!"),
+                },
+              })} error={errors.nameLatin} />
+              <FormField id="email" label={t("E-mail")} type="email"
                 register={register("email", {
-                  required: "Невалиден имейл!",
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Невалиден имейл!" }
+                  required: t("Невалиден имейл!"),
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: t("Невалиден имейл!"),
+                  },
                 })} error={errors.email} />
-              <FormField id="phone" label="Телефон" type="tel"
+              <FormField id="phone" label={t("Телефон")} type="tel"
                 register={register("phone", {
-                  required: "Моля, въведете телефон!",
-                  pattern: { value: /^0[0-9]{9}$/, message: "Моля, въведете телефон!" }
+                  required: t("Моля, въведете телефон!"),
+                  pattern: {
+                    value: /^0[0-9]{9}$/,
+                    message: t("Моля, въведете телефон!"),
+                  },
                 })} error={errors.phone} />
-              <FormField id="address" label="Адрес"
-                register={register("address", { required: "Моля, въведете адрес!" })} error={errors.address} />
+              <FormField id="address" label={t("Адрес")} register={register("address", {
+                required: t("Моля, въведете адрес!"),
+              })} error={errors.address} />
             </div>
           </div>
 
-          <div id="user-data" className="p-5 grid grid-cols-2 gap-4 text-xs md:text-basic">
-            <FormField id="username" label="Потребителско име:"
+          <div id="user-data" className="p-5 grid grid-cols-2 gap-4 text-xs md:text-base">
+            <FormField id="username" label={t("Потребителско име:")}
               register={register("username", {
-                required: "Символи на кирилица не са позволени!",
+                required: t("Символи на кирилица не са позволени!"),
                 pattern: {
                   value: /^[a-zA-Z0-9_-]+$/,
-                  message: "Използвайте само латински букви, цифри, тире или долна черта."
+                  message: t("Използвайте само латински букви, цифри, тире или долна черта."),
                 }
               })} error={errors.username} />
 
-            <FormField id="password" label="Парола за вход:" type="password"
+            <FormField id="password" label={t("Парола за вход:")} type="password"
               register={register("password", {
-                required: "Паролата е твърде къса.",
+                required: t("Паролата е твърде къса."),
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,24}$/,
-                  message: "Прочети изискванията.",
+                  message: t("Прочети изискванията."),
                 }
               })}
               error={errors.password}
@@ -169,12 +178,12 @@ export const RegisterForm: React.FC = () => {
                   <Arrow position="bottom" />
 
                   <div>
-                    <strong className="block mb-1">Изисквания за парола:</strong>
+                    <strong className="block mb-1">{t("Изисквания за парола:")}</strong>
                     <ul className="list-none space-y-1">
-                      <li>► Да е с дължина от 6 до 24 знака.</li>
-                      <li>► Да съдържа поне една буква.</li>
-                      <li>► Да съдържа поне една цифра.</li>
-                      <li>► Да е на латиница.</li>
+                      <li>► {t("Да е с дължина от 6 до 24 знака.")}</li>
+                      <li>► {t("Да съдържа поне една буква.")}</li>
+                      <li>► {t("Да съдържа поне една цифра.")}</li>
+                      <li>► {t("Да е на латиница.")}</li>
                     </ul>
                   </div>
                 </>
@@ -190,21 +199,22 @@ export const RegisterForm: React.FC = () => {
                   ></div>
                 </div>
                 <p className="text-xs md:text-sm mt-1">{getStrengthLabel()}</p>
-
               </div>
             </div>
-            <FormField id="confirm-password" label="Повторете паролата:" type="password"
+            <FormField id="confirm-password" label={t("Повторете паролата:")} type="password"
               register={register("confirmPassword", {
-                required: "Моля, повторете паролата.",
+                required: t("Моля, повторете паролата."),
                 validate: (value) =>
-                  value === password || "Паролите не съвпадат.",
+                  value === password || t("Паролите не съвпадат."),
               })}
               error={errors.confirmPassword} />
           </div>
           <div id="submit-button" className="border-t-2 border-gray-300 pt-3 pb-3 pl-5 pr-5 text-center">
-            <p className="text-left text-sm text-gray-700">Необходимо е да запомните потребителското си име и парола, които току-що въведохте. След като потвърдите регистрацията в банката, те ще Ви служат за вход във Виртуален банков клон (e-fibank).</p>
+            <p className="text-left text-sm text-gray-700">
+              {t("Необходимо е да запомните потребителското си име и парола, които току-що въведохте. След като потвърдите регистрацията в банката, те ще Ви служат за вход във Виртуален банков клон (e-fibank).")}
+            </p>
             <ShowMessage message={message} messageType={messageType} />
-            <ButtonForm text="ИЗПРАТЕТЕ ИСКАНЕ ЗА РЕГИСТРАЦИЯ" />
+            <ButtonForm text={t("ИЗПРАТЕТЕ ИСКАНЕ ЗА РЕГИСТРАЦИЯ")} />
           </div>
         </form>
       </div>
