@@ -28,6 +28,7 @@ export const Header: React.FC = () => {
                         <Link to="/Login" className="bg-blue-800 text-white py-2 px-8 mx-5 hover:cursor-pointer">ВХОД</Link>
                     }
 
+
                 </div>
             </nav>
         </div>
@@ -44,6 +45,7 @@ export const Footer: React.FC = () => {
                 <FooterLink text="Електронен подпис" />
                 <FooterLink text="Такси и комисионни" />
                 <FooterLink displayProps="pl-2 hover:underline" text="Документи" />
+
             </div>
             <p>© Първа инвестиционна банка 2009-2015.</p>
         </div>

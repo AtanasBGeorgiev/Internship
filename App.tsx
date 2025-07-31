@@ -9,7 +9,7 @@ import { Dashboard } from './Dashboard';
 const App: React.FC = () => {
   return (
     <>
-      <Header />
+ <Header />
       <Routes>
         {/*The login form is displayed first when the app is started. */}
         <Route path="/" element={
@@ -34,6 +34,7 @@ const App: React.FC = () => {
         } />
       </Routes>
       <Footer />
+
     </>
   );
 }

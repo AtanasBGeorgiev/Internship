@@ -64,6 +64,7 @@ interface FormFieldWithIconProps {
 
 export const FormFieldWithIcon: React.FC<FormFieldWithIconProps> = ({ id, label, type = "text", required = true, src, alt,
     isVisible = "hidden", register, error }) => {
+
     return (
         <>
             <label htmlFor={id} className="flex items-center w-full">

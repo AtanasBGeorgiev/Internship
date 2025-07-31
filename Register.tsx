@@ -67,6 +67,7 @@ export const RegisterForm: React.FC = () => {
     }
   };
 
+
   return (
     <div id="wrapper" className="min-h-screen flex items-center justify-center p-4">
       <div id="register-form" className="w-2/3 border-2 border-gray-300 rounded-sm lg:w-1/2 xl:w-4/10 2xl:w-1/3">
