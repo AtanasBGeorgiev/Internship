@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -9,20 +9,26 @@ import { FaMoneyBillAlt, FaUniversity, FaChartLine, FaRegNewspaper, FaTag, FaApp
 import { MdMessage, MdEditDocument, MdEditNote } from "react-icons/md";
 import { IoMdLogOut, IoIosListBox, IoMdList, } from "react-icons/io";
 import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
-import { FaPenClip } from "react-icons/fa6";
+import { FaPenClip, FaCoins } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { BiSolidWallet } from "react-icons/bi";
 import { GrAtm } from "react-icons/gr";
-import { AiFillPieChart } from "react-icons/ai";
+import { AiFillPieChart, AiFillSignature } from "react-icons/ai";
 import { BsInfoLg, BsSafeFill } from "react-icons/bs";
 import { LuMonitor } from "react-icons/lu";
 import { TiVendorAndroid } from "react-icons/ti";
 import { PiCoinsFill } from "react-icons/pi";
 import { FaArrowUpLong } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
+import { SiJsonwebtokens } from "react-icons/si";
 
-import { DashboardNavbarLink, DashboardMoreInfo, SectionToolTip } from "./Components/Dashboard";
+import {
+    DashboardNavbarLink, DashboardMoreInfo, SectionToolTip, SectionHead,
+    Table, TableData, ActionField, ActionTooltip, GroupCheckbox, useSelectableList, TableButton
+} from "./Components/Dashboard";
 import { NavbarHelpContact } from "./Components/HeaderAndFooter";
 import { Arrow, LangSwitcher } from "./Components/Common";
+import type { Account, Card } from './Components/Dashboard';
 
 const handleLogout = () => {
     localStorage.removeItem('jwtToken');
@@ -57,51 +63,62 @@ export function Dashboard() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
+    //account hook
+    const [accounts, setAccounts] = useState<Account[]>([]);
+
+    //card hooks
+    const [cards, setCards] = useState<Card[]>([]);
+    const { selectedItems, allSelected, toggleSelectAll, toggleItem } = useSelectableList(cards);
+
     //array with dependencies [navigate] - if navigate changes, the useEffect will run again
     //useEffect runs when the component is executed
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
+        const fetchDashboardData = async () => {
 
-        if (!token) {
-            navigate("/Login");
-            return;
-        }
+            const token = localStorage.getItem('jwtToken');
 
-        try {
-            //jwtDecode- reads the content of the token without verifying it's signature
-            const decoded = jwtDecode<jwtPayload>(token);//reads content of the token without verifying it's signature
-
-            const currentTime = Date.now() / 1000;//current time in seconds
-            if (currentTime > decoded.exp) {
-                localStorage.removeItem('jwtToken');
-                navigate('/Login');
+            if (!token) {
+                navigate("/Login");
+                return;
             }
 
-            //sends a request to the server
-            axios.get(`${import.meta.env.VITE_API_URL}/Dashboard`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                //checks the server response and if the request is successful, the user is logged in
-                .then((res) => {
+            try {
+                //jwtDecode- reads the content of the token without verifying it's signature
+                const decoded = jwtDecode<jwtPayload>(token);//reads content of the token without verifying it's signature
+
+                const currentTime = Date.now() / 1000;//current time in seconds
+                if (currentTime > decoded.exp) {
+                    localStorage.removeItem('jwtToken');
+                    navigate('/Login');
+                }
+
+                try {
+                    const response = await axios.get(`${import.meta.env.VITE_API_URL}/Dashboard`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
                     console.log("Server confirmed access");
-                })
-                //if the request is not successful, the user is logged out
-                .catch((err) => {
+                    setAccounts(response.data.accounts);
+                    setCards(response.data.cards);
+                }
+                catch (fetchErr) {
                     console.error("The token is invalid on the server");
                     localStorage.removeItem('jwtToken');
                     navigate('/Login');
-                });
-        }
-        //if the token is not valid, the user is logged out
-        catch (error) {
-            console.error("Token decoding error");
+                }
+            }
+            catch (decodeErr) {
+                console.error("Token decoding error");
+                localStorage.removeItem('jwtToken');
+                navigate('/Login');
+            }
+        };
 
-            localStorage.removeItem('jwtToken');
-            navigate('/Login');
-        }
+        fetchDashboardData();
     }, [navigate]);
+
     return (
         <>
             <DashboardHeader />
@@ -285,6 +302,111 @@ export function Dashboard() {
                 </div>
                 <div id="mainContent" className="col-span-10 bg-white border-r-2 border-gray-300">
                     <h1 className="text-lg text-gray-500 border-b-2 border-gray-300 p-2">{t("Начало")}</h1>
+
+                    <div id="userBankData" className="p-5">
+
+                        {/*Bank accounts */}
+                        <SectionHead title={t("СМЕТКИ")} />
+                        <Table
+                            tableHead={
+                                <>
+                                    <TableData type="th" text={t("Сметка")} alignment="left" />
+                                    <TableData type="th" text={t("Валута")} />
+                                    <TableData type="th" text={t("Разполагаемост")} />
+                                    <TableData type="th" text={t("Начавно салдо за деня")} />
+                                    <TableData type="th" text={t("Текущо салдо")} />
+                                    <TableData type="th" text={t("Дължими суми от такси")} />
+                                    <TableData type="th" text={t("Действия")} />
+                                </>
+                            }
+                            items={accounts}
+                            tableData={(account) => (
+                                <>
+                                    <TableData text={`${account.type}`} type="accountInfo" accountType={account.type as "personal" | "unrestricted"}
+                                        cardNum={`${account.accountNumber}`} alignment="left" />
+                                    <TableData text={`${account.currency}`} />
+                                    <TableData text={account.avaiability} alignment="right" isDecimal={true} />
+                                    <TableData text={account.openingBalance} alignment="right" isDecimal={true} />
+                                    <TableData text={account.currentBalance} alignment="right" isDecimal={true} />
+                                    <TableData text={`${account.feesDue}`} display="text-blue-800 w-1/9" alignment='right' />
+                                    <TableData type="actions" actions={
+                                        <>
+                                            <ActionField icon={<PiCoinsFill />} tooltip={<ActionTooltip text={t("НОВ ПРЕВОД")} />} />
+                                            <ActionField icon={<IoMdList />} tooltip={<ActionTooltip text={t("СПРАВКИ")} />} />
+                                            <ActionField icon={<FaCoins />} tooltip={<ActionTooltip text={t("ПЛАЩАНИЯ")} />} />
+                                            <ActionField icon={<SlEnvolopeLetter />} tooltip={<ActionTooltip text={t("УСЛУГИ")} />} />
+                                        </>
+                                    } />
+                                </>
+                            )} />
+
+
+                        {/*Payments */}
+                        <SectionHead title={t("ЗА ПОДПИС")}
+                        />
+                        <Table tableHead={
+                            <>
+                                {/*\u2193 - unicode for down arrow */}
+                                <TableData type="th" text={t("Вид плашане \u2193")} alignment="left" checkbox={
+                                    <GroupCheckbox allSelected={allSelected} type="parent" toggleSelectAll={toggleSelectAll} />} />
+                                <TableData type="th" text={t("Платец")} alignment="left" />
+                                <TableData type="th" text={t("Получател")} alignment="left" />
+                                <TableData type="th" text={t("Сума и валута")} alignment="left" />
+                            </>
+                        }
+                            items={cards}
+                            tableData={(card) => (
+                                <>
+
+                                </>
+                            )} />
+
+
+                        <div className="flex flex-row bg-gray-100 border-b-2 border-x-2 border-gray-300 p-2 pl-5">
+                            <TableButton icon={<AiFillSignature />} display="bg-blue-800 text-white" text={t("ПОДПИШЕТЕ")} />
+                            <TableButton icon={<SiJsonwebtokens />} display="bg-blue-800 text-white" text={t("ТОКЕН")} />
+                            <TableButton icon={<RxCross2 />} display="bg-white" text={t("ОТКАЖЕТЕ")} />
+                        </div>
+
+
+                        {/*Cards */}
+                        <SectionHead title={t("КАРТИ")} />
+                        <Table
+                            tableHead={
+                                <>
+                                    <TableData type="th" text={t("Карта")} alignment="left" checkbox={
+                                        <GroupCheckbox allSelected={allSelected} type="parent" toggleSelectAll={toggleSelectAll} />
+                                    } />
+                                    <TableData type="th" text={t("Валута")} />
+                                    <TableData type="th" text={t("Наличност")} />
+                                    <TableData type="th" text={t("Задължения")} />
+                                    <TableData type="th" text={t("Мин.вноска")} />
+                                    <TableData type="th" text={t("Погасете до")} />
+                                    <TableData type="th" text={t("3D Сигурност")} />
+                                </>
+                            }
+                            items={cards}
+                            tableData={(card) => (
+                                <>
+                                    <TableData text={`${card.type}`} type="cardImg" cardNum={`${card.cardNumber}`} alignment="left"
+                                        checkbox={
+                                            <GroupCheckbox isSelected={selectedItems.includes(card.id)}
+                                                onToggle={() => toggleItem(card.id)} />
+                                        } />
+                                    <TableData text={`${card.currency}`} />
+                                    <TableData text={card.balance} alignment="right" isDecimal={true} />
+                                    <TableData text={card.liabilities} display="text-red-500" alignment="right" isDecimal={true} />
+                                    <TableData text={card.minPayment} display="text-red-500" alignment="right" isDecimal={true} />
+                                    <TableData text={`${card.repaymentDate}`} />
+                                    <TableData type="security" isActive={`${card.ThreeDSecurity}`} alignment="left" />
+                                </>
+                            )} />
+                        <div className=" border-b-2 border-x-2 border-gray-300 p-2 pl-5">
+                            <TableButton display="bg-red-600 text-white w-35" text={t("ПОГАСЕТЕ") + ` >`} />
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </>

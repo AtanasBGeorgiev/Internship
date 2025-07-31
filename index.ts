@@ -7,12 +7,13 @@ import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import { NextFunction } from 'express';
 import dotenv from 'dotenv';
+import { isDate } from 'util/types';
 dotenv.config();//loads environment variables from .env file	
 
 const app = express();//creates server
 const PORT = 5000;
 
-// Middleware-function, which stands "between" the incoming HTTP request (request) and the response,
+// Middleware-function, which stands "between" the incoming HTTP request and the response,
 // and processes the request before it reaches the final logic
 app.use(cors());
 app.use(bodyParser.json());//parse json queries
@@ -28,7 +29,6 @@ const loginLimiter = rateLimit({
   message: { errorKey: 'errors.tooManyAttempts' }
 });
 
-//Creating user schema 
 const userSchema = new mongoose.Schema({
   role: String,
   egn: String,
@@ -41,8 +41,44 @@ const userSchema = new mongoose.Schema({
   username: String,
   password: String,
 });
-
 const User = mongoose.model('User', userSchema);
+
+const cardSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  cardNumber: Number,
+  type: String,
+  currency: String,
+  balance: String,
+  liabilities: String,
+  minPayment: String,
+  repaymentDate: Date,
+  ThreeDSecurity: { type: Boolean, default: false }
+});
+const Card = mongoose.model('Card', cardSchema);
+
+const accountSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  type: String,
+  accountNumber: String,
+  currency: String,
+  avaiability: String,
+  openingBalance: String,
+  currentBalance: String,
+  feesDue: String
+});
+const Account = mongoose.model('Account', accountSchema)
+
+const paymentSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  paymentType: String,
+  remmiterName: String,
+  remmiterBankAccount: String,
+  beneficiaryName: String,
+  beneficiaryBankAccount: String,
+  amount: String,
+  currency: String
+});
+const Payment = mongoose.model('Payment', paymentSchema);
 
 //middleware function which is executed before some route
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -79,12 +115,55 @@ app.get('/', (req: Request, res: Response) => {
 //verifyToken is a middleware function which is executed before the route- the defense of the route
 //req and res are handler functions which are executed after the middleware function
 app.get('/Dashboard', verifyToken, async (req: Request, res: Response) => {
-  const user = (req as any).user;
+  try {
+    const user = (req as any).user;
 
-  return res.status(200).json({
-    message: `Hello, ${user.username}`,
-    userId: user.userId
-  });
+    const accounts = await Account.find({ userId: user.userId }).select('-__v');
+
+    if (accounts.length === 0) {
+      return res.status(404).json({ message: 'No accounts for this user.' });
+    }
+
+    const cleanedAccounts = accounts.map(account => ({
+      id: account._id.toString(),
+      type: account.type,
+      accountNumber: account.accountNumber,
+      currency: account.currency ?? "0",
+      avaiability: account.avaiability ?? "0",
+      openingBalance: account.openingBalance ?? "0",
+      currentBalance: account.currentBalance ?? "0",
+      feesDue: account.feesDue
+    }));
+
+    // Fetch cards for the authenticated user, excluding __v
+    const cards = await Card.find({ userId: user.userId }).select('-__v');
+
+    if (cards.length === 0) {
+      return res.status(404).json({ message: 'No cards for this user.' });
+    }
+
+    const cleanedCards = cards.map(card => ({
+      id: card._id.toString(),
+      cardNumber: card.cardNumber,
+      type: card.type,
+      currency: card.currency,
+      balance: card.balance ?? "0",// keep as string
+      liabilities: card.liabilities ?? "0",
+      minPayment: card.minPayment ?? "0",
+      repaymentDate: card.repaymentDate ? card.repaymentDate.toISOString().split('T')[0] : "",                             // keep formatted date string only
+      ThreeDSecurity: card.ThreeDSecurity
+    }));
+
+    return res.status(200).json({
+      message: `Cards for ${user.username}`,
+      userId: user.userId,
+      accounts: cleanedAccounts,
+      cards: cleanedCards
+    });
+  } catch (error) {
+    console.error('Error fetching cards:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 //POST route for user registration
@@ -122,10 +201,42 @@ app.post('/Register', async (req: Request, res: Response) => {
   }
 });
 
+app.post('/Dashboard', async (req: Request, res: Response) => {
+  try {
+    const paymentData = req.body;
+    const payment = new Payment(paymentData);
+    await payment.save();
+    return res.status(201).json({ success: 'New payment!', payment });
+  }
+  catch (error) {
+    console.error('Error saving payment:', error);
+    return res.status(500).json({ error: 'Could not save payment' });
+  }
+  /*try {
+    const accountData = req.body;
+    const account = new Account(accountData);
+    await account.save();
+    return res.status(201).json({ success: 'New card!', account });
+  }
+  catch (error) {
+    console.error('Error saving card:', error);
+    return res.status(500).json({ error: 'Could not save account' });
+  }*/
+  /*try {
+    const cardData = req.body;
+    const card = new Card(cardData);
+    await card.save();
+    return res.status(201).json({ success: 'New card!', card });
+  }
+  catch (error) {
+    console.error('Error saving card:', error);
+    return res.status(500).json({ error: 'Could not save card' });
+  }*/
+});
+
 //POST route for checking login
 app.post('/Login', loginLimiter, async (req: Request, res: Response) => {
   console.log('POST /Login received!');
-  
   try {
     const { username, password } = req.body;
 
