@@ -1,10 +1,9 @@
-import { FormField, ButtonForm } from "./Components";
+import { FormField, ButtonForm, Arrow } from "./Components";
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
 import { hideMessag, ShowMessage } from "./Components";
 import { useNavigate } from 'react-router-dom';
-
 
 type FormValues = {
   egn: string;
@@ -46,7 +45,7 @@ export const RegisterForm: React.FC = () => {
     }
     catch (error: any) {
       console.error('Грешка при регистрация:', error);
-            
+
       //if the error is from the server
       const serverMessage = error.response.data?.error;
       setMessage(serverMessage || "Възникна непредвидена грешка при регистрацията.");
@@ -90,10 +89,11 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <div id="wrapper" className="min-h-screen flex items-center justify-center p-4">
-      <div id="register-form" className="w-2/3 border-2 border-gray-300 rounded-sm lg:w-1/2 xl:w-4/10 2xl:w-1/3">
+      <div id="register-form" className="w-4/5 md:w-2/3 border-2 border-gray-300 rounded-sm lg:w-1/2 xl:w-4/10 2xl:w-1/3">
         <div className="p-3">
-          <h2 className="text-2xl">Регистрация на нов потребител</h2>
-          <p className="text-sm text-gray-700">
+          <h2 className="text-base md:text-2xl">Регистрация на нов потребител</h2>
+          <p className="text-xs md:text-sm text-gray-700">
+
             Тази регистрационна форма се попълва само ако нямате потребител и парола за Виртуален банков клон (e-fibank) на ПИБ. Ако вече имате потребител и парола, добавянето на достъп до ново физическо или юридическо лице става в банката.
             Ако сте забравили своя потребител и/или парола, заповядайте в банката, за да ги получите.
           </p>
@@ -101,7 +101,8 @@ export const RegisterForm: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div id="personal-data" className="border-t-2 border-b-2 border-gray-300 p-5">
             <p className="text-sm text-gray-700 pb-3"><span className="text-red-500">*</span> Задължителни полета</p>
-            <div id="display-grid" className="grid grid-cols-2 gap-4 text-basic">
+            <div id="display-grid" className="grid grid-cols-2 gap-4 text-xs md:text-basic">
+
               <FormField id="egn" label="ЕГН" register={register("egn", {
                 required: "Невалидно ЕГН!",
                 pattern: { value: /^[0-9]{10}$/, message: "Невалидно ЕГН!" }
@@ -109,7 +110,11 @@ export const RegisterForm: React.FC = () => {
               <FormField id="passport" label="ЛНЧ или паспорт" required={false}
                 register={register("passport")} error={errors.passport}
                 tooltipContent={
-                  <p>Попълва се само от чуждестранни граждани.</p>
+                  <>
+                    <Arrow position="bottom" />
+
+                    <p>Попълва се само от чуждестранни граждани.</p>
+                  </>
                 }
               />
               {/* Cyrillic letters only.Allows spaces and dashes.*/}
@@ -140,14 +145,13 @@ export const RegisterForm: React.FC = () => {
             </div>
           </div>
 
-          <div id="user-data" className="p-5 grid grid-cols-2 gap-4">
+          <div id="user-data" className="p-5 grid grid-cols-2 gap-4 text-xs md:text-basic">
             <FormField id="username" label="Потребителско име:"
               register={register("username", {
                 required: "Символи на кирилица не са позволени!",
                 pattern: {
                   value: /^[a-zA-Z0-9_-]+$/,
                   message: "Използвайте само латински букви, цифри, тире или долна черта."
-
                 }
               })} error={errors.username} />
 
@@ -161,15 +165,19 @@ export const RegisterForm: React.FC = () => {
               })}
               error={errors.password}
               tooltipContent={
-                <div>
-                  <strong className="block mb-1">Изисквания за парола:</strong>
-                  <ul className="list-none space-y-1">
-                    <li>► Да е с дължина от 6 до 24 знака.</li>
-                    <li>► Да съдържа поне една буква.</li>
-                    <li>► Да съдържа поне една цифра.</li>
-                    <li>► Да е на латиница.</li>
-                  </ul>
-                </div>
+                <>
+                  <Arrow position="bottom" />
+
+                  <div>
+                    <strong className="block mb-1">Изисквания за парола:</strong>
+                    <ul className="list-none space-y-1">
+                      <li>► Да е с дължина от 6 до 24 знака.</li>
+                      <li>► Да съдържа поне една буква.</li>
+                      <li>► Да съдържа поне една цифра.</li>
+                      <li>► Да е на латиница.</li>
+                    </ul>
+                  </div>
+                </>
               }
             />
             <div className="col-span-2 grid grid-cols-2 gap-4">
@@ -181,7 +189,8 @@ export const RegisterForm: React.FC = () => {
                     style={{ width: `${(passwordStrength / 4) * 100}%` }}
                   ></div>
                 </div>
-                <p className="text-sm mt-1">{getStrengthLabel()}</p>
+                <p className="text-xs md:text-sm mt-1">{getStrengthLabel()}</p>
+
               </div>
             </div>
             <FormField id="confirm-password" label="Повторете паролата:" type="password"
