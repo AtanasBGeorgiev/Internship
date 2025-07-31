@@ -3,12 +3,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
-
 import { BiSolidConversation, BiSolidMessageError } from "react-icons/bi";
 import { IoDocumentLockOutline } from "react-icons/io5";
 import { FaPhone, FaEnvelope, FaUniversity, FaLock, FaUser } from "react-icons/fa";
 import { GrAtm } from "react-icons/gr";
-
 import { FormFieldWithIcon, ButtonForm } from "./Components/InputForms";
 import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
 import { FooterLink, ContactInfo } from "./Components/HeaderAndFooter";

@@ -97,6 +97,7 @@ export function Dashboard() {
         //if the token is not valid, the user is logged out
         catch (error) {
             console.error("Token decoding error");
+
             localStorage.removeItem('jwtToken');
             navigate('/Login');
         }

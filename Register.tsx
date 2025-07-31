@@ -186,7 +186,6 @@ export const RegisterForm: React.FC = () => {
                       <li>► {t("Да е на латиница.")}</li>
                     </ul>
                   </div>
-
                 </>
               }
             />
