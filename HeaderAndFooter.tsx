@@ -4,6 +4,10 @@ import { useLocation } from 'react-router-dom';
 import { NavbarMenu } from "./Components";
 import { AllNavbarLinks } from "./Components";
 
+const handleLogout = () => {
+    localStorage.removeItem('jwtToken');
+  };
+
 export const Header: React.FC = () => {
     const location = useLocation();
 
@@ -27,8 +31,9 @@ export const Header: React.FC = () => {
                     {location.pathname === "/Register" &&
                         <Link to="/Login" className="bg-blue-800 text-white py-2 px-8 mx-5 hover:cursor-pointer">ВХОД</Link>
                     }
-
-
+                    {location.pathname === "/Dashboard" &&
+                        <Link onClick={handleLogout} to="/Login" className="bg-red-600 text-white py-2 px-8 mx-5 hover:cursor-pointer">ИЗХОД</Link>
+                    }
                 </div>
             </nav>
         </div>
@@ -45,7 +50,6 @@ export const Footer: React.FC = () => {
                 <FooterLink text="Електронен подпис" />
                 <FooterLink text="Такси и комисионни" />
                 <FooterLink displayProps="pl-2 hover:underline" text="Документи" />
-
             </div>
             <p>© Първа инвестиционна банка 2009-2015.</p>
         </div>

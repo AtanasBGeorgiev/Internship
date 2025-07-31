@@ -1,6 +1,10 @@
 import { FormField, ButtonForm } from "./Components";
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { useState } from 'react';
+import { hideMessag, ShowMessage } from "./Components";
+import { useNavigate } from 'react-router-dom';
+
 
 type FormValues = {
   egn: string;
@@ -15,6 +19,10 @@ type FormValues = {
   confirmPassword: string;
 };
 export const RegisterForm: React.FC = () => {
+  const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -25,12 +33,25 @@ export const RegisterForm: React.FC = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/Register`, data);
-      alert("Формата е изпратена успешно!");
+
+      setMessage("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход.");
+      setMessageType("success");
+      hideMessag(setMessage, setMessageType);
+
+      setTimeout(() => {
+        navigate('/Login');
+      }, 6000);
+
       console.log('Server response:', response.data);
     }
     catch (error: any) {
       console.error('Грешка при регистрация:', error);
-      alert('Грешка при регистрация!');
+            
+      //if the error is from the server
+      const serverMessage = error.response.data?.error;
+      setMessage(serverMessage || "Възникна непредвидена грешка при регистрацията.");
+      setMessageType("error");
+      hideMessag(setMessage, setMessageType);
     }
   };
 
@@ -67,7 +88,6 @@ export const RegisterForm: React.FC = () => {
     }
   };
 
-
   return (
     <div id="wrapper" className="min-h-screen flex items-center justify-center p-4">
       <div id="register-form" className="w-2/3 border-2 border-gray-300 rounded-sm lg:w-1/2 xl:w-4/10 2xl:w-1/3">
@@ -97,7 +117,7 @@ export const RegisterForm: React.FC = () => {
                 register={register("nameCyrillic", {
                   required: "Моля, въведете име!", pattern: {
                     value: /^[А-Яа-я\s\-]+$/,
-                    message: "Моля, въведете име!",
+                    message: "Използвай само символи на кирилица!",
                   },
                 })} error={errors.nameCyrillic} />
               <FormField id="name-latin" label="Име и фамилия на латиница"
@@ -126,7 +146,8 @@ export const RegisterForm: React.FC = () => {
                 required: "Символи на кирилица не са позволени!",
                 pattern: {
                   value: /^[a-zA-Z0-9_-]+$/,
-                  message: "Използвайте само латински букви, цифри, тире или долна черта"
+                  message: "Използвайте само латински букви, цифри, тире или долна черта."
+
                 }
               })} error={errors.username} />
 
@@ -173,6 +194,7 @@ export const RegisterForm: React.FC = () => {
           </div>
           <div id="submit-button" className="border-t-2 border-gray-300 pt-3 pb-3 pl-5 pr-5 text-center">
             <p className="text-left text-sm text-gray-700">Необходимо е да запомните потребителското си име и парола, които току-що въведохте. След като потвърдите регистрацията в банката, те ще Ви служат за вход във Виртуален банков клон (e-fibank).</p>
+            <ShowMessage message={message} messageType={messageType} />
             <ButtonForm text="ИЗПРАТЕТЕ ИСКАНЕ ЗА РЕГИСТРАЦИЯ" />
           </div>
         </form>

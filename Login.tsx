@@ -6,6 +6,10 @@ import { ContactInfo } from "./Components";
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { hideMessag } from "./Components";
+import { useState } from "react";
+import { ShowMessage } from "./Components";
+
 
 type FormValues = {
   username: string;
@@ -17,18 +21,28 @@ export const LoginForm: React.FC = () => {
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
 
+  const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
+
+  //async- allows to use await inside the function
+  //also declares the function as async which returns Promise
+  //Promise- object that represents the result of an asyncronous operation
   const onSubmit = async (data: FormValues) => {
     try {
+      //await- wiats first to be executed the http request
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/Login`, data);
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem('jwtToken', token);
+      }
       navigate('/Dashboard');
     }
+    //:any - says the type of the error is not known and switches off type checking
     catch (error: any) {
-      if (error.response && error.response.data?.error) {
-        alert(error.response.data.error);
-      }
-      else {
-        alert("Грешка при вход!");
-      }
+      const serverMessage = error.response.data?.error;
+      setMessage(serverMessage || "Грешка при вход!");
+      setMessageType("error");
+      hideMessag(setMessage, setMessageType);
     }
   };
 
@@ -40,12 +54,23 @@ export const LoginForm: React.FC = () => {
           id="login-form" className="border-2 border-gray-300 rounded-sm p-3 w-3/4 md:w-1/2">
           <h3 className="text-xl pb-1">Виртуален банков клон (e-fibank)</h3>
           <FormFieldWithIcon id="username" label="Потребител"
-            register={register("username", { required: "Моля, въедете потребител!" })} error={errors.username}
+            register={register("username", {
+              required: "Моля, въедете потребител!",
+              pattern: { value: /^[a-zA-Z0-9_-]+$/, message: "Смволи на кирилица!" }
+            })} error={errors.username}
             src="/icon-user.png" alt="user" isVisible="unhidden" />
           <FormFieldWithIcon id="password" label="Парола" type="password"
-            register={register("password", { required: "Моля, въедете парола!" })} error={errors.password}
+            register={register("password", {
+              required: "Моля, въедете парола!",
+              pattern: {
+                value: /^[^А-Яа-яЁёЇїІіЄєҐґ]*$/,//^A- all symbols allowed except Cyrillic
+                message: "Не използвай кирилица!",
+              }
+            })} error={errors.password}
             src="/icon-padlock.png" alt="padlock" />
           <a href="" className="text-xs text-gray-700 hover:underline hover:cursor-pointer">Забравена парола?</a>
+          <ShowMessage message={message} messageType={messageType} />
+
           <ButtonForm type="submit" text="ВХОД" />
         </form>
 
@@ -65,7 +90,6 @@ export const LoginForm: React.FC = () => {
       </div>
 
       <div id="right-sidebar" className="text-sm text-gray-600 w-2/3 md:w-1/2 p-3">
-
         <Announcment hText="ВАЖНО!" pText="ППИБ АД УВЕДОМЯВА КАРТОДЪРЖАТЕЛИТЕ си, че има информация за получени фалшиви съобщения по електронната поща, които..."
           aText="Прочетете повече" />
         <Announcment hText="Разгледайте системата" pText="Разгледайте и усетете онлайн банкирането чрез интерактивната ни демо версия."
@@ -87,7 +111,6 @@ export const LoginFooter: React.FC = () => {
           <ContactInfo src="/icon-phone.png" alt="phone" text="Телефон" spanText="0700 12 777" moreText=" (денонощно)*" />
           <ContactInfo src="/icon-mail.png" alt="mail" text="E-mail" spanText="e-bank@fibank.bg" />
           <ContactInfo src="/icon-chat.png" alt="chat" text="Чат" spanText="Пишете ни" isLink={true} />
-
         </div>
         <p className="text-xs">*Разговорите към национален номер 0700 12 777 се таксуват според определените от Вашия оператор цени за обаждане към номера тип 0700 на Vivacom. За абонати на Vivacот обаждане към този номер се таксува като обаждане към стационарен номер в мрежата на Vivacom.</p>
         <p className="text-black text-lg p-2 pt-3">Вижте къде се намираме:</p>
