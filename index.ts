@@ -192,7 +192,6 @@ app.post('/Register', async (req: Request, res: Response) => {
     //{ ...userData, password: hashedPassword }-spread operator- creates new object with the same fields but replaces the password
     const user = new User({ role: "user", ...userData, password: hashedPassword });// Creates a new document (user) with these data, based on the mongoose model User
     await user.save();// Writes the new user to the database (MongoDB)
-
     console.log('The user is saved successfully.');
     return res.status(201).json({ messageKey: 'success.regSuccess' });
   }
