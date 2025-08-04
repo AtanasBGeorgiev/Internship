@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { BiSolidConversation } from 'react-icons/bi';
 import { FaPhone, FaEnvelope, FaApple } from 'react-icons/fa';
-import { IoDocumentLockOutline, IoDocumentTextSharp } from 'react-icons/io5';
+import { IoDocumentLockOutline, IoDocumentTextSharp, IoTriangle } from 'react-icons/io5';
 import { BsQuestionLg, BsInfoLg } from "react-icons/bs";
 import { LuMonitor } from "react-icons/lu";
 import { TiVendorAndroid } from "react-icons/ti";
@@ -24,7 +24,7 @@ export const FooterLink: React.FC<FooterLinkProps> = ({ href = "", displayProps 
     return (
         <div className={`relative group flex items-center justify-center py-2 px-2 lg:px-3`}>
             {icon && <span className={`mx-2 text-xl text-gray-700 group-hover:text-blue-800`}>{icon}</span>}
-            <a href={href}  className={`${displayProps}`}>{text} {'>'}</a>
+            <a href={href} className={`${displayProps}`}>{text} {'>'}</a>
         </div>
     );
 };
@@ -86,7 +86,7 @@ interface ContactInfoProps {
 export const ContactInfo: React.FC<ContactInfoProps> = ({ icon, text, spanText, moreText = "", isLink = false, href = "" }) => {
     if (isLink === true) {
         return (
-            <a href={href}  className="text-xs sm:text-basic md:text-lg my-1 flex items-center group hover:underline hover:text-blue-800">
+            <a href={href} className="text-xs sm:text-basic md:text-lg my-1 flex items-center group hover:underline hover:text-blue-800">
                 {icon && <span className={`mx-2 text-basic md:text-xl text-gray-700 group-hover:text-blue-800`}>{icon}</span>}
                 {text}:<span className="text-blue-800 font-bold ml-1"> {spanText}</span> {moreText}
             </a>
@@ -198,5 +198,47 @@ export const NavbarMenu: React.FC = () => {
                 </div>
             )}
         </>
+    );
+};
+
+interface DashboardNavbarLinkProps {
+    href?: string;
+    text: string;
+    displayIconProps?: string;
+    tooltipText?: React.ReactNode;
+    icons?: React.ReactNode[];
+    fontSize?: string;
+    onClick?: () => void;
+    hover?: string;
+    position?: string;
+    displayArrow?: string;
+};
+
+export const DashboardNavbarLink: React.FC<DashboardNavbarLinkProps> = ({ href = "", text, displayIconProps = "unhidden",
+    tooltipText, icons, fontSize = "text-lg", onClick, hover = "hover:bg-gray-200", position = "top-full", displayArrow = "hidden" }) => {
+    return (
+
+        <div className={`w-full relative group flex items-center justify-between py-2 px-2 lg:px-3 ${hover}`}>
+            <div className="flex items-center space-x-2">
+                {tooltipText && (
+                    <div className={`absolute ${position} z-50 bg-white border-2 border-gray-300 hidden group-hover:block`}>
+                        {tooltipText}
+                    </div>
+                )}
+
+                {icons && (<span className={`${displayIconProps} flex text-gray-500 group-hover:text-blue-800`}>
+                    {icons.map((icon, index) => (
+                        <span key={index}>{icon}</span>
+                    ))}
+                </span>)}
+
+                <Link onClick={onClick} to={href} className={`${fontSize} text-black group-hover:text-blue-800`}>
+                    {text}
+                </Link>
+            </div>
+
+            <IoTriangle className={`text-gray-400 rotate-90 ${displayArrow}`} />
+        </div>
+
     );
 };
