@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import api from './api/axiosInstance';
 
 import { FormField, ButtonForm } from "./Components/InputForms";
 import { Arrow, hideMessage, ShowMessage } from "./Components/Common";
+import { getPasswordStrength, getStrengthColor, getStrengthLabel } from "./Components/PasswordVerification";
 
 type FormValues = {
   egn: string;
@@ -34,7 +35,7 @@ export const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/Register`, data);
+      const response = await api.post(`/api/register/Register`, data);
 
       setMessage(t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."));
       setMessageType("success");
@@ -58,37 +59,7 @@ export const RegisterForm: React.FC = () => {
   };
 
   const password = watch("password");
-
-  const getPasswordStrength = (password: string): number => {
-    let score = 0;
-    if (password.length >= 6) score++;
-    if (/[A-Za-z]/.test(password) && /\d/.test(password)) score++;
-    if (password.length >= 15) score++;
-    if (password.length >= 20) score++;
-    return score;
-  };
-
   const passwordStrength = getPasswordStrength(password || "");
-
-  const getStrengthColor = () => {
-    switch (passwordStrength) {
-      case 1: return "bg-red-500";
-      case 2: return "bg-yellow-400";
-      case 3: return "bg-green-600";
-      case 4: return "bg-green-600";
-      default: return "bg-gray-300";
-    }
-  };
-
-  const getStrengthLabel = () => {
-    switch (passwordStrength) {
-      case 1: return t("Паролата е твърде слаба.");
-      case 2: return t("Паролата е средно сигурна.");
-      case 3: return t("Паролата е с високо ниво на сигурност.");
-      case 4: return t("Паролата е максимално сигурна.");
-      default: return t("Сигурност на парола.");
-    }
-  };
 
   return (
     <div id="wrapper" className="min-h-screen flex items-center justify-center p-4">
@@ -186,6 +157,7 @@ export const RegisterForm: React.FC = () => {
                       <li>► {t("Да е на латиница.")}</li>
                     </ul>
                   </div>
+
                 </>
               }
             />
@@ -194,11 +166,11 @@ export const RegisterForm: React.FC = () => {
               <div>
                 <div className="h-2 rounded bg-gray-200 mt-1 overflow-hidden">
                   <div
-                    className={`h-2 transition-all duration-300 ${getStrengthColor()}`}
+                    className={`h-2 transition-all duration-300 ${getStrengthColor(passwordStrength)}`}
                     style={{ width: `${(passwordStrength / 4) * 100}%` }}
                   ></div>
                 </div>
-                <p className="text-xs md:text-sm mt-1">{getStrengthLabel()}</p>
+                <p className="text-xs md:text-sm mt-1">{getStrengthLabel(passwordStrength)}</p>
               </div>
             </div>
             <FormField id="confirm-password" label={t("Повторете паролата:")} type="password"

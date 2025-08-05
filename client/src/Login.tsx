@@ -1,15 +1,18 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import api from './api/axiosInstance';
+
 import { BiSolidConversation, BiSolidMessageError } from "react-icons/bi";
 import { IoDocumentLockOutline } from "react-icons/io5";
 import { FaPhone, FaEnvelope, FaUniversity, FaLock, FaUser } from "react-icons/fa";
 import { GrAtm } from "react-icons/gr";
+
 import { FormFieldWithIcon, ButtonForm } from "./Components/InputForms";
 import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
-import { FooterLink, ContactInfo } from "./Components/HeaderAndFooter";
+import { ContactInfo } from "./Components/Navbar";
+import { FooterLink } from "./Components/Footer";
 
 type FormValues = {
   username: string;
@@ -31,7 +34,7 @@ export const LoginForm: React.FC = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       //await- wiats first to be executed the http request
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/Login`, data);
+      const response = await api.post(`/api/login/Login`, data);
 
       //saves the token in the local storage
       const token = response.data.token;

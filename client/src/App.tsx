@@ -1,40 +1,43 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from 'react';
 import './App.css';
 import { RegisterForm } from './Register';
 import { LoginForm, LoginFooter } from './Login';
-import { Header, Footer } from './HeaderAndFooter';
-import { Dashboard } from './Dashboard';
+import { Header } from './Components/Header';
+import { Footer } from './Components/Footer';
+import { Dashboard} from './Dashboard';
 
 const App: React.FC = () => {
   return (
     <>
- <Header />
       <Routes>
         {/*The login form is displayed first when the app is started. */}
         <Route path="/" element={
           <>
+            <Header />
             <LoginForm />
             <LoginFooter />
           </>
         } />
         <Route path="/Login" element={
           <>
+            <Header />
             <LoginForm />
             <LoginFooter />
           </>
         } />
         <Route path="/Register" element={
           <>
+            <Header />
             <RegisterForm />
           </>
         } />
         <Route path="/Dashboard" element={
-          <Dashboard/>
+          <>
+            <Dashboard />
+          </>
         } />
       </Routes>
       <Footer />
-
     </>
   );
 }
