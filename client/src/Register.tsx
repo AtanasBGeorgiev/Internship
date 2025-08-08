@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import api from './api/axiosInstance';
 
 import { FormField, ButtonForm } from "./Components/InputForms";
 import { Arrow, hideMessage, ShowMessage } from "./Components/Common";
@@ -35,7 +35,7 @@ export const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/Register`, data);
+      const response = await api.post(`/api/register/Register`, data);
 
       setMessage(t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."));
       setMessageType("success");

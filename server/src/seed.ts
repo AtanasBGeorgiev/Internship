@@ -78,7 +78,7 @@ async function seed() {
 
         const cards = [
             new Card({
-                "userId": "688cabd3ed3c6b3bc577b1d0",
+                "userId": "users[0]._id",
                 "cardNumber": "1111222233334444",
                 "type": "MasterCard Standard",
                 "currency": "BGN",
@@ -89,7 +89,7 @@ async function seed() {
                 "ThreeDSecurity": true
             }),
             new Card({
-                "userId": "688cabd3ed3c6b3bc577b1d0",
+                "userId": "users[0]._id",
                 "cardNumber": "2222333344445555",
                 "type": "Visa Electron",
                 "currency": "EUR",
@@ -100,7 +100,7 @@ async function seed() {
                 "ThreeDSecurity": false
             }),
             new Card({
-                "userId": "688cabd3ed3c6b3bc577b1d3",
+                "userId": "users[1]._id",
                 "cardNumber": "8888777766665555",
                 "type": "MasterCard Standard",
                 "currency": "BGN",
@@ -111,7 +111,7 @@ async function seed() {
                 "ThreeDSecurity": false
             }),
             new Card({
-                "userId": "688cabd3ed3c6b3bc577b1d0",
+                "userId": "users[0]._id",
                 "cardNumber": "333444455556666",
                 "type": "MasterCard Standard",
                 "currency": "USD",
