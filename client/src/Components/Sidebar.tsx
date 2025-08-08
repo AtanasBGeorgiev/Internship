@@ -128,7 +128,7 @@ export const SidebarMenu: React.FC = () => {
             <div className="py-2 flex flex-col items-start justify-center">
                 {menu.map((item: MenuItem, index) => {
                     const itemKey = `${item.type}-${item.label}-${index}`;
-
+                
                     switch (item.type) {
                         case "button":
                             return (

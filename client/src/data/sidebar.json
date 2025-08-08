@@ -1,0 +1,177 @@
+[
+    {
+      "type": "button",
+      "label": "НОВ ПРЕВОД",
+      "path": "/",
+      "iconGroup": ["FaArrowUpLong", "PiCoinsFill"],
+      "style": "bg-red-500"
+    },
+    {
+      "type": "link",
+      "label": "Начало",
+      "icons": ["AiFillPieChart"],
+      "path": "/"
+    },
+    {
+      "type": "tooltip",
+      "label": "Справки",
+      "icons": ["IoMdList"],
+      "tooltipItems": [
+        "ПОС транзакции - по групи",
+        "ПОС транзакции за период",
+        "Салда по всички сметки SSO",
+        "Дневен отчет за бюдж. разпоредител",
+        "Извършени услуги за клиент",
+        "Изпратени SMS нотификации",
+        "Дължими суми от такси",
+        "Преводи по SWIFT",
+        "Сесии"
+      ]
+    },
+    {
+      "type": "tooltip-sections",
+      "label": "Плащания",
+      "icons": ["FaMoneyBillAlt"],
+      "sections": [
+        {
+          "title": "ПРЕВОД",
+          "items": [
+            "Нов кредитен превод",
+            "Плащане от/към бюджета",
+            "Директен дебит",
+            "Масов превод",
+            "Преводи от файл",
+            "Нов периодичен превод",
+            "Плащания към СЕБРА",
+            "Кредитен превод CY",
+            "Вътрешноклонов превод CY"
+          ]
+        },
+        {
+          "title": "ПОКУПКА/ПРОДАЖБА НА ВАЛУТА",
+          "items": [
+            "Покупка/продажба на валута",
+            "Договаряне на курс"
+          ]
+        },
+        {
+          "title": "РЕГИСТРИ",
+          "items": [
+            "Регистър на пер. преводи",
+            "Получатели за преводи"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "tooltip",
+      "label": "Извлечения",
+      "icons": ["FaArchive"],
+      "tooltipItems": [
+        "Извлечения сметка",
+        "Извлечения по кредитна карта"
+      ]
+    },
+    {
+      "type": "link",
+      "label": "Сметки",
+      "icons": ["IoIosListBox"],
+      "path": "/accounts"
+    },
+    {
+      "type": "link",
+      "label": "Депозити",
+      "icons": ["BsSafeFill"],
+      "path": "/deposits"
+    },
+    {
+      "type": "link",
+      "label": "Карти",
+      "icons": ["RiBankCardLine"],
+      "path": "/cards"
+    },
+    {
+      "type": "link",
+      "label": "Преводи за подпис",
+      "icons": ["FaPenClip"],
+      "path": "/pending-signatures"
+    },
+    {
+      "type": "link",
+      "label": "Наредени документи",
+      "icons": ["MdEditNote"],
+      "path": "/submitted-documents"
+    },
+    {
+      "type": "tooltip",
+      "label": "Услуги",
+      "icons": ["SlEnvolopeLetter"],
+      "tooltipItems": [
+        "Отчети по e-mail за сметки",
+        "Извлечения по e-mail за карти",
+        "Картови авторизации по e-mail",
+        "Преводи по SWIFT по e-mail"
+      ]
+    },
+    {
+      "type": "tooltip-sections",
+      "label": "Комунални услуги",
+      "icons": ["BiSolidWallet"],
+      "sections": [
+        {
+          "title": "ПЛАЩАНЕ НА ЗАДЪЛЖЕНИЯ",
+          "items": [
+            "Задължения, очакващи плащане",
+            "Плащане на задължения",
+            "Плащае на общински данъци и такси",
+            "Еднократно плащане"
+          ]
+        },
+        {
+          "title": "АБОНАТНИ СМЕТКИ",
+          "items": [
+            "Добавяне на абонатна сметка",
+            "Регистрерани абонатни сметки"
+          ]
+        },
+        {
+          "title": "ДРУГИ",
+          "items": [
+            "Известия по e-mail",
+            "История на плащанията"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "tooltip",
+      "label": "Декларации",
+      "icons": ["MdEditDocument"],
+      "tooltipItems": [
+        "Декларация НОИ",
+        "Статистическа форма 100 000 лв.",
+        "Декларация за произход на средствата",
+        "Декларация за презгранични преводи"
+      ]
+    },
+    {
+      "type": "collapsible",
+      "label": "ИНФОРМАЦИЯ ЗА FIBANK",
+      "items": [
+        { "label": "Клонове", "icons": ["FaUniversity"], "path": "/branches" },
+        { "label": "Банкомати", "icons": ["GrAtm"], "path": "/atms" },
+        { "label": "Валутни курсове", "icons": ["FaChartLine"], "path": "/exchange-rates" },
+        { "label": "Новини", "icons": ["FaRegNewspaper"], "path": "/news" },
+        { "label": "Промоции", "icons": ["FaTag"], "path": "/promotions" }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "label": "ДОПЪЛНИТЕЛНО",
+      "items": [
+        { "label": "Помощ", "icons": ["BsInfoLg"], "path": "/help" },
+        { "label": "Към сайта", "icons": ["LuMonitor"], "path": "https://fibank.bg" },
+        { "label": "Мобилно приложение", "icons": ["TiVendorAndroid", "FaApple"], "path": "/apps" }
+      ]
+    }
+  ]
