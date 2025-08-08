@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FaPenNib } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import { IoMdLogOut, IoMdList, } from "react-icons/io";
+
 import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
 import { FaCoins } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
@@ -21,6 +22,7 @@ import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip,
 import { useSelectableList, GroupCheckbox } from "./Components/Checkboxes";
 import { useProtectedFetch } from "./Components/ProtectedRequests";
 import { SidebarMenu } from "./Components/Sidebar";
+
 
 const handleLogout = () => {
     localStorage.removeItem('jwtToken');
@@ -81,6 +83,7 @@ export function Dashboard() {
         payments?: Payment[];
         cards?: Card[];
     }>('/api/dashboard/Dashboard');
+
 
     useEffect(() => {
         if (error) {
