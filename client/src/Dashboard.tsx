@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FaPenNib } from "react-icons/fa";
-import { MdMessage } from "react-icons/md";
-import { IoMdLogOut, IoMdList, } from "react-icons/io";
-
-import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
+import { IoMdList, } from "react-icons/io";
 import { FaCoins } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { PiCoinsFill } from "react-icons/pi";
@@ -14,36 +11,26 @@ import { RxCross2 } from "react-icons/rx";
 import { SiJsonwebtokens } from "react-icons/si";
 
 import Decimal from "decimal.js";
-import { DashboardNavbarLink } from "./Components/HeaderAndFooter";
+import dashNavbarData from './data/dashNavbar.json';
+import { NavbarContent, NavbarMenu } from "./Components/Navbar";
 import { CalculateNetCardAvaiability, CalculateCurrentBalance, CalculateTotalNetFunds } from "./Components/Calculations";
-import { LangSwitcher, ShowMessage } from "./Components/Common";
+import { ShowMessage } from "./Components/Common";
 import type { Account, Payment, Card } from './Components/ModelTypes';
 import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip, TotalSum } from "./Components/Tables";
 import { useSelectableList, GroupCheckbox } from "./Components/Checkboxes";
 import { useProtectedFetch } from "./Components/ProtectedRequests";
 import { SidebarMenu } from "./Components/Sidebar";
 
-
-const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-};
-
 const DashboardHeader: React.FC = () => {
-    const { t } = useTranslation();
-
     return (
         <div className="h-20 border-b-2 border-gray-300 lg:h-15">
             <nav className="text-center h-20 px-2 lg:h-15">
                 <div className="h-full flex items-center justify-between relative">
                     <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 sm:w-40 sm:h-10 ml-5" />
-
-                    <div className="flex items-center justify-between justify-center space-x-5">
-                        <LangSwitcher english="ENGLISH" bulgarian="БЪЛГАРСКИ" />
-                        <DashboardNavbarLink text={t("СЪОБЩЕНИЯ")} icons={[<MdMessage />]} hover="" />
-                        <DashboardNavbarLink text={t("ИЗВЕСТИЯ")} icons={[<IoNotificationsSharp />]} hover="" />
-                        <DashboardNavbarLink text={t("НАСТРОЙКИ")} icons={[<IoSettingsSharp />]} hover="" />
-                        <DashboardNavbarLink text={t("ИЗХОД")} displayIconProps="-rotate-90" icons={[<IoMdLogOut />]} onClick={handleLogout} href="/Login" hover="" />
+                    <div className="hidden lg:flex items-center justify-between lg:justify-center space-x-5">
+                        <NavbarContent data={dashNavbarData} />
                     </div>
+                    <NavbarMenu data={dashNavbarData} />
                 </div>
             </nav>
         </div>
@@ -83,7 +70,6 @@ export function Dashboard() {
         payments?: Payment[];
         cards?: Card[];
     }>('/api/dashboard/Dashboard');
-
 
     useEffect(() => {
         if (error) {

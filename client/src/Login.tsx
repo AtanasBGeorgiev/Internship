@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,7 +11,8 @@ import { GrAtm } from "react-icons/gr";
 
 import { FormFieldWithIcon, ButtonForm } from "./Components/InputForms";
 import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
-import { FooterLink, ContactInfo } from "./Components/HeaderAndFooter";
+import { ContactInfo } from "./Components/Navbar";
+import { FooterLink } from "./Components/Footer";
 
 type FormValues = {
   username: string;

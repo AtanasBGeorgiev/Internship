@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { renderIcon } from "../utils/iconMap";
-import { DashboardNavbarLink } from './HeaderAndFooter';
-import { NavbarHelpContact } from './HeaderAndFooter';
+import { NavbarHelpContact } from './Navbar';
 import { Arrow } from './Common';
 import { IoTriangle } from 'react-icons/io5';
 
@@ -79,6 +78,48 @@ const DashboardMoreInfo: React.FC<DashboardMoreInfoProps> = ({ pText, tooltip })
     );
 };
 
+interface SidebardNavLinkProps {
+    href?: string;
+    text: string;
+    displayIconProps?: string;
+    tooltipText?: React.ReactNode;
+    icons?: React.ReactNode[];
+    fontSize?: string;
+    onClick?: () => void;
+    hover?: string;
+    position?: string;
+    displayArrow?: string;
+};
+
+export const SidebardNavLink: React.FC<SidebardNavLinkProps> = ({ href = "", text, displayIconProps = "unhidden",
+    tooltipText, icons, fontSize = "text-lg", onClick, hover = "hover:bg-gray-200", position = "top-full", displayArrow = "hidden" }) => {
+    return (
+
+        <div className={`w-full relative group flex items-center justify-between py-2 px-2 lg:px-3 ${hover}`}>
+            <div className="flex items-center space-x-2">
+                {tooltipText && (
+                    <div className={`absolute ${position} z-50 bg-white border-2 border-gray-300 hidden group-hover:block`}>
+                        {tooltipText}
+                    </div>
+                )}
+
+                {icons && (<span className={`${displayIconProps} flex text-gray-500 group-hover:text-blue-800`}>
+                    {icons.map((icon, index) => (
+                        <span key={index}>{icon}</span>
+                    ))}
+                </span>)}
+
+                <Link onClick={onClick} to={href} className={`${fontSize} text-black group-hover:text-blue-800`}>
+                    {text}
+                </Link>
+            </div>
+
+            <IoTriangle className={`text-gray-400 rotate-90 ${displayArrow}`} />
+        </div>
+
+    );
+};
+
 export const SidebarMenu: React.FC = () => {
     const { t } = useTranslation();
 
@@ -87,7 +128,7 @@ export const SidebarMenu: React.FC = () => {
             <div className="py-2 flex flex-col items-start justify-center">
                 {menu.map((item: MenuItem, index) => {
                     const itemKey = `${item.type}-${item.label}-${index}`;
-                    
+                
                     switch (item.type) {
                         case "button":
                             return (
@@ -103,12 +144,12 @@ export const SidebarMenu: React.FC = () => {
                             );
                         case "link":
                             return (
-                                <DashboardNavbarLink key={itemKey} text={t(item.label)}
+                                <SidebardNavLink key={itemKey} text={t(item.label)}
                                     icons={item.icons?.map((iconName: string) => renderIcon(iconName)) ?? []} href={item.path} />
                             );
                         case "tooltip":
                             return (
-                                <DashboardNavbarLink key={itemKey} text={t(item.label)}
+                                <SidebardNavLink key={itemKey} text={t(item.label)}
                                     icons={item.icons?.map((iconName: string) => renderIcon(iconName)) ?? []} displayArrow="block"
                                     position="left-full top-0"
                                     tooltipText={
@@ -124,7 +165,7 @@ export const SidebarMenu: React.FC = () => {
                             );
                         case "tooltip-sections":
                             return (
-                                <DashboardNavbarLink key={itemKey} text={t(item.label)}
+                                <SidebardNavLink key={itemKey} text={t(item.label)}
                                     icons={item.icons?.map((iconName: string) => renderIcon(iconName)) ?? []} displayArrow="block"
                                     position="left-full top-0"
                                     tooltipText={
@@ -149,7 +190,7 @@ export const SidebarMenu: React.FC = () => {
                                         tooltip={
                                             <div className="w-full">
                                                 {item.items?.map((child, i: number) => (
-                                                    <DashboardNavbarLink key={`${itemKey}-child-${i}`} text={t(child.label)}
+                                                    <SidebardNavLink key={`${itemKey}-child-${i}`} text={t(child.label)}
                                                         icons={child.icons?.map((iconName: string) => renderIcon(iconName)) ?? []}
                                                         href={child.path} />
                                                 ))}
