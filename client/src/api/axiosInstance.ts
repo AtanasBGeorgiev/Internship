@@ -1,33 +1,46 @@
 import axios from 'axios';
-import { jwtDecode, type JwtPayload } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { useError } from '../context/ErrorContext';
+import { showGlobalError } from "../utils/errorHandler";
 
+interface JwtPayload {
+    userId: string;
+    userName: string;
+    role: string;
+    exp: number;
+}
+
+//Create axios instance
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
+    //All requests will be in JSON format
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
 //Request interceptor
-api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('jwtToken');
-        
-        if (token) {
-            const decoded = jwtDecode<JwtPayload>(token);
-            const currentTime = Date.now() / 1000;
+//(config) - callback function that accepts the config object and returns a new config object
+//config contains url,method,headers,data,etc
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('jwtToken');
 
-            if (decoded.exp && decoded.exp < currentTime) {
-                // Само изтриваме токена и отбелязваме грешка
-                localStorage.removeItem("jwtToken");
-                return Promise.reject(new Error("TOKEN_EXPIRED"));
-            }
+    if (token) {
+        const decoded = jwtDecode<JwtPayload>(token);
+        const currentTime = Date.now() / 1000;
 
-            config.headers.Authorization = `Bearer ${token}`;
+        if (decoded.exp && decoded.exp < currentTime) {
+            // Remove token and throw error - let the component handle navigation
+            localStorage.removeItem("jwtToken");
+            return Promise.reject(new Error("TOKEN_EXPIRED"));
         }
 
-        return config;
-    },
+        //add token to headers in config
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+},
     (error) => Promise.reject(error)
 );
 
@@ -36,6 +49,10 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         console.error('Axios error:', error.response || error.message)
+
+        const message = error.response?.data?.message || "Unexpected error occured";
+        showGlobalError(message);
+
         return Promise.reject(error);
     }
 );
