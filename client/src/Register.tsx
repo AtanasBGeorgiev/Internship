@@ -2,11 +2,11 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import api from './api/axiosInstance';
 
 import { FormField, ButtonForm } from "./Components/InputForms";
 import { Arrow, hideMessage, ShowMessage } from "./Components/Common";
 import { getPasswordStrength, getStrengthColor, getStrengthLabel } from "./Components/PasswordVerification";
+import { registerUser } from "./services/authService";
 
 type FormValues = {
   egn: string;
@@ -35,7 +35,7 @@ export const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const response = await api.post(`/api/register/Register`, data);
+      const result = await registerUser(data);
 
       setMessage(t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."));
       setMessageType("success");
@@ -45,7 +45,7 @@ export const RegisterForm: React.FC = () => {
         navigate('/Login');
       }, 6000);
 
-      console.log('Server response:', response.data);
+      console.log('Server response:', result.message);
     }
     catch (error: any) {
       console.error('Registration error:', error);

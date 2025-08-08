@@ -2,35 +2,74 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FaPenNib } from "react-icons/fa";
-import { IoMdList, } from "react-icons/io";
+import { IoIosListBox, IoMdList, IoMdPhonePortrait, } from "react-icons/io";
 import { FaCoins } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { PiCoinsFill } from "react-icons/pi";
 import { FaPlus, FaPencil } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { SiJsonwebtokens } from "react-icons/si";
+import { FaUserAlt } from "react-icons/fa";
+import { BsSafeFill } from "react-icons/bs";
+import { RiBankCardLine } from "react-icons/ri";
+import { IoNotificationsSharp } from "react-icons/io5";
+import { FaLock } from "react-icons/fa";
+import { FaUnlockKeyhole } from "react-icons/fa6";
+import { CiShoppingTag } from "react-icons/ci";
+import { FaRegNewspaper } from "react-icons/fa";
 
 import Decimal from "decimal.js";
 import dashNavbarData from './data/dashNavbar.json';
-import { NavbarContent, NavbarMenu } from "./Components/Navbar";
+import { NavbarContent, NavbarHelpContact, NavbarLink, NavbarMenu } from "./Components/Navbar";
 import { CalculateNetCardAvaiability, CalculateCurrentBalance, CalculateTotalNetFunds } from "./Components/Calculations";
-import { ShowMessage } from "./Components/Common";
+import { LangSwitcher, ShowMessage } from "./Components/Common";
 import type { Account, Payment, Card } from './Components/ModelTypes';
 import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip, TotalSum } from "./Components/Tables";
 import { useSelectableList, GroupCheckbox } from "./Components/Checkboxes";
 import { useProtectedFetch } from "./Components/ProtectedRequests";
 import { SidebarMenu } from "./Components/Sidebar";
+import { renderIcon } from "./utils/iconMap";
+import { getUserRole } from "./services/authService";
 
 const DashboardHeader: React.FC = () => {
+    const { t } = useTranslation();
+
+    const handleLogout = () => {
+        localStorage.removeItem('jwtToken');
+    };
+
     return (
         <div className="h-20 border-b-2 border-gray-300 lg:h-15">
             <nav className="text-center h-20 px-2 lg:h-15">
                 <div className="h-full flex items-center justify-between relative">
                     <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 sm:w-40 sm:h-10 ml-5" />
                     <div className="hidden lg:flex items-center justify-between lg:justify-center space-x-5">
-                        <NavbarContent data={dashNavbarData} />
+                        <LangSwitcher english={t("ENGLISH")} bulgarian={t("BULGARIAN")} />
+                        <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")} />
+                        <NavbarLink icons={["IoNotificationsSharp"].map(icon => renderIcon(icon))} text={t("ИЗВЕСТИЯ")} />
+                        <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")}
+                            tooltipText={
+                                <div className="max-h-70 overflow-y-auto scrollbar-thin">
+                                    <NavbarHelpContact text={t("Лични данни")} icon={<FaUserAlt />} />
+                                    <NavbarHelpContact text={t("Общи настройки")} icon={<FaPencil />} />
+                                    <NavbarHelpContact text={t("Настройки на сметка")} icon={<IoIosListBox />} />
+                                    <NavbarHelpContact text={t("Настройки на депозит")} icon={<BsSafeFill />} />
+                                    <NavbarHelpContact text={t("Настройки на карта")} icon={<RiBankCardLine />} />
+                                    <NavbarHelpContact text={t("3D сигурност на карти")} icon={<RiBankCardLine />} />
+                                    <NavbarHelpContact text={t("Промяна на парола")} icon={<FaLock />} />
+                                    <NavbarHelpContact text={t("Регистриране на сертификат")} icon={<FaRegNewspaper />} />
+                                    <NavbarHelpContact text={t("Регистрирани на КЕП")} icon={<FaPenNib />} />
+                                    <hr></hr>
+                                    <NavbarHelpContact text={t("Деблокиране на Token")} icon={<FaUnlockKeyhole />} />
+                                    <NavbarHelpContact text={t("Промяна ПИН Token")} icon={<CiShoppingTag />} />
+                                    <NavbarHelpContact text={t("E-mail и SMS известяване")} icon={<IoNotificationsSharp />} />
+                                    <NavbarHelpContact text={t("SMS известяване за карти")} icon={<RiBankCardLine />} />
+                                    <NavbarHelpContact text={t("Мобилно приложение Fibank")} icon={<IoMdPhonePortrait />} />
+                                </div>
+                            } />
+                        <NavbarLink icons={["IoMdLogOut"].map(icon => renderIcon(icon))} text={t("ИЗХОД")}
+                            onClick={() => handleLogout()} href={"/Login"} type="logout" displayIconProps="-rotate-90" />
                     </div>
-                    <NavbarMenu data={dashNavbarData} />
                 </div>
             </nav>
         </div>
@@ -65,24 +104,52 @@ export function Dashboard() {
     //array with dependencies [navigate] - if navigate changes, the useEffect will run again
     //useEffect runs when the component is executed
 
-    const { data, error } = useProtectedFetch<{
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            const role = await getUserRole();
+            setUserRole(role);
+            console.log(userRole);
+        };
+        fetchUserRole();
+    }, []);
+
+    interface UserDashboardData {
         accounts?: Account[];
         payments?: Payment[];
         cards?: Card[];
-    }>('/api/dashboard/Dashboard');
+    }
+
+    const { data: userData, error: userError } = useProtectedFetch<UserDashboardData>
+    (userRole === "user" ? '/api/dashboard/UserDashboard' : null);
+
+    interface AdminDashboardData {
+
+    };
+
+    const { data: adminData, error: adminError } = useProtectedFetch<AdminDashboardData>
+    (userRole === "admin" ? '/api/dashboard/AdminDashboard' : null);
 
     useEffect(() => {
-        if (error) {
-            setMessage(error);
+        if (userError) {
+            setMessage(userError);
+            setMessageType("error");
+        }
+        if (adminError) {
+            setMessage(adminError);
             setMessageType("error");
         }
 
-        if (data) {
-            if (data.accounts) setAccounts(data.accounts);
-            if (data.payments) setPayment(data.payments);
-            if (data.cards) setCards(data.cards);
+        if (userData) {
+            if (userData.accounts) setAccounts(userData.accounts);
+            if (userData.payments) setPayment(userData.payments);
+            if (userData.cards) setCards(userData.cards);
         }
-    }, [data]);
+        if (adminData) {
+            
+        }
+    }, [userData, userError, adminData, adminError, userRole]);
 
     let netCardsAvaiability = CalculateNetCardAvaiability({
         collection: cards,
