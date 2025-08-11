@@ -10,6 +10,9 @@ import accountRoutes from './routes/accountRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import cardRoutes from './routes/cardRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import verifyToken from './middleware/verifyToken';
+import sidebarRoutes from './routes/sidebarRoutes';
+import currencyRoutes from './routes/currencyRoutes';
 
 dotenv.config();//loads environment variables from .env file	
 
@@ -27,17 +30,23 @@ mongoose.connect(process.env.MONGO_URI || '')
   .catch(err => console.error('MongoDB connection error:', err));
 
 //api.use redirects all queries(/api/dashboard) to dashboardRoutes
-app.use('/api/register', registerRoutes);
+app.use('/register', registerRoutes);
 
-app.use('/api/login', loginRoutes);
+app.use('/login', loginRoutes);
 
-app.use('/api/dashboard', dashboardRoutes);
+const protectedRoutes = express.Router();
 
-app.use('/api/payment', paymentRoutes);
+protectedRoutes.use('/dashboard', dashboardRoutes);
 
-app.use('/api/account', accountRoutes);
+protectedRoutes.use('/sidebar', sidebarRoutes);
 
-app.use('/api/card', cardRoutes);
+protectedRoutes.use('/payment', paymentRoutes);
+
+protectedRoutes.use('/account', accountRoutes);
+
+protectedRoutes.use('/card', cardRoutes);
+
+app.use('/api', verifyToken, protectedRoutes);
 
 //Mandatory after all routes
 app.use(errorHandler);
