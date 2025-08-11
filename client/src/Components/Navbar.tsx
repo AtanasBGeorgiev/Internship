@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { Arrow, LangSwitcher } from './Common';
 import { renderIcon } from '../utils/iconMap';
+import { logout } from "../utils/errorHandler";
 
 interface NavbarLinkProps {
     type?: "link" | "tooltipLink" | "logout";
@@ -35,7 +36,7 @@ export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = ""
     return (
         <div onClick={() => isMobile && setShowTooltip((prev) => !prev)} className="relative group flex items-center justify-center space-x-1">
             {tooltipText &&
-                <div className={`absolute top-full z-50 bg-white border-2 border-gray-300 ${isMobile ? showTooltip ? "block" : "hidden" : "hidden group-hover:block"}`}>
+                <div className={`min-w-70 absolute top-full z-50 bg-white border-2 border-gray-300 ${isMobile ? showTooltip ? "block" : "hidden" : "hidden group-hover:block"}`}>
                     {tooltipText}
                 </div>
             }
@@ -143,7 +144,7 @@ export const NavbarContent: React.FC<NavbarContentProps> = ({ data }) => {
     const { t } = useTranslation();
 
     const handleLogout = () => {
-        localStorage.removeItem('jwtToken');
+        logout();
     };
 
     return (
@@ -225,7 +226,6 @@ export const NavbarMenu: React.FC<NavbarContentProps> = ({ data }) => {
 
     return (
         <>
-            {/* Бутонът трябва да е винаги наличен */}
             <div className="lg:hidden">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
