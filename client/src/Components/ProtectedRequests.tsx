@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { protectedFetch } from "../services/authService";
-import { showGlobalError } from "../utils/errorHandler";
+import { showGlobalError, logout } from "../utils/errorHandler";
 
 export function useProtectedFetch<T = unknown>(endpoint: string | null) {
     const [data, setData] = useState<T | null>(null);
@@ -21,7 +21,7 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null) {
             else {
                 const token = localStorage.getItem("jwtToken");
                 if (!token) {
-                    navigate("/Login");
+                    logout();
                     return;
                 }
 
@@ -32,9 +32,9 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null) {
                 catch (err: any) {
                     console.error("Protected fetch error:", err.message);
 
-                    if (err.message === "No token" || err.message === "TOKEN_EXPIRED") {
-                        localStorage.removeItem("jwtToken");
-                        navigate("/Login");
+                    if (err.message === "No token" || err.message === "TOKEN_EXPIRED" || err.message === "INVALID_TOKEN") {
+                        // Let the centralized logout handle this
+                        logout();
                     } else {
                         setError("Failed to load data. Please try again.");
                         showGlobalError("Failed to load data. Please try again.");
