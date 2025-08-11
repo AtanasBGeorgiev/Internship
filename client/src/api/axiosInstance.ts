@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { useError } from '../context/ErrorContext';
-import { showGlobalError } from "../utils/errorHandler";
+import { showGlobalError, handleAuthError } from "../utils/errorHandler";
 
 interface JwtPayload {
     userId: string;
@@ -26,31 +25,59 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem('jwtToken');
 
     if (token) {
-        const decoded = jwtDecode<JwtPayload>(token);
-        const currentTime = Date.now() / 1000;
+        try {
+            const decoded = jwtDecode<JwtPayload>(token);
+            const currentTime = Date.now() / 1000;
 
-        if (decoded.exp && decoded.exp < currentTime) {
-            // Remove token and throw error - let the component handle navigation
-            localStorage.removeItem("jwtToken");
-            return Promise.reject(new Error("TOKEN_EXPIRED"));
+            if (decoded.exp && decoded.exp < currentTime) {
+                // Token expired - handle automatic logout
+                handleAuthError("Token expired. Please login again.");
+                return Promise.reject(new Error("TOKEN_EXPIRED"));
+            }
+
+            //add token to headers in config
+            config.headers.Authorization = `Bearer ${token}`;
+        } catch (error) {
+            // Invalid token format - handle automatic logout
+            handleAuthError("Invalid token. Please login again.");
+            return Promise.reject(new Error("INVALID_TOKEN"));
         }
-
-        //add token to headers in config
-        config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
 },
-    (error) => Promise.reject(error)
+    (error) => {
+        showGlobalError("Error in request interceptor");
+        return Promise.reject(error);
+    }
 );
 
 //Response interceptor
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('Axios error:', error.response || error.message)
+        console.error('Axios error:', error.response || error.message);
 
-        const message = error.response?.data?.message || "Unexpected error occured";
+        // Handle authentication errors
+        if (error.response?.status === 401) {
+            handleAuthError("Unauthorized. Please login again.");
+            return Promise.reject(error);
+        }
+
+        if (error.response?.status === 403) {
+            handleAuthError("Access forbidden. Please login again.");
+            return Promise.reject(error);
+        }
+
+        // Handle token expired errors from server
+        if (error.response?.data?.message?.toLowerCase().includes('expired') || 
+            error.response?.data?.message?.toLowerCase().includes('invalid token')) {
+            handleAuthError("Session expired. Please login again.");
+            return Promise.reject(error);
+        }
+
+        // Handle other errors
+        const message = error.response?.data?.message || "Unexpected error occurred";
         showGlobalError(message);
 
         return Promise.reject(error);
