@@ -6,10 +6,11 @@ import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import { Dashboard } from './Dashboard';
 import { ErrorProvider, useError } from './context/ErrorContext';
-import { registerErrorHandler } from './utils/errorHandler';
+import { getIsAuthErrorActive, registerErrorHandler } from './utils/errorHandler';
 import { useEffect } from "react";
 
 const GlobalErrorBanner = () => {
+  //access the error and setError functions from the context
   const { error, setError } = useError();
 
   if (!error) return null;
@@ -21,6 +22,16 @@ const GlobalErrorBanner = () => {
     </div>
   );
 }
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthErrorActive = getIsAuthErrorActive();
+
+  if (isAuthErrorActive) {
+    return;
+  }
+
+  return children;
+};
 
 const AppRoutes = () => {
   const { setError } = useError();
@@ -55,9 +66,9 @@ const AppRoutes = () => {
           </>
         } />
         <Route path="/Dashboard" element={
-          <>
+          <ProtectedRoute>
             <Dashboard />
-          </>
+          </ProtectedRoute>
         } />
       </Routes>
       <Footer />
