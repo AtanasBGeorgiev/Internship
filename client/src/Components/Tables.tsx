@@ -41,7 +41,7 @@ export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick, getPos
         <div className="mt-5 border-x-2 border-t-2 border-gray-300 w-full">
             <div id="section" className="pl-3 flex items-center justify-between">
 
-                <h2 className="px-4 py-2 font-bold text-basic xl:text-lg">{title}</h2>
+                <h2 className="px-4 py-2 font-bold text-base xl:text-lg">{title}</h2>
 
                 <div className="flex items-center justify-center">
                     <p className="text-sm xl:text-base border-x-2 border-gray-300 p-2 hover:underline hover:text-blue-800">{t("Вижте всички")} {`>`}</p>
@@ -53,7 +53,7 @@ export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick, getPos
                             <p>{t("НАСТРОЙКИ")}</p>
                         </div>
                         <div>
-                            <MdSettingsSuggest className="text-basic xl:text-xl" />
+                            <MdSettingsSuggest className="text-base xl:text-xl" />
                         </div>
                     </div>
 
@@ -145,7 +145,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
         }
 
         return (
-            <td className={`text-sm xl:text-basic border border-gray-300 px-2 text-${alignment} ${display} ${displaySign}`}>
+            <td className={`text-sm xl:text-base border border-gray-300 px-2 text-${alignment} ${display} ${displaySign}`}>
                 {text.length > 0 ? text : icon ? icon : amount} {showRate ? `%` : ""}
                 {isDate && (
                     <div className="w-9/10">
@@ -198,8 +198,8 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
                 {checkbox}
                 {icon}
                 <div>
-                    <p className="font-bold text-sm xl:text-basic">{t(text)}</p>
-                    <p className={`text-sm xl:text-basic ${display}`}>{cardNum ? cardNum + '>' : t("Размер: ") + amount}</p>
+                    <p className="font-bold text-sm xl:text-base">{t(text)}</p>
+                    <p className={`text-sm xl:text-base ${display}`}>{cardNum ? cardNum + '>' : t("Размер: ") + amount}</p>
                 </div>
             </td>
         );
@@ -207,7 +207,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     if (type === "actions") {
         return (
             <td className="text-gray-500">
-                <div className="text-sm xl:text-basic flex items-center justify-center px-1">
+                <div className="text-sm xl:text-base flex items-center justify-center px-1">
                     {actions}
                 </div>
             </td>
@@ -393,7 +393,7 @@ export const TotalSum: React.FC<TotalSumProps> = ({ text, totalAmount }) => {
     return (
         <div className='flex flex-col items-center justify-between px-5 py-2 bg-gray-100 text-center w-1/3 xl:px-10 xl:py-5'>
             <p className='text-sm xl:text-base'>{t(text)}</p>
-            <h2 className='text-basic text-blue-800 font-bold text-sm xl:text-2xl'>{totalAmount}</h2>
+            <h2 className='text-base text-blue-800 font-bold text-sm xl:text-2xl'>{totalAmount}</h2>
         </div>
     );
 };
