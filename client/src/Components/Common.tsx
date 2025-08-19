@@ -30,10 +30,10 @@ export const LangSwitcher: React.FC<LangSwitcherProps> = ({ fontSize = "text-lg"
     }, [i18n]);
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="relative items-center">
             <button
                 onClick={() => changeLanguage(lang === 'bg' ? 'en' : 'bg')}
-                className={`${fontSize} text-black hover:text-blue-800`}
+                className={`${fontSize} text-sm lg:text-base text-black hover:text-blue-800`}
             >
                 {lang === 'bg' ? `${english}` : `${bulgarian}`}
             </button>
@@ -45,7 +45,6 @@ interface AnnouncmentProps {
     hText: string;
     pText: string;
     aText: string;
-    /* със ?, защото нямам конкретни връзки */
     href?: string;
     aDisplayProps?: string;
     borderProp1?: string;
@@ -57,8 +56,8 @@ export const Announcment: React.FC<AnnouncmentProps> = ({ hText, pText, aText, h
     return (
         <div className={`${borderProp1} ${borderProp2} pb-4`}>
             <h3 className="text-base md:text-xl font-bold pt-2">{hText}</h3>
-            <p className="text-xs md:text-basic pt-2 pb-2">{pText}</p>
-            <a href={href}  className={`text-sm md:text-basic text-blue-800 hover:underline ${aDisplayProps}`}>{aText} {'>'}</a>
+            <p className="text-xs md:text-base pt-2 pb-2">{pText}</p>
+            <a href={href} className={`text-sm md:text-base text-blue-800 hover:underline ${aDisplayProps}`}>{aText} {'>'}</a>
         </div>
     );
 };
@@ -77,9 +76,10 @@ interface MessageProps {
 export const ShowMessage: React.FC<MessageProps> = ({ message, messageType }) => {
     if (message) {
         return (
-            <p className={`text-sm md:text-basic text-center p-4 ${messageType === "success" ? "text-green-600 md:font-bold" : "text-red-500"}`}>
+            <div className={`p-3 m-3 rounded ${messageType === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                }`}>
                 {message}
-            </p>
+            </div>
         );
     }
 };
@@ -88,23 +88,29 @@ interface ArrowProps {
     bgColor?: string;
     borderColor?: string;
     position: string;
+    display?: string;
 };
-export const Arrow: React.FC<ArrowProps> = ({ bgColor = "bg-white", borderColor = "border-gray-300", position }) => {
+export const Arrow: React.FC<ArrowProps> = ({ bgColor = "bg-white", borderColor = "border-gray-300", position, display }) => {
     if (position === "left") {
         return (
-            <div className={`absolute -left-2 top-3 w-4 h-4 ${bgColor} border-l-2 border-b-2 ${borderColor} rotate-45 z-[-1]`}></div>
+            <div className={`absolute -left-2 ${display ? display : "top-3"} w-4 h-4 ${bgColor} border-l-2 border-b-2 ${borderColor} rotate-45 z-[10]`}></div>
+        );
+    }
+    if (position === "right") {
+        return (
+            <div className={`absolute -right-2 ${display ? display : "top-3"} w-4 h-4 ${bgColor} border-r-2 border-t-2 ${borderColor} rotate-45 z-[10]`}></div>
         );
     }
     if (position === "top") {
         return (
             <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 ${bgColor} border-l-2 border-t-2 
-            ${borderColor} rotate-45 z-[-1]`}></div>
+            ${borderColor} rotate-45 z-[10]`}></div>
         );
     }
     if (position === "bottom") {
         return (
             <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-4 h-4 ${bgColor} border-r-2 border-b-2 
-            ${borderColor} rotate-45 z-[-1]`}></div>
+            ${borderColor} rotate-45 z-[10]`}></div>
         );
     }
     if (position === "redBottom") {
