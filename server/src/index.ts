@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';//web server
 import mongoose from 'mongoose';//ORM library for database 
 import cors from 'cors';//Cross-Origin Resource Sharing -allows or deny http requests from different domains
 import dotenv from 'dotenv';
+import liabilityRoutes from './routes/liabilityRoutes';
 
 import loginRoutes from './routes/loginRoutes';
 import registerRoutes from './routes/registerRoutes';
@@ -10,6 +11,17 @@ import accountRoutes from './routes/accountRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import cardRoutes from './routes/cardRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import verifyToken from './middleware/verifyToken';
+import sidebarRoutes from './routes/sidebarRoutes';
+import currencyRoutes from './routes/currencyRoutes';
+import isLoggedInRoute from './routes/isLoggedInRoute';
+import transactionRoutes from './routes/transactionRoutes';
+import creditRoutes from './routes/creditRoutes';
+import depositRoutes from './routes/depositRoutes';
+import preferredAccountRoutes from './routes/preferencesRoutes';
+import preferencesRoutes from './routes/preferencesRoutes';
+import businessClientRoutes from './routes/bussinesClientRoutes';
+import notificationRoutes from './routes/notificationRoutes';
 
 dotenv.config();//loads environment variables from .env file	
 
@@ -27,17 +39,39 @@ mongoose.connect(process.env.MONGO_URI || '')
   .catch(err => console.error('MongoDB connection error:', err));
 
 //api.use redirects all queries(/api/dashboard) to dashboardRoutes
-app.use('/api/register', registerRoutes);
+app.use('/register', registerRoutes);
 
-app.use('/api/login', loginRoutes);
+app.use('/login', loginRoutes);
 
-app.use('/api/dashboard', dashboardRoutes);
+app.use('/transaction', transactionRoutes);
 
-app.use('/api/payment', paymentRoutes);
+app.use('/credit', creditRoutes);
 
-app.use('/api/account', accountRoutes);
+app.use('/deposit', depositRoutes);
 
-app.use('/api/card', cardRoutes);
+app.use('/account', accountRoutes);
+
+const protectedRoutes = express.Router();
+
+protectedRoutes.use('/dashboard', dashboardRoutes);
+
+protectedRoutes.use('/sidebar', sidebarRoutes);
+
+protectedRoutes.use('/payment', paymentRoutes);
+
+protectedRoutes.use('/card', cardRoutes);
+
+protectedRoutes.use('/currency', currencyRoutes);
+
+protectedRoutes.use('/liability', liabilityRoutes);
+
+protectedRoutes.use('/preferences', preferencesRoutes);
+
+protectedRoutes.use('/businessClient', businessClientRoutes);
+
+protectedRoutes.use('/notification', notificationRoutes);
+
+app.use('/api', verifyToken, protectedRoutes);
 
 //Mandatory after all routes
 app.use(errorHandler);
