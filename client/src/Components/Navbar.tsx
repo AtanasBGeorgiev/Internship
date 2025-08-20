@@ -46,9 +46,12 @@ export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = ""
                 </div>
             }
             <div className="relative">
-                {icons && icons.map((icon, index) => (
-                    <span key={index} className={`${displayIconProps} text-gray-700 group-hover:text-blue-800`}>{icon}</span>
-                ))}
+                {icons &&
+                    <div className="flex items-center justify-center space-x-1">
+                        {icons.map((icon, index) => (
+                            <span key={index} className={`${displayIconProps} text-gray-700 group-hover:text-blue-800`}>{icon}</span>
+                        ))}
+                    </div>}
                 {(count && count > 0) && <p className="absolute top-0 right-0 bg-red-600 text-white text-xs w-4 h-4">
                     {count > 99 ? "99+" : count}
                 </p>}
