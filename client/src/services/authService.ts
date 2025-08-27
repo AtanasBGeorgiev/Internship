@@ -78,7 +78,6 @@ export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
         handleAuthError('Authentication required. Please log in.');
         throw new Error('No token!');
     }
-
     try {
         const response = await api.get<T>(endpoint);
         return response.data;
