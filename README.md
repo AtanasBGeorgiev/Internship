@@ -12,7 +12,8 @@ client/ #Frontent
 server/ #Backend
 README.md #Project documentation
 
-2.How to run the project  
+2.How to run the project   
+
 a) Start Cursor IDE  
 b) Open the project folder  
 c) Open the Terminal  
@@ -24,6 +25,7 @@ g) SECOND open new Terminal and navigate to client folder (execute cd client)
 h) to run the frontent execute:  
    npm run dev  
 j) in the terminal will be displayed a link. Copy it and open in a browser  
+
 
 
 
