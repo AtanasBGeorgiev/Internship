@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormField, ButtonForm } from "./Components/InputForms";
-import { Arrow, hideMessage, ShowMessage } from "./Components/Common";
+import { Arrow, ShowMessage, SetMessage} from "./Components/Common";
 import { getPasswordStrength, getStrengthColor, getStrengthLabel } from "./Components/PasswordVerification";
 import { registerUser } from "./services/authService";
 
@@ -37,9 +37,7 @@ export const RegisterForm: React.FC = () => {
     try {
       const result = await registerUser(data);
 
-      setMessage(t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."));
-      setMessageType("success");
-      hideMessage(setMessage, setMessageType);
+      SetMessage({ message: t("Формата е изпратена успешно! Ще бъдете пренасочен към страницата за вход."), messageType: "success", setMessage, setMessageType });
 
       setTimeout(() => {
         navigate('/Login');
@@ -52,9 +50,7 @@ export const RegisterForm: React.FC = () => {
 
       //if the error is from the server
       const errorKey = error.response?.data?.errorKey;
-      setMessage(errorKey ? t(errorKey) : t("Възникна непредвидена грешка при регистрацията."));
-      setMessageType("error");
-      hideMessage(setMessage, setMessageType);
+      SetMessage({ message: errorKey ? t(errorKey) : t("Възникна непредвидена грешка при регистрацията."), messageType: "error", setMessage, setMessageType });
     }
   };
 

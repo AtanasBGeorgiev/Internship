@@ -32,29 +32,30 @@ export function useSelectableList<T extends { id: string }>(items: T[] = []) {
 }
 
 interface GroupCheckboxProps {
-    type?: "parent" | "child";
-    allSelected?: boolean;
-    toggleSelectAll?: () => void;
-    isSelected?: boolean;
-    onToggle?: () => void;
-}
-export const GroupCheckbox: React.FC<GroupCheckboxProps> = ({ type = "child", allSelected, toggleSelectAll, isSelected, onToggle }) => {
-    if (type === "parent") {
-        return (
-            <input
-                type="checkbox"
-                checked={allSelected}
-                onChange={toggleSelectAll}
-            />
-        );
-    }
-    else {
-        return (
-            <input
-                type="checkbox"
-                checked={isSelected}
-                onChange={onToggle}
-            />
-        );
-    }
+    condition: boolean;
+    onChange: () => void;
+};
+export const GroupCheckbox: React.FC<GroupCheckboxProps> = ({ condition, onChange }) => {
+    return (
+        <input type="checkbox" checked={condition}
+            onChange={onChange}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+        />
+    );
+};
+
+interface TableCheckboxProps {
+    checkedCondition: boolean;
+    disabledCondition?: boolean;
+    onChange: () => void;
+};
+export const TableCheckbox: React.FC<TableCheckboxProps> = ({ checkedCondition, disabledCondition, onChange }) => {
+    return (
+        <input
+            type="checkbox" checked={checkedCondition}
+            onChange={onChange}
+            disabled={disabledCondition}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+        />
+    );
 };

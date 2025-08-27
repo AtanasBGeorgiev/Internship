@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MdPerson, MdSearch } from "react-icons/md";
 import { type BusinessClient } from "./ModelTypes";
 import { fetchBusinessClients, getUserData } from "../services/authService";
@@ -7,6 +7,7 @@ import { useClientContext } from "../context/ClientContext";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoTriangle } from "react-icons/io5";
 import { usePosition } from "../context/PositionContext";
+import { getUserNamesByLanguage, updateUserNames } from '../services/authService';
 
 export const ClientsContainer = ({ name, onClick }: { name: string, onClick: () => void }) => {
     return (
@@ -52,7 +53,7 @@ export const UserAndClient: React.FC<UserAndClientProps> = ({ userNames, selecte
             <div className="flex items-center space-x-1 p-2">
                 <img src="profile-picture.jpg" alt="profile" className="w-6 h-6 xl:w-10 xl:h-10 rounded-full pr-1" />
                 <div className="text-left">
-                    <p className="text-xs xl:text-sm text-gray-600">Потребител:</p>
+                    <p className="text-xs xl:text-sm text-gray-600">{t("Потребител")}:</p>
                     {userNames && <h3 className="text-sm xl:text-base">{t(userNames)}</h3>}
                 </div>
             </div>
@@ -60,7 +61,7 @@ export const UserAndClient: React.FC<UserAndClientProps> = ({ userNames, selecte
                 <div className="flex items-center justify-start space-x-1 p-2">
                     <MdPerson className="w-6 h-6 xl:w-10 xl:h-10 rounded-full pr-1" />
                     <div className="text-left">
-                        <p className="text-xs xl:text-sm text-gray-600">Клиент:</p>
+                        <p className="text-xs xl:text-sm text-gray-600">{t("Клиент")}:</p>
                         <h3 className="text-sm xl:text-base">{t(selectedclient)}</h3>
                     </div>
                 </div>
@@ -83,6 +84,7 @@ export const ProfileMenuBusiness = () => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [userNames, setUserNames] = useState<string>("");
     const { selectedClient, setSelectedClient } = useClientContext();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,10 +93,17 @@ export const ProfileMenuBusiness = () => {
             console.log("getUserData result:", names);
             console.log("names[3]:", names[3]);
             setBusinessClients(clients);
-            setUserNames(names[3]);
+            
+            // Set user names based on current language
+            const currentLanguage = i18n.language || 'bg';
+            setUserNames(getUserNamesByLanguage(names, currentLanguage));
         };
         fetchData();
-    }, []);
+    }, [i18n.language]);
+
+    useEffect(() => {
+        updateUserNames(setUserNames);
+    }, [i18n.language]);
 
     const filteredClients = businessClients.filter(client =>
         client.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -107,23 +116,37 @@ export const ProfileMenuBusiness = () => {
     return (
         <div className="w-70 text-left">
             <UserAndClient userNames={userNames} selectedclient={selectedClient?.name || ""} />
+            
+            <SearchBar title={t("Изберете друг клиент")} placeholder={t("Търсете по име клиент...")} searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} />
 
-            <div className="p-3 border-y-2 border-gray-300">
-                <p className="text-sm text-gray-600 mb-2">Изберете друг клиент:</p>
-                <div className="relative">
-                    <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                        type="text"
-                        placeholder="Търсете по име клиент..."
-                        className="w-full pl-10 pr-3 py-2 border border-gray-300"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}//e.target.value gets the types text into the searchbar
-                    />
-                </div>
-            </div>
             <div className="overflow-y-auto max-h-[180px] 
                     scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {filteredClients.map((client) => <ClientsContainer key={client.id} onClick={(() => handleSelectedClient(client))} name={client.name} />)}
+            </div>
+        </div>
+    );
+};
+
+interface SearchBarProps {
+    title: string;
+    placeholder: string;
+    searchTerm: string;
+    setSearchTerm: (value: string) => void;
+};
+export const SearchBar: React.FC<SearchBarProps> = ({ title, placeholder, searchTerm, setSearchTerm }) => {
+    return (
+        <div className="p-3 border-y-2 border-gray-300">
+            <p className="text-sm text-gray-600 mb-2">{title}</p>
+            <div className="relative">
+                <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                    type="text"
+                    placeholder={placeholder}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}//e.target.value gets the types text into the searchbar
+                />
             </div>
         </div>
     );

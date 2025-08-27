@@ -10,7 +10,7 @@ interface FooterLinkProps {
 export const FooterLink: React.FC<FooterLinkProps> = ({ href = "", displayProps = "pt-2 pb-2 pr-2 pl-2 border-r-1 border-gray-400 hover:underline",
     icon, text }) => {
     return (
-        <div className={`relative group flex items-center justify-center py-2 px-2 lg:px-3`}>
+        <div className={`relative group flex items-center justify-center py-2 px-1 xl:px-3`}>
             {icon && <span className={`mx-2 text-xl text-gray-700 group-hover:text-blue-800`}>{icon}</span>}
             <a href={href} className={`${displayProps}`}>{text} {'>'}</a>
         </div>

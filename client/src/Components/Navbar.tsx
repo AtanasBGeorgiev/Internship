@@ -38,6 +38,11 @@ export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = ""
         return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
+    let showCount = false;
+    if (count && count > 0) {
+        showCount = true;
+    }
+
     return (
         <div onClick={() => isMobile && setShowTooltip((prev) => !prev)} className="relative group flex items-center justify-center space-x-1 text-sm lg:text-base">
             {tooltipText &&
@@ -52,9 +57,10 @@ export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = ""
                             <span key={index} className={`${displayIconProps} text-gray-700 group-hover:text-blue-800`}>{icon}</span>
                         ))}
                     </div>}
-                {(count && count > 0) && <p className="absolute top-0 right-0 bg-red-600 text-white text-xs w-4 h-4">
-                    {count > 99 ? "99+" : count}
+                {showCount && <p className="absolute top-0 right-0 bg-red-600 text-white text-xs w-4 h-4">
+                    {count}
                 </p>}
+
             </div>
 
 
@@ -280,14 +286,14 @@ interface NavbarMenuProps {
     text?: string;
     hideBreakpoint?: string;
 };
-export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hideBreakpoint = "lg" }) => {
+export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hideBreakpoint }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { height } = useScreenHeight();
     console.log("height2", height);
 
     return (
         <>
-            <div className={`block ${hideBreakpoint}:hidden hover:cursor-pointer hover:text-blue-800`}>
+            <div className={`block ${hideBreakpoint ? hideBreakpoint + ":hidden" : "lg:hidden"} hover:cursor-pointer hover:text-blue-800`}>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={`text-gray-700 hover:text-blue-800 focus:outline-none`}
@@ -307,7 +313,7 @@ export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hid
 
             {/* Mobile menu */}
             {isOpen && (
-                <div className={`absolute top-full left-0 w-full h-668 bg-white/80 z-50 pb-4 space-y-2 shadow-lg`}
+                <div className={`${hideBreakpoint}:hidden absolute top-full left-0 w-full h-668 bg-white/80 z-50 pb-4 space-y-2 shadow-lg`}
                 >
                     {content ? content : <NavbarContent data={data as MenuItem[]} />}
                 </div>

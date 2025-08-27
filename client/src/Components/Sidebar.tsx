@@ -13,6 +13,8 @@ import { UserAndClient } from './ProfileMenuBusiness';
 import { useClientContext } from '../context/ClientContext';
 import { usePosition } from '../context/PositionContext';
 import { NavbarHelpContact } from './Navbar';
+import { Loading, ErrorMessage } from './Common';
+import { getUserNamesByLanguage, updateUserNames } from '../services/authService';
 
 interface RenderSidebarComponentProps {
     item: MenuItem;
@@ -75,7 +77,6 @@ const RenderCollapsible: React.FC<RenderSidebarComponentProps> = ({ item, itemKe
 const RenderMultiLevel: React.FC<RenderSidebarComponentProps> = ({ item, itemKey }) => {
     const { t } = useTranslation();
 
-const RenderMultiLevel: React.FC<RenderSidebarComponentProps> = ({ item, itemKey }) => {
     return (
         <>
             {item.multiLevelItems?.map((child, i: number) => (
@@ -115,6 +116,7 @@ const RecursiveMenu: React.FC<RecursiveMenuProps> = ({ items }) => {
 
 // Main Sidebar component
 export const SidebarMenu: React.FC = () => {
+    const { t, i18n } = useTranslation();
     const [menu, setMenu] = useState<MenuItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -132,11 +134,14 @@ export const SidebarMenu: React.FC = () => {
                 setMenu(menuData);
                 const userRoleData = await getUserData();
                 setUserRole(userRoleData[1]);
-                setUserNames(userRoleData[3]);
+                
+                // Set user names based on current language
+                const currentLanguage = i18n.language || 'bg';
+                setUserNames(getUserNamesByLanguage(userRoleData, currentLanguage));
             } catch (err) {
                 console.error('Error fetching sidebar menu:', err);
-                setError('Failed to load menu');
-                showGlobalError('Failed to load sidebar menu');
+                setError(t('errors.failedToLoadSidebarMenu'));
+                showGlobalError('errors.failedToLoadSidebarMenu');
             } finally {
                 setLoading(false);
             }
@@ -145,27 +150,22 @@ export const SidebarMenu: React.FC = () => {
         fetchMenu();
     }, []);
 
+    // Update user names when language changes
+    useEffect(() => {
+        updateUserNames(setUserNames);
+    }, [i18n.language]);
+
     if (loading) {
-        return (
-            <div className="border-x-2 border-gray-300 bg-white">
-                <div className="p-4 text-center text-gray-600">Зареждане...</div>
-            </div>
-        );
+        return <Loading />;
     }
 
-    if (error) {
-        return (
-            <div className="hidden xl:block border-x-2 border-gray-300 bg-white xl:col-span-2">
-                <div className="p-4 text-center text-red-600">{error}</div>
-            </div>
-        );
-    }
+    error && <ErrorMessage message={error} />
 
     return (
         <div className="xl:block border-x-2 border-gray-300 bg-white xl:col-span-2">
             <div className="py-2 flex flex-col items-start justify-center">
-                {userRole === "user" && <p className='text-xs xl:text-sm text-gray-600 p-2'>Счетоводна дата: 10/Сеп/2025</p>}
-                {userRole === "user" ? <UserAndClient userNames={userNames} selectedclient={selectedClient?.name || ""} displaySideIcon={true} getPosition={true} /> : null}
+                {userRole === "user" && <p className='text-xs xl:text-sm text-gray-600 p-2'>{t("Счетоводна дата")}: 10/{t("Сеп")}/2025</p>}
+                <UserAndClient userNames={userNames} selectedclient={selectedClient?.name || ""} displaySideIcon={true} getPosition={true} />
                 <RecursiveMenu items={menu} />
                 <SidebarHelpSection />
             </div>
@@ -188,11 +188,11 @@ const SidebarHelpSection: React.FC = () => {
                 </button>
             </div>
 
-                <img
-                    src="icon-call-center.png"
-                    alt="Help illustration"
-                    className="absolute bottom-0 right-0 w-18 h-27"
-                />
+            <img
+                src="icon-call-center.png"
+                alt="Help illustration"
+                className="absolute bottom-0 right-0 w-18 h-27"
+            />
         </div>
     );
 };

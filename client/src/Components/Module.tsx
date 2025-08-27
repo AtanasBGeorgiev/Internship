@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip, TotalSum } from "./Tables";
-import { useProtectedFetch } from "./ProtectedRequests";
-import { IoCloseSharp, IoListCircleSharp } from "react-icons/io5";
-import { hideMessage, ShowMessage } from "./Common";
 import { useTranslation } from "react-i18next";
-import { getUserData, postPreferrence } from "../services/authService";
+
+import { IoCloseSharp, IoListCircleSharp } from "react-icons/io5";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { BsSafeFill } from "react-icons/bs";
+
+import { getUserData, postPreferrence } from "../services/authService";
+import { useProtectedFetch } from "./ProtectedRequests";
+import { ShowMessage, SetMessage } from "./Common";
+import { Table, TableData, TableButton } from "./Tables";
 import type { Account, Deposit } from "./ModelTypes";
+import { TableCheckbox } from "./Checkboxes";
 
 interface ModuleProps {
     heading: string;
@@ -18,7 +21,7 @@ interface ModuleProps {
     typeCollection: "accounts" | "cards" | "payments" | "liabilities" | "transactions" | "credits" | "deposits" | "currencies";
     onClose: () => void;
 };
-export const SetModule = <T extends { id: string }>({ heading, tableHeads, condition, newCondition, countLimit, typeCollection, onClose }: ModuleProps) => {
+export const SetModule = <T extends { id: string }>({ heading, tableHeads, condition, countLimit, typeCollection, onClose }: ModuleProps) => {
     const { t } = useTranslation();
 
     const [id, setId] = useState<string>("");
@@ -37,9 +40,7 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
 
     useEffect(() => {
         if (userError) {
-            setMessage(t("login.genericError"));
-            setMessageType("error");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Грешка при зареждане на данните"), messageType: "error", setMessage, setMessageType });
         }
 
         if (userData) {
@@ -75,18 +76,14 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
 
     const handleSave = () => {
         if (selectedItems.length === 0) {
-            setMessage(t("Моля, изберете поне едно!"));
-            setMessageType("error");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Моля, изберете поне едно!"), messageType: "error", setMessage, setMessageType });
             return;
         }
 
         //send the selected items to the server
         postPreferrence(id, selectedItems, typeCollection);
 
-        setMessage("Успешно запазени!");
-        setMessageType("success");
-        hideMessage(setMessage, setMessageType);
+        SetMessage({ message: t("Успешно запазени!"), messageType: "success", setMessage, setMessageType });
 
         // Close modal after successful save
         setTimeout(() => onClose(), 1500);
@@ -97,7 +94,7 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
         <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
             <div className="bg-white text-sm w-100 border-2 border-gray-300">
                 <div className="p-3 border-b-2 border-gray-300 flex justify-between items-center">
-                    <h2 className="text-base">Настройване на модул - {heading}</h2>
+                    <h2 className="text-base">{t("Настройване на модул")} - {heading}</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-500 hover:text-gray-700 hover:cursor-pointer"
@@ -105,8 +102,8 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
                         <IoCloseSharp className="text-2xl" />
                     </button>
                 </div>
-                <p className="p-3 border-b-2 border-gray-300">Изберете
-                    <span className="text-blue-800">{condition}</span>, които да се показват:
+                <p className="p-3 border-b-2 border-gray-300">{t("Изберете")}
+                    <span className="text-blue-800"> {condition}</span> {t("които да се показват")}:
                 </p>
 
                 <ShowMessage message={message} messageType={messageType} />
@@ -119,7 +116,7 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
                         tableData={(item) => <>
                             {/*First column */}
                             {(typeCollection === "accounts" || typeCollection === "credits" || typeCollection === "deposits") &&
-                                <TableData text={typeCollection === "accounts" ? `${(item as any).type}` : `${(item as any).name}`}
+                                <TableData text={`${(item as any).name || (item as any).type || 'N/A'}`}
                                     type="accountInfo" alignment="left"
                                     cardNum={typeCollection === "accounts" ? `${(item as any).accountNumber}`
                                         : typeCollection === "deposits" ? `${(item as any).number}`
@@ -131,12 +128,9 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
                                         : typeCollection === "credits" ? <FaHandHoldingDollar className="text-blue-800 text-3xl transform scale-x-[-1]" />
                                             : <BsSafeFill className="text-blue-800 text-3xl" />}
                                     checkbox={
-                                        <input
-                                            type="checkbox" checked={selectedItems.includes(item.id)}
-                                            onChange={() => handleCheckboxChange(item.id)}
-                                            disabled={!selectedItems.includes(item.id) && selectedItems.length === countLimit}
-                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                                        />
+                                        <TableCheckbox checkedCondition={selectedItems.includes(item.id)}
+                                            disabledCondition={!selectedItems.includes(item.id) && selectedItems.length === countLimit}
+                                            onChange={() => handleCheckboxChange(item.id)} />
                                     } />
                             }
 
@@ -223,9 +217,7 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
 
     useEffect(() => {
         if (userError) {
-            setMessage(t("Неуспешно зареждане на данните"));
-            setMessageType("error");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Неуспешно зареждане на данните"), messageType: "error", setMessage, setMessageType });
         }
 
         if (userData) {
@@ -277,9 +269,7 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
 
     const handleSave = async () => {
         if (totalSelected === 0) {
-            setMessage(`Моля, изберете поне един елемент!`);
-            setMessageType("error");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Моля, изберете поне един елемент!"), messageType: "error", setMessage, setMessageType });
             return;
         }
 
@@ -288,15 +278,11 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
             // Send both selected accounts and deposits into an array
             await postPreferrence(id, itemsID, typeCollection);
 
-            setMessage("Успешно запазени!");
-            setMessageType("success");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Успешно запазени!"), messageType: "success", setMessage, setMessageType });
 
             setTimeout(() => onClose(), 1500);
         } catch (error) {
-            setMessage("Грешка при запазване!");
-            setMessageType("error");
-            hideMessage(setMessage, setMessageType);
+            SetMessage({ message: t("Грешка при запазване!"), messageType: "error", setMessage, setMessageType });
         }
     };
 
@@ -310,7 +296,7 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
         <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
             <div className="bg-white text-sm w-100 border-2 border-gray-300">
                 <div className="p-3 border-b-2 border-gray-300 flex justify-between items-center">
-                    <h2 className="text-base">Настройване на модул - {heading}</h2>
+                    <h2 className="text-base">{t("Настройване на модул")} - {heading}</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-500 hover:text-gray-700 hover:cursor-pointer"
@@ -330,7 +316,7 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
                         tableData={(item) => <>
                             {/* First column - Type and Info */}
                             <TableData
-                                text={item.itemType === 'account' ? (item as Account).type : (item as Deposit).name}
+                                text={item.itemType === 'account' ? (item as Account).name : (item as Deposit).name}
                                 type="accountInfo"
                                 cardNum={item.itemType === 'account' ? (item as Account).accountNumber : (item as Deposit).number}
                                 alignment="left"

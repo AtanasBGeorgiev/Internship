@@ -161,7 +161,7 @@ export function UserDashboard() {
     const [currentBalance, setCurrentBalance] = useState<string>("0");
     const [totalNetFunds, setTotalNetFunds] = useState<string>("0");
     const [tableNames, setTableNames] = useState<TableNames[]>([]);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchTableNames = async () => {
@@ -232,13 +232,14 @@ export function UserDashboard() {
         transactions?: Transaction[];
         credits?: Credit[];
         deposits?: Deposit[];
-        currencies?: Currency[];
+                currencies?: Currency[];
     }
 
-    const { data: userData, error: userError } = useProtectedFetch<UserDashboardData>
-        ('/api/dashboard/UserDashboard');
-
-    useEffect(() => {
+    const { data: userData, error: userError } = useProtectedFetch<UserDashboardData>(
+        '/api/dashboard/UserDashboard',
+        [i18n.language] // Re-fetch when language changes
+    );
+    useEffect(() => {        
         if (userError) {
             setMessage(userError);
             setMessageType("error");
@@ -329,7 +330,7 @@ export function UserDashboard() {
                     condition={t("до 3 валути")} countLimit={3} typeCollection="currencies" onClose={() => setShowModuleCurrencies(false)} />}
 
                 {tableNames.map(table => {
-                    if (table.name.includes("Сметки")) {
+                    if (table.name.includes("Сметки") || table.name.includes("Accounts")) {
                         {/*Bank accounts */ }
                         return (
                             <>
@@ -349,7 +350,7 @@ export function UserDashboard() {
                                     items={accounts}
                                     tableData={(account) => (
                                         <>
-                                            <TableData text={`${account.type}`} type="accountInfo"
+                                            <TableData text={`${account.name}`} type="accountInfo"
                                                 cardNum={`${account.accountNumber}`} alignment="left"
                                                 display="text-blue-800 hover:cursor-pointer hover:underline"
                                                 icon={<IoListCircleSharp className='text-blue-800 text-2xl xl:text-3xl' />} />
@@ -371,7 +372,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("За подпис")) {
+                    if (table.name.includes("За подпис") || table.name.includes("For signing")) {
                         {/*Payments */ }
                         return (
                             <>
@@ -420,7 +421,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Карти")) {
+                    if (table.name.includes("Карти") || table.name.includes("Cards")) {
                         {/*Cards */ }
                         return (
                             <>
@@ -461,7 +462,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Задължения")) {
+                    if (table.name.includes("Задължения") || table.name.includes("Liabilities")) {
                         {/*Liabilities */ }
                         return (
                             <>
@@ -503,7 +504,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Последни 5 превода")) {
+                    if (table.name.includes("Последни 5 превода") || table.name.includes("Last 5 transfers")) {
                         {/*Transactions */ }
                         return (
                             <>
@@ -535,7 +536,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Кредити")) {
+                    if (table.name.includes("Кредити") || table.name.includes("Loans")) {
                         {/*Credits */ }
                         return (
                             <>
@@ -574,7 +575,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Депозити")) {
+                    if (table.name.includes("Депозити") || table.name.includes("Deposits")) {
                         {/*Deposits */ }
                         return (
                             <>
@@ -612,7 +613,7 @@ export function UserDashboard() {
                             </>
                         )
                     }
-                    if (table.name.includes("Валутни курсове")) {
+                    if (table.name.includes("Валутни курсове") || table.name.includes("Exchange rates")) {
                         {/*Currencies */ }
                         return (
                             <>

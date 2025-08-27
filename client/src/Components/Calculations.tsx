@@ -7,7 +7,7 @@ export async function getExchangeRates(): Promise<Record<string, number>> {
         const response = await getCurrencies();
         return response.data;
     } catch (error) {
-        showGlobalError("Failed to fetch exchange rates");
+        showGlobalError("errors.failedToFetchExchangeRates");
         console.log('Failed to fetch exchange rates');
         return {};
     }

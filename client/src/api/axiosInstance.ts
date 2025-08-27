@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { showGlobalError, handleAuthError } from "../utils/errorHandler";
+import i18n from '../i18n';
 
 interface JwtPayload {
-    userId: string;
-    userName: string;
+    id: string;
     role: string;
     exp: number;
 }
@@ -23,6 +23,7 @@ const api = axios.create({
 //config contains url,method,headers,data,etc
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('jwtToken');
+    const currentLanguage = i18n.language || 'bg';
 
     if (token) {
         try {
@@ -31,23 +32,27 @@ api.interceptors.request.use((config) => {
 
             if (decoded.exp && decoded.exp < currentTime) {
                 // Token expired - handle automatic logout
-                handleAuthError("Token expired. Please login again.");
+                handleAuthError("errors.tokenExpired");
                 return Promise.reject(new Error("TOKEN_EXPIRED"));
             }
 
-            //add token to headers in config
+            //add token to headers in config with language preference
             config.headers.Authorization = `Bearer ${token}`;
+            config.headers['Accept-Language'] = currentLanguage;
         } catch (error) {
             // Invalid token format - handle automatic logout
-            handleAuthError("Invalid token. Please login again.");
+            handleAuthError("errors.invalidToken");
             return Promise.reject(new Error("INVALID_TOKEN"));
         }
+    } else {
+        // Even without token, send language preference
+        config.headers['Accept-Language'] = currentLanguage;
     }
 
     return config;
 },
     (error) => {
-        showGlobalError("Error in request interceptor");
+        showGlobalError("errors.requestInterceptorError");
         return Promise.reject(error);
     }
 );
@@ -58,26 +63,21 @@ api.interceptors.response.use(
     (error) => {
         console.error('Axios error:', error.response || error.message);
 
-        // Handle authentication errors
-        if (error.response?.status === 401) {
-            handleAuthError("Unauthorized. Please login again.");
-            return Promise.reject(error);
-        }
-
+       
         if (error.response?.status === 403) {
-            handleAuthError("Access forbidden. Please login again.");
+            handleAuthError("errors.accessForbidden");
             return Promise.reject(error);
         }
 
         // Handle token expired errors from server
         if (error.response?.data?.message?.toLowerCase().includes('expired') || 
             error.response?.data?.message?.toLowerCase().includes('invalid token')) {
-            handleAuthError("Session expired. Please login again.");
+            handleAuthError("errors.sessionExpired");
             return Promise.reject(error);
         }
 
         // Handle other errors
-        const message = error.response?.data?.message || "Unexpected error occurred";
+        const message = error.response?.data?.message;
         showGlobalError(message);
 
         return Promise.reject(error);
@@ -85,3 +85,14 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// Function to update language preference in axios instance
+export const updateLanguagePreference = (language: string) => {
+    // Update the default headers for future requests
+    api.defaults.headers.common['Accept-Language'] = language;
+};
+
+// Function to get current language preference
+export const getCurrentLanguage = () => {
+    return i18n.language || 'bg';
+};

@@ -44,7 +44,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ showModule, setS
         <>
             {showModule && <AdminRoleModule onClose={() => setShowModule(false)} />}
 
-            {tableNames.some(table => table.name.includes("Потребители")) &&
+            {tableNames.some(table => table.name.includes("Потребители") || table.name.includes("Users")) &&
                 <>
                     <SectionHead title={t("ПОТРЕБИТЕЛИ")} onClick={ShowModule} />
                     <Table

@@ -1,4 +1,5 @@
 //global mechanism to handle errors
+import i18n from '../i18n';
 
 let setGlobalError: (msg: string | null) => void = () => { };
 let setIsAuthErrorActive: (isActive: boolean) => void = () => { };
@@ -9,10 +10,17 @@ export const registerErrorHandler = (fn: (msg: string | null) => void) => {
     setGlobalError = fn;
 };
 
-export const showGlobalError = (msg: string, force: boolean = false) => {
-    //If at the moment is displayed an auth error, don't display another one
+export const showGlobalError = (msg?: string, force: boolean = false) => {
     if (!force && isAuthErrorActive) return;
-    setGlobalError(msg);
+
+    const safeMsg = msg ?? "";
+
+    if (safeMsg.startsWith("errors.")) {
+        const translatedMsg = i18n.t(safeMsg);
+        setGlobalError(translatedMsg);
+    } else {
+        setGlobalError(safeMsg);
+    }
 };
 
 // Centralized logout utility
@@ -22,7 +30,7 @@ export const logout = () => {
 };
 
 // Handle authentication errors (401, 403, token expired)
-export const handleAuthError = (message: string = 'Authentication failed. Please login again.') => {
+export const handleAuthError = (message: string = 'errors.authenticationRequired') => {
     isAuthErrorActive = true;
     setIsAuthErrorActive(true);
     showGlobalError(message, true);

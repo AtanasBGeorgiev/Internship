@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
 import { MdCreditCard } from "react-icons/md";
 import { SiJsonwebtokens } from "react-icons/si";
@@ -8,7 +9,7 @@ import { TbBaselineDensityMedium, TbXboxXFilled } from "react-icons/tb";
 import { getNotifications, getUserData, RemoveNotification } from "../services/authService";
 import { type Notification } from "./ModelTypes";
 import { FaHandHoldingDollar } from "react-icons/fa6";
-import { Arrow } from "./Common";
+import { Arrow, ErrorMessage, Loading } from "./Common";
 
 interface NotificationProps {
     notifiaction: Notification;
@@ -111,7 +112,7 @@ export const NotificationsMenu: React.FC = () => {
                 const data = await getUserData();
                 setUserID(data[0]);//data[0] is the userID
             } catch (error) {
-                setError("Failed to fetch user data");
+                setError(t("errors.failedToFetchUserData"));
                 console.error("Error fetching user data:", error);
             }
         };
@@ -128,14 +129,14 @@ export const NotificationsMenu: React.FC = () => {
                 setNotifications(data.notifications);
                 setCountUnread(data.countUnread);
             } catch (error) {
-                setError("Failed to fetch notifications");
+                setError(t("errors.failedToFetchNotificationsLocal"));
                 console.error("Error fetching notifications:", error);
             } finally {
                 setIsLoading(false);
             }
         };
         fetchNotifications();
-    }, [userID]);
+    }, [userID, i18n.language]);
 
     const handleremoveNotification = async (id: string) => {
         try {
@@ -146,21 +147,9 @@ export const NotificationsMenu: React.FC = () => {
         }
     };
 
-    if (error) {
-        return (
-            <div className="w-120 p-2 text-left">
-                <p className="text-red-500 pl-2">{error}</p>
-            </div>
-        );
-    }
+    error && <ErrorMessage message={error} />
 
-    if (isLoading) {
-        return (
-            <div className="w-120 p-2 text-left">
-                <p className="text-gray-500 pl-2">{t("Зареждане на известия...")}</p>
-            </div>
-        );
-    }
+    isLoading && <Loading />;
 
     return (
         <div className="w-120 p-2 text-left">
