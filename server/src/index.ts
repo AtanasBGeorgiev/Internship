@@ -21,6 +21,7 @@ import depositRoutes from './routes/depositRoutes';
 import preferredAccountRoutes from './routes/preferencesRoutes';
 import preferencesRoutes from './routes/preferencesRoutes';
 import businessClientRoutes from './routes/bussinesClientRoutes';
+import notificationRoutes from './routes/notificationRoutes';
 
 dotenv.config();//loads environment variables from .env file	
 
@@ -67,6 +68,8 @@ protectedRoutes.use('/liability', liabilityRoutes);
 protectedRoutes.use('/preferences', preferencesRoutes);
 
 protectedRoutes.use('/businessClient', businessClientRoutes);
+
+protectedRoutes.use('/notification', notificationRoutes);
 
 app.use('/api', verifyToken, protectedRoutes);
 

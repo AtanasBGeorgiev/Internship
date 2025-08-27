@@ -18,9 +18,10 @@ interface NavbarLinkProps {
     onClick?: () => void;
     displayIconProps?: string;
     width?: string;
+    count?: number;
 };
 
-export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = "", icons, text, tooltipText, onClick, displayIconProps, width }) => {
+export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = "", icons, text, tooltipText, onClick, displayIconProps, width, count }) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -44,9 +45,18 @@ export const NavbarLink: React.FC<NavbarLinkProps> = ({ type = "link", href = ""
                     {tooltipText}
                 </div>
             }
-            {icons && icons.map((icon, index) => (
-                <span key={index} className={`${displayIconProps} text-gray-700 group-hover:text-blue-800`}>{icon}</span>
-            ))}
+            <div className="relative">
+                {icons &&
+                    <div className="flex items-center justify-center space-x-1">
+                        {icons.map((icon, index) => (
+                            <span key={index} className={`${displayIconProps} text-gray-700 group-hover:text-blue-800`}>{icon}</span>
+                        ))}
+                    </div>}
+                {(count && count > 0) && <p className="absolute top-0 right-0 bg-red-600 text-white text-xs w-4 h-4">
+                    {count > 99 ? "99+" : count}
+                </p>}
+            </div>
+
 
             {type === "logout" ?
                 <Link onClick={onClick} to={href} className={`text-black group-hover:text-blue-800`}>
@@ -298,7 +308,7 @@ export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hid
             {/* Mobile menu */}
             {isOpen && (
                 <div className={`absolute top-full left-0 w-full h-668 bg-white/80 z-50 pb-4 space-y-2 shadow-lg`}
-                    >
+                >
                     {content ? content : <NavbarContent data={data as MenuItem[]} />}
                 </div>
             )}

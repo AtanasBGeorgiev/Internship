@@ -1,7 +1,7 @@
 import api from "../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { showGlobalError, handleAuthError } from "../utils/errorHandler";
-import { type BusinessClient } from "../Components/ModelTypes";
+import { type BusinessClient, type Notification, type NotificationResponse } from "../Components/ModelTypes";
 
 export interface loginData {
     username: string;
@@ -65,7 +65,6 @@ export const getUserData = async (): Promise<string[]> => {
         }
         const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic];
         return data;
-
     } catch (error) {
         handleAuthError('Invalid token format. Please log in again.');
         throw new Error('Invalid token format!');
@@ -79,7 +78,6 @@ export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
         handleAuthError('Authentication required. Please log in.');
         throw new Error('No token!');
     }
-  
     try {
         const response = await api.get<T>(endpoint);
         return response.data;
@@ -142,6 +140,26 @@ export const fetchBusinessClients = async (): Promise<BusinessClient[]> => {
         return response.data;
     } catch (error) {
         showGlobalError('Failed to fetch business clients');
+        throw error;
+    }
+};
+
+export const getNotifications = async (userId: string): Promise<NotificationResponse> => {
+    try {
+        const response = await api.get<NotificationResponse>(`/api/notification/get?userId=${userId}`);
+        return response.data;
+    } catch (error) {
+        showGlobalError('Failed to fetch notifications');
+        throw error;
+    }
+};
+
+export const RemoveNotification = async (notificationId: string) => {
+    try {
+        const response = await api.put(`/api/notification/update/${notificationId}`);
+        return response.data;
+    } catch (error) {
+        showGlobalError('Failed to remove notification');
         throw error;
     }
 };

@@ -26,7 +26,7 @@ import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip,
 import { useSelectableList, GroupCheckbox } from "../Components/Checkboxes";
 import { useProtectedFetch } from "../Components/ProtectedRequests";
 import { TiInfoLargeOutline } from "react-icons/ti";
-import { ShowMessage, LangSwitcher,Arrow } from "./Common";
+import { ShowMessage, LangSwitcher, Arrow } from "./Common";
 import { NavbarLink, NavbarHelpContact, NavProfile, NavbarMenu } from "./Navbar";
 import { renderIcon } from "../utils/iconMap";
 import { logout } from "../utils/errorHandler";
@@ -35,12 +35,24 @@ import { ModuleManaging } from "./ModuleManaging";
 import { ProfileMenuBusiness } from "./ProfileMenuBusiness";
 import { Tutorial } from "./Tutorial";
 import { SidebarMenu } from "./Sidebar";
+import { NotificationsMenu } from "./Notifications";
+import { getNotifications, getUserData } from "../services/authService";
 
 export const UserDashboardHeader: React.FC = () => {
     const { t } = useTranslation();
 
     const [moduleManaging, setModuleManaging] = useState(false);
     const [showTutorial, setShowTutorial] = useState(false);
+    const [countNotif, setCountNotif] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchCountNotif = async () => {
+            const userData = await getUserData();
+            const data = await getNotifications(userData[0]);
+            setCountNotif(data.countUnread);
+        }
+        fetchCountNotif();
+    }, []);
 
     const handleLogout = () => {
         logout();
@@ -71,8 +83,17 @@ export const UserDashboardHeader: React.FC = () => {
                         <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 xl:w-40 xl:h-10 ml-5" />
                         <div className="flex items-center justify-between justify-center space-x-5">
                             <LangSwitcher english={t("ENGLISH")} bulgarian={t("БЪЛГАРСКИ")} />
-                            <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")} />
-                            <NavbarLink icons={["IoNotificationsSharp"].map(icon => renderIcon(icon))} text={t("ИЗВЕСТИЯ")} />
+                            <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")}
+                                displayIconProps="text-2xl" count={2} />
+                            <NavbarLink icons={["IoNotificationsSharp"].map(icon => renderIcon(icon))} text={t("ИЗВЕСТИЯ")}
+                                displayIconProps="text-2xl" count={countNotif}
+                                tooltipText={
+                                    <div>
+                                        <Arrow position="top" />
+                                        <NotificationsMenu />
+                                    </div>
+                                }
+                            />
                             <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")} width="min-w-70"
                                 tooltipText={
                                     <div className="max-h-70 overflow-y-auto scrollbar-thin">
