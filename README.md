@@ -7,11 +7,11 @@
    * both pages have data validation
  - Defended Dashboard page using token  
    * Dashboard is role based  
-   * Contains fetched data from DB related to the user
-     /Accounts
-     /Cards
-     /Deposits and more
-   * The user can change their preferences regarding the displayed data
+   * Contains fetched data from DB related to the user  
+     /Accounts  
+     /Cards  
+     /Deposits and more  
+   * The user can change their preferences regarding the displayed data  
 
  2.Technologies
  -	Frontend	Framework:	React.js	(with	TypeScript)
@@ -20,10 +20,10 @@
  -	Backend:	Node.js	with	Express
  -	Database:	MongoDB
 
-3.Folder structure
-client/ #Frontent
-server/ #Backend
-README.md #Project documentation
+3.Folder structure  
+client/ #Frontent  
+server/ #Backend  
+README.md #Project documentation  
 
 4.Prerequisites  
 - Node.js (version 16 or higher)  
@@ -143,4 +143,5 @@ npm run build    # Build for production
 npm run preview  # Preview production build
 npm run lint     # Code quality check
 ```
+
 
