@@ -79,6 +79,7 @@ const DashboardHeader: React.FC = () => {
 export function Dashboard() {
     const [message, setMessage] = useState<string | null>(null);
     const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
+
     const { t } = useTranslation();
 
     //account hook

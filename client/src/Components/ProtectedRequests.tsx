@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import { protectedFetch } from "../services/authService";
+import { showGlobalError, logout } from "../utils/errorHandler";
 
-interface JwtPayload {
-    exp: number;
-}
-
-export function useProtectedFetch<T = unknown>(endpoint: string) {
+export function useProtectedFetch<T = unknown>(endpoint: string | null) {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -15,35 +11,36 @@ export function useProtectedFetch<T = unknown>(endpoint: string) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const token = localStorage.getItem("jwtToken");
-            if (!token) {
-                navigate("/Login");
+            // Check if endpoint is null or empty
+            if (!endpoint) {
+                console.log("Endpoint is null or empty, skipping fetch");
+                setError(null); // Clear any previous errors
+                setData(null); // Clear any previous data
                 return;
             }
-
-            try {
-                const decoded = jwtDecode<JwtPayload>(token);
-
-                const currentTime = Date.now() / 1000;
-                if (decoded.exp < currentTime) {
-                    localStorage.removeItem("jwtToken");
-                    navigate("/Login");
+            else {
+                const token = localStorage.getItem("jwtToken");
+                if (!token) {
+                    logout();
                     return;
                 }
 
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}${endpoint}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                try {
+                    const result = await protectedFetch<T>(endpoint);
+                    setData(result);
+                }
+                catch (err: any) {
+                    console.error("Protected fetch error:", err.message);
 
-                setData(response.data);
-            }
-            catch (err: any) {
-                console.error("Protected fetch error:",)
-                localStorage.removeItem("jwtToken");
-                setError("Failed to load data. Please login again.");
-                navigate("/Login");
+                    if (err.message === "No token" || err.message === "TOKEN_EXPIRED" || err.message === "INVALID_TOKEN") {
+                        // Let the centralized logout handle this
+                        logout();
+                    } else {
+                        setError("Failed to load data. Please try again.");
+                        showGlobalError("Failed to load data. Please try again.");
+                        console.error("Non-token error:", err);
+                    }
+                }
             }
         };
 
