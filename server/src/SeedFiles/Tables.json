@@ -1,0 +1,74 @@
+[
+  {
+    "name_bg": "Сметки",
+    "name_en": "Accounts",
+    "defaultOrder": 1,
+    "isRestricted": false,
+    "description_bg": "Показва информация за всички банкови сметки, валута, наличност, дължими такси.",
+    "description_en": "Displays information about all bank accounts, currency, balance, and due fees."
+  },
+  {
+    "name_bg": "За подпис",
+    "name_en": "For signing",
+    "defaultOrder": 2,
+    "isRestricted": false,
+    "description_bg": "Показва информация за преводни нареждания, за платеца и получателя, сума, валута и опция за подписване на плащанията.",
+    "description_en": "Displays information about payment orders, payer and recipient, amount, currency, and the option to sign payments."
+  },
+  {
+    "name_bg": "Карти",
+    "name_en": "Cards",
+    "defaultOrder": 3,
+    "isRestricted": false,
+    "description_bg": "Показва информация за кредитни и дебитни карти, тяхната наличност, задължения, краен срок и опция за погасяване на задълженията.",
+    "description_en": "Displays information about credit and debit cards, their balance, liabilities, due date, and option to repay obligations."
+  },
+  {
+    "name_bg": "Задължения",
+    "name_en": "Liabilities",
+    "defaultOrder": 4,
+    "isRestricted": false,
+    "description_bg": "Показва информация за задълженията, техният размер и дата на издаване.",
+    "description_en": "Displays information about liabilities, their amount, and issue date."
+  },
+  {
+    "name_bg": "Последни 5 превода",
+    "name_en": "Last 5 transfers",
+    "defaultOrder": 5,
+    "isRestricted": false,
+    "description_bg": "Показва информация за последните 5 превода, направени от избрани сметки и депозити.",
+    "description_en": "Displays information about the last 5 transfers made from selected accounts and deposits."
+  },
+  {
+    "name_bg": "Кредити",
+    "name_en": "Loans",
+    "defaultOrder": 6,
+    "isRestricted": false,
+    "description_bg": "Показва информация за кредитите - валута, лихвен %, вноска, дата на вноска, падеж. Има опция за погасяване на задълженията.",
+    "description_en": "Displays information about loans – currency, interest rate, installment, installment date, and maturity. Includes an option to repay obligations."
+  },
+  {
+    "name_bg": "Депозити",
+    "name_en": "Deposits",
+    "defaultOrder": 7,
+    "isRestricted": false,
+    "description_bg": "Показва информация за депозити - валута, разполагаемост, натрупана лихва, падеж.",
+    "description_en": "Displays information about deposits – currency, availability, accrued interest, and maturity."
+  },
+  {
+    "name_bg": "Валутни курсове",
+    "name_en": "Exchange rates",
+    "defaultOrder": 8,
+    "isRestricted": false,
+    "description_bg": "Показва информация за избраните валутни курсове - купува и продава за единица валута.",
+    "description_en": "Displays information about selected exchange rates – buy and sell for one unit of currency."
+  },
+  {
+    "name_bg": "Потребители",
+    "name_en": "Users",
+    "defaultOrder": 9,
+    "isRestricted": true,
+    "description_bg": "Показва информация за потребителите с роля user.",
+    "description_en": "Displays information about users with the role 'user'."
+  }
+]

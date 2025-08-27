@@ -1,0 +1,84 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Сметка за ток (офис)",
+    "name_en": "Electricity bill (office)",
+    "Date": "2025-08-31T00:00:00.000Z",
+    "autoPay": false,
+    "amount": 25,
+    "feeType": "electricity"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Сметка за парно (офис)",
+    "name_en": "Heating bill (office)",
+    "Date": "2025-08-28T00:00:00.000Z",
+    "autoPay": false,
+    "amount": 22500,
+    "feeType": "heating"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Vivacom (личен GSM)",
+    "name_en": "Vivacom (personal GSM)",
+    "Date": "2025-08-28T00:00:00.000Z",
+    "autoPay": true,
+    "amount": 70,
+    "feeType": "phone"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Такса смет",
+    "name_en": "Garbage fee",
+    "Date": "2025-09-02T00:00:00.000Z",
+    "autoPay": null,
+    "amount": 70,
+    "feeType": "other"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Сметка за вода (вкъщи)",
+    "name_en": "Water bill (home)",
+    "Date": "2025-09-02T00:00:00.000Z",
+    "autoPay": false,
+    "amount": 93.1,
+    "feeType": "water"
+  },
+  {
+    "userId": "6890bb5e0974857345641f63",
+    "name_bg": "Сметка за вода (вкъщи)",
+    "name_en": "Water bill (home)",
+    "Date": "2025-09-02T00:00:00.000Z",
+    "autoPay": false,
+    "amount": 93.1,
+    "feeType": "water"
+  },
+  {
+    "userId": "6890bb5e0974857345641f63",
+    "name_bg": "Сметка за парно (офис)",
+    "name_en": "Heating bill (office)",
+    "Date": "2025-08-29T00:00:00.000Z",
+    "autoPay": true,
+    "amount": 500,
+    "feeType": "heating"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Такса смет",
+    "name_en": "Garbage fee",
+    "Date": "2025-09-02T00:00:00.000Z",
+    "autoPay": null,
+    "amount": 70,
+    "feeType": "other"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Сметка за вода (вкъщи)",
+    "name_en": "Water bill (home)",
+    "Date": "2025-09-02T00:00:00.000Z",
+    "autoPay": false,
+    "amount": 93.1,
+    "feeType": "water"
+  }
+]
+

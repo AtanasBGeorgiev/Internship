@@ -1,0 +1,68 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "cardNumber": "1111222233334444",
+    "type": "MasterCard Standard",
+    "currency": "BGN",
+    "balance": 17500,
+    "liabilities": 12000,
+    "minPayment": 2000,
+    "repaymentDate": "2025-08-05T00:00:00.000+00:00",
+    "ThreeDSecurity": true
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "cardNumber": "2222333344445555",
+    "type": "Visa Electron",
+    "currency": "EUR",
+    "balance": 3000,
+    "liabilities": 2000,
+    "minPayment": 200,
+    "repaymentDate": "2025-08-04T22:00:00.000+00:00",
+    "ThreeDSecurity": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f64",
+    "cardNumber": "8888777766665555",
+    "type": "MasterCard Standard",
+    "currency": "BGN",
+    "balance": 13267.58,
+    "liabilities": 1000,
+    "minPayment": 500,
+    "repaymentDate": "2025-08-05T00:00:00.000+00:00",
+    "ThreeDSecurity": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "cardNumber": "333444455556666",
+    "type": "MasterCard Standard",
+    "currency": "USD",
+    "balance": 10.01,
+    "liabilities": 20,
+    "minPayment": 2.5,
+    "repaymentDate": "2025-08-05T00:00:00.000+00:00",
+    "ThreeDSecurity": false
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "cardNumber": "8888777766665555",
+    "type": "MasterCard Standard",
+    "currency": "BGN",
+    "balance": 13267.58,
+    "liabilities": 1000,
+    "minPayment": 500,
+    "repaymentDate": "2025-08-05T00:00:00.000+00:00",
+    "ThreeDSecurity": false
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "cardNumber": "333444455556666",
+    "type": "MasterCard Standard",
+    "currency": "USD",
+    "balance": 10.01,
+    "liabilities": 20,
+    "minPayment": 2.5,
+    "repaymentDate": "2025-08-05T00:00:00.000+00:00",
+    "ThreeDSecurity": false
+  }
+]

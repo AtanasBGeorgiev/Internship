@@ -1,0 +1,376 @@
+{
+    "userRole": "user",
+    "menu": [
+        {
+            "type": "button",
+            "buttonItem": {
+                "href": "/",
+                "icons": [
+                    "FaArrowUpLong",
+                    "PiCoinsFill"
+                ],
+                "label": "НОВ ПРЕВОД",
+                "style": "bg-red-500"
+            }
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Начало",
+                    "icons": ["AiFillPieChart"],
+                    "href": "/"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Справки",
+                    "icons": ["IoMdList"],
+                    "href": "/",
+                    "nextLevel": [
+                        {
+                            "title": "ТРАНЗАКЦИИ",
+                            "label": "ПОС транзакции - по групи",
+                            "href": "/pos-transactions",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "ПОС транзакции за период",
+                            "href": "/pos-period"
+                        },
+                        {
+                            "label": "Салда по всички сметки SSO",
+                            "href": "/account-balances"
+                        },
+                        {
+                            "label": "Дневен отчет за бюдж. разпоредител",
+                            "href": "/daily-budget-report"
+                        },
+                        {
+                            "label": "Извършени услуги за клиент",
+                            "href": "/completed-services"
+                        },
+                        {
+                            "label": "Изпратени SMS нотификации",
+                            "href": "/sent-sms"
+                        },
+                        {
+                            "label": "Дължими суми от такси",
+                            "href": "/owed-taxes"
+                        },
+                        {
+                            "label": "Преводи по SWIFT",
+                            "href": "/swift"
+                        },
+                        {
+                            "label": "Сесии",
+                            "href": "/user-sessions"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Плащания",
+                    "icons": ["FaMoneyBillAlt"],
+                    "href": "/payments",
+                    "nextLevel": [
+                        {
+                            "title": "ПРЕВОД",
+                            "label": "Нов кредитен превод",
+                            "href": "/new-credit-transfer",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "Плащане от/към бюджета",
+                            "href": "/budget-payment"
+                        },
+                        {
+                            "label": "Директен дебит",
+                            "href": "/direct-debit"
+                        },
+                        {
+                            "label": "Масов превод",
+                            "href": "/bulk-transfer"
+                        },
+                        {
+                            "label": "Преводи от файл",
+                            "href": "/file-transfers"
+                        },
+                        {
+                            "label": "Нов периодичен превод",
+                            "href": "/periodic-transfer"
+                        },
+                        {
+                            "label": "Плащания към СЕБРА",
+                            "href": "/sebra-payments"
+                        },
+                        {
+                            "label": "Кредитен превод CY",
+                            "href": "/cy-credit-transfer"
+                        },
+                        {
+                            "label": "Вътрешноклонов превод CY",
+                            "href": "/cy-internal-transfer"
+                        },
+                        {
+                            "title": "ПОКУПКА/ПРОДАЖБА НА ВАЛУТА",
+                            "label": "Покупка/продажба на валута",
+                            "href": "/currency-exchange",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "Договаряне на курс",
+                            "href": "/rate-negotiation"
+                        },
+                        {
+                            "title": "РЕГИСТРИ",
+                            "label": "Регистър на пер. преводи",
+                            "href": "/transfer-registry",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "Получатели за преводи",
+                            "href": "/transfer-recipients"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Извлечения",
+                    "icons": ["FaArchive"],
+                    "href": "/extracts",
+                    "nextLevel": [
+                        {
+                            "label": "Извлечения сметка",
+                            "href": "/account-extracts",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "Извлечения по кредитна карта",
+                            "href": "/credit-card-extracts",
+                            "nextLevel": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Сметки",
+                    "icons": ["IoIosListBox"],
+                    "href": "/accounts"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Депозити",
+                    "icons": ["BsSafeFill"],
+                    "href": "/deposits"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Карти",
+                    "icons": ["RiBankCardLine"],
+                    "href": "/cards"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Преводи за подпис",
+                    "icons": ["FaPenClip"],
+                    "href": "/pending-signatures"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Наредени документи",
+                    "icons": ["MdEditNote"],
+                    "href": "/submitted-documents"
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Услуги",
+                    "icons": ["SlEnvolopeLetter"],
+                    "href": "/services",
+                    "nextLevel": [
+                        {
+                            "label": "Отчети по e-mail за сметки",
+                            "href": "/email-reports",
+                            "nextLevel": []
+                        },
+                        {
+                            "label": "Извлечения по e-mail за карти",
+                            "href": "/card-email-extracts"
+                        },
+                        {
+                            "label": "Картови авторизации по e-mail",
+                            "href": "/card-authorizations"
+                        },
+                        {
+                            "label": "Преводи по SWIFT по e-mail",
+                            "href": "/swift-email"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Комунални услуги",
+                    "icons": ["BiSolidWallet"],
+                    "href": "/utility-services",
+                    "nextLevel": [
+                        {
+                            "title": "ПЛАЩАНЕ НА ЗАДЪЛЖЕНИЯ",
+                            "label": "Задължения, очакващи плащане",
+                            "href": "/utility-pending-obligations"
+                        },
+                        {
+                            "label": "Плащане на задължения",
+                            "href": "/"
+                        },
+                        {
+                            "label": "Плащане на общински данъци и такси",
+                            "href": "/"
+                        },
+                        {
+                            "label": "Еднократно плащане",
+                            "href": "/"
+                        },
+                        {
+                            "title": "АБОНАТНИ СМЕТКИ",
+                            "label": "Добавяне на абонатна сметка",
+                            "href": "/utility-add-subscription"
+                        },
+                        {
+                            "label": "Регистрирай абонатни сметки",
+                            "href": "/"
+                        },
+                        {
+                            "title": "ДРУГИ",
+                            "label": "Известия по e-mail",
+                            "href": "/utility-email-notifications"
+                        },
+                        {
+                            "label": "История на плащанията",
+                            "href": "/"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "multi-level",
+            "multiLevelItems": [
+                {
+                    "label": "Декларации",
+                    "icons": ["MdEditDocument"],
+                    "href": "/declarations",
+                    "nextLevel": [
+                        {
+                            "label": "Декларация НОИ",
+                            "href": "/noi-declaration"
+                        },
+                        {
+                            "label": "Статистическа форма 100 000 лв.",
+                            "href": "/statistical-form"
+                        },
+                        {
+                            "label": "Декларация за произход на средствата",
+                            "href": "/funds-origin-declaration"
+                        },
+                        {
+                            "label": "Декларация за презгранични преводи",
+                            "href": "/cross-border-declaration"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "collapsible",
+            "titleCollapse": "ДОПЪЛНИТЕЛНО",
+            "collapsibleItem": [
+                {
+                    "label": "Клонове",
+                    "href":"/branches",
+                    "icons": ["FaUniversity"]
+                },
+                {
+                    "label": "Банкомати",
+                    "href":"/",
+                    "icons": ["GrAtm"],
+                    "nextLevel": []
+                },
+                {
+                    "label": "Валутни курсове",
+                    "href":"/",
+                    "icons": ["FaChartLine"]
+                },
+                {
+                    "label": "Новини",
+                    "href":"/",
+                    "icons": ["FaRegNewspaper"]
+                },
+                {
+                    "label": "Промоции",
+                    "href":"/",
+                    "icons": ["FaTag"]
+                }
+            ]
+        },
+        {
+            "type": "collapsible",
+            "titleCollapse": "ИНФОРМАЦИЯ ЗА FIBANK",
+            "collapsibleItem": [
+                {
+                    "label": "Помош",
+                    "href": "/",
+                    "icons": ["BsInfoLg"]
+                },
+                {
+                    "label": "Към сайта",
+                    "href": "/",
+                    "icons": ["LuMonitor"   ]
+                },
+                {
+                    "label": "Мобилно приложение",
+                    "href": "/",
+                    "icons": ["TiVendorAndroid", "FaApple"]
+                }
+            ]
+        }
+    ]
+}

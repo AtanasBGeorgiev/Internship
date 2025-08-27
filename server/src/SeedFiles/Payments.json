@@ -1,0 +1,51 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "paymentType": "internal",
+    "remmiterName_bg": "Петър Петров",
+    "remmiterName_en": "Petar Petrov",
+    "remmiterBankAccount": "915010BGNOVWVT",
+    "beneficiaryName_bg": "Бортис ООД",
+    "beneficiaryName_en": "Bortis Ltd",
+    "beneficiaryBankAccount": "BG19FIN91501015849744",
+    "amount": 1500,
+    "currency": "BGN"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "paymentType": "credit",
+    "remmiterName_bg": "Петър Петров",
+    "remmiterName_en": "Petar Petrov",
+    "remmiterBankAccount": "915010BGNOVWVT",
+    "beneficiaryName_bg": "Нимбус ООД",
+    "beneficiaryName_en": "Nimbus Ltd",
+    "beneficiaryBankAccount": "BG23UNCR70001521769897",
+    "amount": 500,
+    "currency": "BGN"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "paymentType": "own",
+    "remmiterName_bg": "Петър Петров",
+    "remmiterName_en": "Petar Petrov",
+    "remmiterBankAccount": "915010BGNOVWVT",
+    "beneficiaryName_bg": "УИЗ ООД",
+    "beneficiaryName_en": "UIZ Ltd",
+    "beneficiaryBankAccount": "BG44FINV91501004592444",
+    "amount": 200,
+    "currency": "USD"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "paymentType": "credit",
+    "remmiterName_bg": "Петър Петров",
+    "remmiterName_en": "Petar Petrov",
+    "remmiterBankAccount": "915010BGNOVWVT",
+    "beneficiaryName_bg": "Нимбус ООД",
+    "beneficiaryName_en": "Nimbus Ltd",
+    "beneficiaryBankAccount": "BG23UNCR70001521769897",
+    "amount": 500,
+    "currency": "BGN"
+  }
+]
+

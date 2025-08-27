@@ -1,0 +1,73 @@
+[
+    {
+        "type": "langSwitcher",
+        "english": "English",
+        "bulgarian": "Български"
+    },
+    {
+        "type": "link",
+        "icons": ["LuMonitor"],
+        "text": "Към сайта"
+    },
+    {
+        "type": "tooltipLink",
+        "icons": ["FaApple","TiVendorAndroid"],
+        "text": "Мобилно приложение",
+        "tooltip": {
+            "arrowPosition": "top",
+            "bgImage": "/bashar.jpg",
+            "title": "Банкирай навсякъде, по всяко време",
+            "buttonText": "НАУЧЕТЕ ПОВЕЧЕ",
+            "buttonHref": ""
+        }
+    },
+    {
+        "type": "link",
+        "icons": ["TbClipboardList"],
+        "text": "Промени в ОУ и тарифа"
+    },
+    {
+        "type": "tooltipLink",
+        "icons": ["BsInfoLg"],
+        "text": "Помощ",
+        "tooltip": {
+            "arrowPosition": "top",
+            "sections": [
+                {
+                    "title": "Информация",
+                    "items": [
+                        {
+                            "icon": "IoDocumentTextSharp",
+                            "text": "Помощни статии"
+                        },
+                        {
+                            "icon": "BsQuestionLg",
+                            "text": "Често задавани въпроси"
+                        },
+                        {
+                            "icon": "IoDocumentLockOutline",
+                            "text": "Съвети за сигурност"
+                        }
+                    ]
+                },
+                {
+                    "title": "Връзка с нас",
+                    "items": [
+                        {
+                            "icon": "FaPhone",
+                            "text": "0700 12 777"
+                        },
+                        {
+                            "icon": "FaEnvelope",
+                            "text": "help@fibank.bg"
+                        },
+                        {
+                            "icon": "BiSolidConversation",
+                            "text": "Онлайн чат"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]

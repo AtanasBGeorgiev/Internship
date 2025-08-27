@@ -1,0 +1,51 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "consumerLoan",
+    "name_bg": "Потребителски кредит",
+    "name_en": "Consumer Loan",
+    "amount": 10000.00,
+    "currency": "BGN",
+    "interestRate": 7.70,
+    "installmentDue": 200,
+    "installmentDueDate": "2025-08-25T00:00:00.000Z",
+    "maturity": "2027-09-15T00:00:00.000Z"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "mortgageLoan",
+    "name_bg": "Жилищен кредит \"Право на избор\"",
+    "name_en": "Mortgage Loan \"Right of Choice\"",
+    "amount": 300000.00,
+    "currency": "EUR",
+    "interestRate": 5.80,
+    "installmentDue": 2200,
+    "installmentDueDate": "2025-08-20T00:00:00.000Z",
+    "maturity": "2033-11-22T00:00:00.000Z"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "superLoan",
+    "name_bg": "Супер кредит",
+    "name_en": "Super Loan",
+    "amount": 150000.00,
+    "currency": "USD",
+    "interestRate": 6.50,
+    "installmentDue": 2662,
+    "installmentDueDate": "2025-08-30T00:00:00.000Z",
+    "maturity": "2030-06-12T00:00:00.000Z"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "type": "superLoan",
+    "name_bg": "Супер кредит",
+    "name_en": "Super Loan",
+    "amount": 150000.00,
+    "currency": "USD",
+    "interestRate": 6.50,
+    "installmentDue": 2662,
+    "installmentDueDate": "2025-08-30T00:00:00.000Z",
+    "maturity": "2030-06-12T00:00:00.000Z"
+  }
+]
+

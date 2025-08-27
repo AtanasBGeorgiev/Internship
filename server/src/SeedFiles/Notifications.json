@@ -1,0 +1,90 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "token",
+    "title_bg": "Успешно активирано Token устройство.",
+    "message_bg": "Вече можете да ползвате Token устройството си за оторизация.",
+    "title_en": "Token device successfully activated.",
+    "message_en": "You can now use your Token device for authorization.",
+    "date": "2025-08-19T13:30:00.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "credit",
+    "title_bg": "Погасяване на кредит",
+    "message_bg": "Остават 5 дена за плащане на вноска по кредит.",
+    "title_en": "Loan repayment",
+    "message_en": "5 days left to pay your loan installment.",
+    "date": "2025-08-19T16:00:00.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "credit",
+    "title_bg": "Погасяване на кредит",
+    "message_bg": "Остават 3 дена за плащане на вноска по кредит.",
+    "title_en": "Loan repayment",
+    "message_en": "3 days left to pay your loan installment.",
+    "date": "2025-08-21T16:00:00.000+00:00",
+    "isRead": true,
+    "isDeleted": false
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "type": "credit",
+    "title_bg": "Погасяване на кредит",
+    "message_bg": "Остават 5 дена за плащане на вноска по кредит.",
+    "title_en": "Loan repayment",
+    "message_en": "5 days left to pay your loan installment.",
+    "date": "2025-08-19T16:00:00.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "type": "credit",
+    "title_bg": "Погасяване на кредит",
+    "message_bg": "Остават 3 дена за плащане на вноска по кредит.",
+    "title_en": "Loan repayment",
+    "message_en": "3 days left to pay your loan installment.",
+    "date": "2025-08-21T16:00:00.000+00:00",
+    "isRead": true,
+    "isDeleted": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "failedTransaction",
+    "title_bg": "Неуспешен превод",
+    "message_bg": "Превод с получател НОИ не беше извършен поради",
+    "title_en": "Failed transfer",
+    "message_en": "A transfer to recipient NSSI was not completed due to an error.",
+    "date": "2025-08-19T12:34:56.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "type": "card",
+    "title_bg": "Нова картова авторизация",
+    "message_bg": "От карта 401820***2251 бяха изтеглени 100 лв.",
+    "title_en": "New card authorization",
+    "message_en": "100 BGN were withdrawn from card 401820***2251.",
+    "date": "2025-08-19T12:00:00.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  },
+  {
+    "userId": "6890bb5e0974857345641f62",
+    "type": "card",
+    "title_bg": "Нова картова авторизация",
+    "message_bg": "От карта 401820***2251 бяха изтеглени 100 лв.",
+    "title_en": "New card authorization",
+    "message_en": "100 BGN were withdrawn from card 401820***2251.",
+    "date": "2025-08-19T12:00:00.000+00:00",
+    "isRead": false,
+    "isDeleted": false
+  }
+]

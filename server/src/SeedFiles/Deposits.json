@@ -1,0 +1,63 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Свободен депозит - 12 м.",
+    "name_en": "Free Deposit - 12 m.",
+    "number": "91502016356335",
+    "currency": "USD",
+    "availability": 30000000.00,
+    "accruedInterest": 20000.00,
+    "maturityDate": "2025-12-31T00:00:00.000Z"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Ср. депозит - физ. лица - 6 м.",
+    "name_en": "Term Deposit - Individuals - 6 m.",
+    "number": "915010BGNOUCTZ",
+    "currency": "BGN",
+    "availability": 100000.00,
+    "accruedInterest": 1300.00,
+    "maturityDate": "2025-09-30T00:00:00.000Z"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Депозит \"6 x 6\"",
+    "name_en": "Deposit \"6 x 6\"",
+    "number": "91501004592050",
+    "currency": "EUR",
+    "availability": 50000.00,
+    "accruedInterest": 920.00,
+    "maturityDate": "2025-12-01T00:00:00.000Z"
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Депозит \"Рекорд\"",
+    "name_en": "Deposit \"Record\"",
+    "number": "915010BGNOQRST",
+    "currency": "BGN",
+    "availability": 35000.00,
+    "accruedInterest": 1700.00,
+    "maturityDate": "2026-02-01T00:00:00.000Z"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Ср. депозит - физ. лица - 6 м.",
+    "name_en": "Term Deposit - Individuals - 6 m.",
+    "number": "915010BGNOUCTZ",
+    "currency": "BGN",
+    "availability": 100000.00,
+    "accruedInterest": 1300.00,
+    "maturityDate": "2025-09-30T00:00:00.000Z"
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Депозит \"6 x 6\"",
+    "name_en": "Deposit \"6 x 6\"",
+    "number": "91501004592050",
+    "currency": "EUR",
+    "availability": 50000.00,
+    "accruedInterest": 920.00,
+    "maturityDate": "2025-12-01T00:00:00.000Z"
+  }
+]
+  

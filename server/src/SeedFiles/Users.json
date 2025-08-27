@@ -1,0 +1,63 @@
+[
+    {
+      "role": "user",
+      "egn": "0505050505",
+      "passport": "",
+      "nameCyrillic": "Петър Петров",
+      "nameLatin": "Petar Petrov",
+      "email": "petar@gmail.com",
+      "phone": "0893344556",
+      "address": "гр.Пловдив Тракия",
+      "username": "petar",
+      "password": "$2b$13$azI8FbrajrkGjAg0N1WYIe2HJDUNJd8olvs/1lLBRG1uNUZRJpi1C"
+    },
+    {
+      "role": "user",
+      "egn": "0101010101",
+      "passport": "",
+      "nameCyrillic": "Иван Иванов",
+      "nameLatin": "Ivan Ivanov",
+      "email": "ivan@gmail.com",
+      "phone": "0894123456",
+      "address": "гр.Пловдив Тракия",
+      "username": "ivan",
+      "password": "$2b$13$azI8FbrajrkGjAg0N1WYIe2HJDUNJd8olvs/1lLBRG1uNUZRJpi1C"
+    },
+    {
+      "role": "user",
+      "egn": "9843697394",
+      "passport": "",
+      "nameCyrillic": "Иван Иванов",
+      "nameLatin": "Ivan Ivanov",
+      "email": "atanasgeorgiev19b@gmail.com",
+      "phone": "0234567890",
+      "address": "София",
+      "username": "ivan2",
+      "password": "$2b$13$azI8FbrajrkGjAg0N1WYIe2HJDUNJd8olvs/1lLBRG1uNUZRJpi1C"
+    },
+    {
+      "role": "user",
+      "egn": "1212121212",
+      "passport": "",
+      "nameCyrillic": "Атанас Атанасов",
+      "nameLatin": "Atanas Atanasov",
+      "email": "atanasgeorgiev2307@gmail.com",
+      "phone": "0894436262",
+      "address": "гр.Пловдив Тракия",
+      "username": "atanas",
+      "password": "$2b$13$azI8FbrajrkGjAg0N1WYIe2HJDUNJd8olvs/1lLBRG1uNUZRJpi1C"
+    },
+    {
+      "role": "admin",
+      "egn": "9999999999",
+      "passport": "",
+      "nameCyrillic": "Сашо Иванов",
+      "nameLatin": "Sasho Ivanov",
+      "email": "sashoadmin@gmail.com",
+      "phone": "0894444444",
+      "address": "гр.Пловдив Тракия",
+      "username": "adminSasho",
+      "password": "$2b$13$P1z2HvT9MPMQd3eozGQGDOeKxYddHb4zE3A8rmum0tRGysEegEouK"
+    }
+  ]
+  
