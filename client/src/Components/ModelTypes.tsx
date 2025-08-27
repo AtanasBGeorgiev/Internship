@@ -94,3 +94,46 @@ export type BusinessClient = {
     id: string;
     name: string;
 };
+
+export type Notification = {
+    id: string;
+    userId: string;
+    type: string;
+    title: string;
+    message: string;
+    date: string;
+    isRead: boolean;
+    isDeleted: boolean;
+}
+
+export type NotificationResponse = {
+    notifications: Notification[];
+    countUnread: number;
+};
+
+export type User = {
+    id: string,
+    role: string,
+    egn: string,
+    passport: string,
+    nameCyrillic: string,
+    nameLatin: string,
+    email: string,
+    phone: string,
+    address: string,
+    username: string,
+    password: string,
+};
+
+export type TableModel = {
+    id: string;
+    name: string;
+    defaultOrder: number;
+    order?: number;
+    isRestricted: boolean;
+    description: string;
+};
+
+export type TableNames = {
+    name: string[];
+};
