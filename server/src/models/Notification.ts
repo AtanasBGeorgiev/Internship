@@ -3,8 +3,10 @@ import mongoose from 'mongoose';
 const notificationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     type: String,
-    title: String,
-    message: String,
+    title_bg: String,
+    message_bg: String,
+    title_en: String,
+    message_en: String,
     date: { type: Date, default: Date.now },
     isRead: Boolean,
     isDeleted: Boolean

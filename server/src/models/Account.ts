@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const accountSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  type: String,
+  name_bg: String,
+  name_en: String,
   accountNumber: String,
   currency: String,
   avaiability: Number,

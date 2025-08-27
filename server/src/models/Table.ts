@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 
 const tableSchema = new mongoose.Schema({
-    name: { type: String, unique: true },
+    name_bg: { type: String, unique: true },
+    name_en: { type: String, unique: true },
     defaultOrder: { type: Number, unique: true },
     isRestricted: Boolean,
-    description: String
+    description_bg: String,
+    description_en: String
 });
 const Table = mongoose.model('Table', tableSchema);
 export default Table;
