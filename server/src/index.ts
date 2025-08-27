@@ -14,14 +14,14 @@ import { errorHandler } from './middleware/errorHandler';
 import verifyToken from './middleware/verifyToken';
 import sidebarRoutes from './routes/sidebarRoutes';
 import currencyRoutes from './routes/currencyRoutes';
-import isLoggedInRoute from './routes/isLoggedInRoute';
 import transactionRoutes from './routes/transactionRoutes';
 import creditRoutes from './routes/creditRoutes';
 import depositRoutes from './routes/depositRoutes';
-import preferredAccountRoutes from './routes/preferencesRoutes';
 import preferencesRoutes from './routes/preferencesRoutes';
 import businessClientRoutes from './routes/bussinesClientRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import adminDashRoutes from './routes/adminDashRoutes';
+import tableRoutes from './routes/tableRoutes';
 
 dotenv.config();//loads environment variables from .env file	
 
@@ -43,19 +43,19 @@ app.use('/register', registerRoutes);
 
 app.use('/login', loginRoutes);
 
-app.use('/transaction', transactionRoutes);
-
-app.use('/credit', creditRoutes);
-
-app.use('/deposit', depositRoutes);
-
-app.use('/account', accountRoutes);
-
 const protectedRoutes = express.Router();
 
 protectedRoutes.use('/dashboard', dashboardRoutes);
 
 protectedRoutes.use('/sidebar', sidebarRoutes);
+
+protectedRoutes.use('/transaction', transactionRoutes);
+
+protectedRoutes.use('/credit', creditRoutes);
+
+protectedRoutes.use('/deposit', depositRoutes);
+
+protectedRoutes.use('/account', accountRoutes);
 
 protectedRoutes.use('/payment', paymentRoutes);
 
@@ -65,11 +65,15 @@ protectedRoutes.use('/currency', currencyRoutes);
 
 protectedRoutes.use('/liability', liabilityRoutes);
 
-protectedRoutes.use('/preferences', preferencesRoutes);
+protectedRoutes.use('/table', tableRoutes);
 
 protectedRoutes.use('/businessClient', businessClientRoutes);
 
 protectedRoutes.use('/notification', notificationRoutes);
+
+protectedRoutes.use('/preferences', preferencesRoutes);
+
+protectedRoutes.use('/admin', adminDashRoutes);
 
 app.use('/api', verifyToken, protectedRoutes);
 
