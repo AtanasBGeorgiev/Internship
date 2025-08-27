@@ -1,4 +1,17 @@
 import Decimal from "decimal.js";
+import { getCurrencies } from "../services/authService";
+import { showGlobalError } from "../utils/errorHandler";
+
+export async function getExchangeRates(): Promise<Record<string, number>> {
+    try {
+        const response = await getCurrencies();
+        return response.data;
+    } catch (error) {
+        showGlobalError("Failed to fetch exchange rates");
+        console.log('Failed to fetch exchange rates');
+        return {};
+    }
+}
 
 export function formatNumberWithSpaces(numStr: string) {
     const parts = numStr.split('.');
@@ -9,17 +22,16 @@ export function formatNumberWithSpaces(numStr: string) {
 
 type NetCardAvaiabilityProps<T> = {
     collection: T[];
-    exRateEUR: Decimal;
-    exRateUSD: Decimal;
     balanceKey: keyof T;
     liabilitiesKey: keyof T;
     currencyKey: keyof T;
     returnType: "string" | "decimal";
 };
-export function CalculateNetCardAvaiability<T>({ collection, exRateEUR, exRateUSD, balanceKey, liabilitiesKey, currencyKey, returnType }: NetCardAvaiabilityProps<T>) {
+
+export async function CalculateNetCardAvaiability<T>({ collection, balanceKey, liabilitiesKey, currencyKey, returnType }: NetCardAvaiabilityProps<T>) {
     if (collection) {
         let netCardsAvaiability = new Decimal(0);
-        netCardsAvaiability = new Decimal(0);
+        const exchangeRates = await getExchangeRates();
 
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
@@ -32,11 +44,8 @@ export function CalculateNetCardAvaiability<T>({ collection, exRateEUR, exRateUS
             if (currency === "BGN") {
                 netCardsAvaiability = netCardsAvaiability.plus(amount);
             }
-            else if (currency === "EUR") {
-                netCardsAvaiability = netCardsAvaiability.plus(amount.div(exRateEUR));
-            }
-            else if (currency === "USD") {
-                netCardsAvaiability = netCardsAvaiability.plus(amount.div(exRateUSD));
+            else if (exchangeRates[currency]) {
+                netCardsAvaiability = netCardsAvaiability.plus(amount.div(new Decimal(exchangeRates[currency])));
             }
         }
 
@@ -47,20 +56,19 @@ export function CalculateNetCardAvaiability<T>({ collection, exRateEUR, exRateUS
             return netCardsAvaiability.toDecimalPlaces(2);
         }
     }
-};
+}
 
 type CurrentBalanceProps<T> = {
     collection: T[];
-    exRateEUR: Decimal;
-    exRateUSD: Decimal;
     currentBalanceKey: keyof T;
     currencyKey: keyof T;
     returnType: "string" | "decimal";
 };
-export function CalculateCurrentBalance<T>({ collection, exRateEUR, exRateUSD, currentBalanceKey, currencyKey, returnType }: CurrentBalanceProps<T>) {
+
+export async function CalculateCurrentBalance<T>({ collection, currentBalanceKey, currencyKey, returnType }: CurrentBalanceProps<T>) {
     if (collection) {
         let totalAmount = new Decimal(0);
-        totalAmount = new Decimal(0);
+        const exchangeRates = await getExchangeRates();
 
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
@@ -70,11 +78,8 @@ export function CalculateCurrentBalance<T>({ collection, exRateEUR, exRateUSD, c
             if (currency === "BGN") {
                 totalAmount = totalAmount.plus(balance);
             }
-            else if (currency === "EUR") {
-                totalAmount = totalAmount.plus(balance.div(exRateEUR));
-            }
-            else if (currency === "USD") {
-                totalAmount = totalAmount.plus(balance.div(exRateUSD));
+            else if (exchangeRates[currency]) {
+                totalAmount = totalAmount.plus(balance.div(new Decimal(exchangeRates[currency])));
             }
         }
 
@@ -85,23 +90,22 @@ export function CalculateCurrentBalance<T>({ collection, exRateEUR, exRateUSD, c
             return totalAmount.toDecimalPlaces(2);
         }
     }
-
-};
+}
 
 type TotalNetFundsProps<T> = {
     collection: T[];
-    exRateEUR: Decimal;
-    exRateUSD: Decimal;
     feesDueKey: keyof T;
     currencyKey: keyof T;
     netCardAvaiability: Decimal;
     currentBalance: Decimal;
     returnType: "string" | "decimal";
 };
-export function CalculateTotalNetFunds<T>({ collection, exRateEUR, exRateUSD, feesDueKey, currencyKey, netCardAvaiability, currentBalance, returnType }: TotalNetFundsProps<T>) {
+
+export async function CalculateTotalNetFunds<T>({ collection, feesDueKey, currencyKey, netCardAvaiability, currentBalance, returnType }: TotalNetFundsProps<T>) {
     if (collection) {
         let totalNetFunds = new Decimal(0);
         totalNetFunds = netCardAvaiability.plus(currentBalance);
+        const exchangeRates = await getExchangeRates();
 
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
@@ -111,19 +115,25 @@ export function CalculateTotalNetFunds<T>({ collection, exRateEUR, exRateUSD, fe
             if (currency === "BGN") {
                 totalNetFunds = totalNetFunds.minus(feesDue);
             }
-            else if (currency === "EUR") {
-                totalNetFunds = totalNetFunds.minus(feesDue.div(exRateEUR));
-            }
-            else if (currency === "USD") {
-                totalNetFunds = totalNetFunds.minus(feesDue.div(exRateUSD));
-            }
-
-            if (returnType === "string") {
-                return formatNumberWithSpaces(totalNetFunds.toDecimalPlaces(2).toString());
-            }
-            else {
-                return totalNetFunds.toDecimalPlaces(2);
+            else if (exchangeRates[currency]) {
+                totalNetFunds = totalNetFunds.minus(feesDue.div(new Decimal(exchangeRates[currency])));
             }
         }
+
+        if (returnType === "string") {
+            return formatNumberWithSpaces(totalNetFunds.toDecimalPlaces(2).toString());
+        }
+        else {
+            return totalNetFunds.toDecimalPlaces(2);
+        }
     }
+}
+
+type CalculateTopDistanceProps = {
+    top: number;
+    bottom: number;
+    modalHeight: number;
+};
+export function CalculateTopDistance({ top, bottom, modalHeight }: CalculateTopDistanceProps) {
+    return (top + bottom - modalHeight) / 2;
 };

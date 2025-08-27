@@ -2,7 +2,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import api from './api/axiosInstance';
 
 import { BiSolidConversation, BiSolidMessageError } from "react-icons/bi";
 import { IoDocumentLockOutline } from "react-icons/io5";
@@ -13,6 +12,7 @@ import { FormFieldWithIcon, ButtonForm } from "./Components/InputForms";
 import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
 import { ContactInfo } from "./Components/Navbar";
 import { FooterLink } from "./Components/Footer";
+import { login } from "./services/authService";
 
 type FormValues = {
   username: string;
@@ -34,14 +34,13 @@ export const LoginForm: React.FC = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       //await- wiats first to be executed the http request
-      const response = await api.post(`/api/login/Login`, data);
+      const result = await login(data);
 
       //saves the token in the local storage
-      const token = response.data.token;
-      if (token) {
-        localStorage.setItem('jwtToken', token);
+      if (result.token) {
+        localStorage.setItem('jwtToken', result.token);
+        navigate('/Dashboard');
       }
-      navigate('/Dashboard');
     }
     //:any - says the type of the error is not known and switches off type checking
     catch (error: any) {
