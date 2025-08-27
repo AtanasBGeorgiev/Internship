@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdPerson, MdSearch } from "react-icons/md";
 import { type BusinessClient } from "./ModelTypes";
@@ -6,6 +6,7 @@ import { fetchBusinessClients, getUserData } from "../services/authService";
 import { useClientContext } from "../context/ClientContext";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoTriangle } from "react-icons/io5";
+import { usePosition } from "../context/PositionContext";
 
 export const ClientsContainer = ({ name, onClick }: { name: string, onClick: () => void }) => {
     return (
@@ -20,33 +21,55 @@ interface UserAndClientProps {
     userNames: string;
     selectedclient: string;
     displaySideIcon?: boolean;
+    getPosition?: boolean;
 };
-export const UserAndClient: React.FC<UserAndClientProps> = ({ userNames, selectedclient, displaySideIcon = false }) => {
+export const UserAndClient: React.FC<UserAndClientProps> = ({ userNames, selectedclient, displaySideIcon = false, getPosition = false }) => {
     const { t } = useTranslation();
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleShowTooltip = () => {
+        setShowTooltip((prev) => !prev);
+    };
+
+    const { setPosition } = usePosition();
+
+    const iconRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (iconRef.current && getPosition) {
+            const rect = iconRef.current.getBoundingClientRect();
+            setPosition("iconClients", {
+                top: rect.top,
+                left: rect.left,
+                right: rect.right,
+                bottom: rect.bottom
+            });
+        }
+    }, [iconRef.current]);
 
     return (
         <div className="pl-3 w-full">
             <div className="flex items-center space-x-1 p-2">
-                <img src="profile-picture.jpg" alt="profile" className="w-10 h-10 rounded-full pr-1" />
+                <img src="profile-picture.jpg" alt="profile" className="w-6 h-6 xl:w-10 xl:h-10 rounded-full pr-1" />
                 <div className="text-left">
-                    <p className="text-sm text-gray-600">Потребител:</p>
-                    {userNames && <h3>{t(userNames)}</h3>}
+                    <p className="text-xs xl:text-sm text-gray-600">Потребител:</p>
+                    {userNames && <h3 className="text-sm xl:text-base">{t(userNames)}</h3>}
                 </div>
             </div>
             <div className="flex items-center justify-between">
                 <div className="flex items-center justify-start space-x-1 p-2">
-                    <MdPerson className="w-10 h-10 rounded-full pr-1" />
+                    <MdPerson className="w-6 h-6 xl:w-10 xl:h-10 rounded-full pr-1" />
                     <div className="text-left">
-                        <p className="text-sm text-gray-600">Клиент:</p>
-                        <h3>{t(selectedclient)}</h3>
+                        <p className="text-xs xl:text-sm text-gray-600">Клиент:</p>
+                        <h3 className="text-sm xl:text-base">{t(selectedclient)}</h3>
                     </div>
                 </div>
                 {displaySideIcon && (
-                    <div className="group relative flex items-center hover:cursor-pointer">
-                        <FaPeopleGroup className="w-5 h-5 mr-4" />
+                    <div onClick={handleShowTooltip} ref={iconRef} className="px-3 group relative flex items-center hover:cursor-pointer">
+                        <FaPeopleGroup className="w-5 h-5 mr-1 xl:mr-4" />
                         <IoTriangle className={`text-xs text-gray-400 rotate-90`} />
-                        <div className="absolute top-0 left-full z-50 bg-white border-2 border-gray-300 
-                        hidden group-hover:block w-70">
+                        <div className={`absolute top-0 left-full z-50 bg-white border-2 border-gray-300 
+                        ${showTooltip ? "block" : "hidden"} w-70`}>
                             <ProfileMenuBusiness />
                         </div>
                     </div>

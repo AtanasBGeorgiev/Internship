@@ -26,14 +26,15 @@ import { Table, TableData, ActionField, SectionHead, TableButton, ActionTooltip,
 import { useSelectableList, GroupCheckbox } from "../Components/Checkboxes";
 import { useProtectedFetch } from "../Components/ProtectedRequests";
 import { TiInfoLargeOutline } from "react-icons/ti";
-import { ShowMessage, LangSwitcher } from "./Common";
-import { NavbarLink, NavbarHelpContact, NavProfile } from "./Navbar";
+import { ShowMessage, LangSwitcher,Arrow } from "./Common";
+import { NavbarLink, NavbarHelpContact, NavProfile, NavbarMenu } from "./Navbar";
 import { renderIcon } from "../utils/iconMap";
 import { logout } from "../utils/errorHandler";
 import { SetModule, SetTransactionModule } from "./Module";
 import { ModuleManaging } from "./ModuleManaging";
 import { ProfileMenuBusiness } from "./ProfileMenuBusiness";
 import { Tutorial } from "./Tutorial";
+import { SidebarMenu } from "./Sidebar";
 
 export const UserDashboardHeader: React.FC = () => {
     const { t } = useTranslation();
@@ -60,9 +61,14 @@ export const UserDashboardHeader: React.FC = () => {
 
             <div className="h-20 border-b-2 border-gray-300 lg:h-15">
                 <nav className="text-center h-20 px-2 lg:h-15">
-                    <div className="h-full flex items-center justify-between relative">
-                    <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("МЕНЮ")} />
-                        <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 lg:w-40 lg:h-10 ml-5" />
+                    <div className="h-full flex items-center justify-center space-x-2 xl:space-x-0 xl:justify-between relative">
+                        <NavbarMenu text={t("МЕНЮ")} hideBreakpoint="xl" content={
+                            <div className="w-1/5">
+                                <SidebarMenu />
+                            </div>
+                        } />
+
+                        <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 xl:w-40 xl:h-10 ml-5" />
                         <div className="flex items-center justify-between justify-center space-x-5">
                             <LangSwitcher english={t("ENGLISH")} bulgarian={t("БЪЛГАРСКИ")} />
                             <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")} />
@@ -70,6 +76,7 @@ export const UserDashboardHeader: React.FC = () => {
                             <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")} width="min-w-70"
                                 tooltipText={
                                     <div className="max-h-70 overflow-y-auto scrollbar-thin">
+                                        <Arrow position="top" />
                                         <NavbarHelpContact text={t("Упътване")} icon={<MdMenuBook />} onClick={() => setShowTutorial(true)} />
                                         <NavbarHelpContact text={t("Лични данни")} icon={<FaUserAlt />} />
                                         <NavbarHelpContact text={t("Общи настройки")} icon={<FaPencil />} />

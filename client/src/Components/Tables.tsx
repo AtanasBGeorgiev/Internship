@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef } from "react";
 import Decimal from "decimal.js";
 
 import { MdSettingsSuggest } from "react-icons/md";
@@ -10,30 +11,49 @@ import { IoMdPhonePortrait } from "react-icons/io";
 import { Arrow } from "./Common";
 import { formatNumberWithSpaces } from "./Calculations";
 import { getRemainingDays, getStrengthColorDate } from "./RemainingTime";
+import { usePosition } from "../context/PositionContext";
 
 interface SectionHeadProps {
     title: string;
     onClick?: () => void;
+    getPosition?: boolean;
 };
-export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick }) => {
+export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick, getPosition = false }) => {
     const { t } = useTranslation();
+
+    const { setPosition } = usePosition();
+
+    const iconRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (iconRef.current && getPosition) {
+            const rect = iconRef.current.getBoundingClientRect();
+            setPosition("iconSettings", {
+                top: rect.top,
+                left: rect.left,
+                right: rect.right,
+                bottom: rect.bottom
+            });
+        }
+    }, [iconRef.current]);
 
     return (
         <div className="mt-5 border-x-2 border-t-2 border-gray-300 w-full">
             <div id="section" className="pl-3 flex items-center justify-between">
-
-                <h2 className="px-4 py-2 font-bold text-lg">{title}</h2>
+                <h2 className="px-4 py-2 font-bold text-base xl:text-lg">{title}</h2>
 
                 <div className="flex items-center justify-center">
-                    <p className="border-x-2 border-gray-300 p-2 hover:underline hover:text-blue-800">{t("Вижте всички")} {`>`}</p>
+                    <p className="text-sm xl:text-base border-x-2 border-gray-300 p-2 hover:underline hover:text-blue-800">{t("Вижте всички")} {`>`}</p>
 
-                    <div className="hover:text-blue-800 relative p-2 group" onClick={onClick}>
+                    <div ref={iconRef} className="hover:text-blue-800 relative p-2 group" onClick={onClick}>
                         <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-gray-300 rounded 
                         p-2 z-10 text-center text-sm w-30 font-bold text-black hidden group-hover:block`}>
                             <Arrow position="bottom" />
                             <p>{t("НАСТРОЙКИ")}</p>
                         </div>
-                        <MdSettingsSuggest />
+                        <div>
+                            <MdSettingsSuggest className="text-base xl:text-xl" />
+                        </div>
                     </div>
 
                 </div>
@@ -53,7 +73,7 @@ type TableProps<T extends withId> = {
 
 interface TableDataProps {
     type?: "th" | "td" | "cardImg" | "security" | "accountInfo" | "actions" | "payment" | "transferParticipant" |
-        "transferAmount" | "bill" | "transaction" | "currency";
+    "transferAmount" | "bill" | "transaction" | "currency";
     display?: string;
     text?: string;
     cardNum?: string;
@@ -102,15 +122,15 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
 
     if (typeTransaction) {
         switch (typeTransaction) {
-            case "income": text = `\u2190`; displaySign = "text-green-600 text-2xl"; break;
-            case "expense": text = `\u2192`; displaySign = "text-red-500 text-2xl"; break;
+            case "income": text = `\u2190`; displaySign = "text-green-600 text-xl xl:text-2xl"; break;
+            case "expense": text = `\u2192`; displaySign = "text-red-500 text-xl xl:text-2xl"; break;
         }
     }
 
     if (type === "th") {
         return (
             <>
-                <th className={`p-2 text-${alignment} ${display}`}><span className='pr-5'>{checkbox}</span>{text}</th>
+                <td className={`p-2 text-sm xl:text-lg text-${alignment} ${display}`}>{checkbox &&<span className='pr-5'>{checkbox}</span>}{text}</td>
             </>
 
         );
@@ -124,7 +144,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
         }
 
         return (
-            <td className={`border border-gray-300 px-2 text-${alignment} ${display} ${displaySign}`}>
+            <td className={`text-sm xl:text-base border border-gray-300 px-2 text-${alignment} ${display} ${displaySign}`}>
                 {text.length > 0 ? text : icon ? icon : amount} {showRate ? `%` : ""}
                 {isDate && (
                     <div className="w-9/10">
@@ -136,7 +156,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
                                 className={`h-3 transition-all duration-300 ${getStrengthColorDate(new Date(text), isDeposit === true ? "deposit" : "credit")}`}>
 
                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-gray-300 rounded 
-                        p-2 z-10 text-center text-sm w-30 font-bold text-black hidden group-hover:block">
+                        p-2 z-10 text-center text-xs xl:text-sm w-30 font-bold text-black hidden group-hover:block">
                                     <Arrow position="bottom" />
                                     <p>Остават {remainingDays > 0 ? remainingDays : 0} дни</p>
                                 </div>
@@ -150,10 +170,10 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     };
     if (type === "cardImg") {
         return (
-            <td className="flex items-center justify-start space-x-4 p-2">
+            <td className="text-sm xl:text-base flex items-center justify-start space-x-4 p-2">
                 {checkbox}
                 <img src={`${text === "MasterCard Standard" ? "icon-mastercard.png" : "icon-visa.png"}`}
-                    className={`${text === "MasterCard Standard" ? "w-20 h-10" : "w-20 h-15"}`}></img>
+                    className={`${text === "MasterCard Standard" ? "w-10 h-5 xl:w-20 xl:h-10" : "w-12 h-9 xl:w-20 xl:h-15"}`}></img>
                 <div>
                     <p className="font-bold">{text}</p>
                     <p>{`**** ${String(cardNum).slice(-4)}`}</p>
@@ -163,7 +183,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     }
     if (type === "security") {
         return (
-            <td className={`px-2 ${display}`}>
+            <td className={`text-sm xl:text-base px-2 ${display}`}>
                 <div className={`flex items-center ${isActive === "false" ? "text-red-500" : "text-green-500"}`}>
                     <FaCreditCard className="mr-2" />
                     {isActive === "false" ? t("Неактивирана") : t("Активирана")}
@@ -177,8 +197,8 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
                 {checkbox}
                 {icon}
                 <div>
-                    <p className="font-bold">{t(text)}</p>
-                    <p className={`${display}`}>{cardNum ?cardNum + '>': t("Размер: ") + amount }</p>
+                    <p className="font-bold text-sm xl:text-base">{t(text)}</p>
+                    <p className={`text-sm xl:text-base ${display}`}>{cardNum ? cardNum + '>' : t("Размер: ") + amount}</p>
                 </div>
             </td>
         );
@@ -186,7 +206,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     if (type === "actions") {
         return (
             <td className="text-gray-500">
-                <div className="flex items-center justify-center">
+                <div className="text-sm xl:text-base flex items-center justify-center px-1">
                     {actions}
                 </div>
             </td>
@@ -194,7 +214,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     }
     if (type === "payment") {
         return (
-            <td className="flex items-center justify-start space-x-4 p-2">
+            <td className="text-sm xl:text-base flex items-center justify-start space-x-4 p-2">
                 {checkbox}
                 <div>
                     <p>{t("Преводно нареждане")}</p>
@@ -207,7 +227,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     }
     if (type === "transferParticipant") {
         return (
-            <td className={`text-left border border-gray-300 px-2 text-${alignment} ${display}`}>
+            <td className={`text-sm xl:text-base text-left border border-gray-300 px-2 text-${alignment} ${display}`}>
                 <p>{t(names as string)}</p>
                 <p>{bankAccount}</p>
             </td>
@@ -220,7 +240,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
         }
 
         return (
-            <td className={`border border-gray-300 px-2 text-${alignment} ${display}`}>
+            <td className={`text-sm xl:text-base border border-gray-300 px-2 text-${alignment} ${display}`}>
                 <div className='flex justify-end items-center'>
                     <p className='pr-2'><span className={`${displaySign}`}>{sign}</span> {amount} {currency}</p>
                 </div>
@@ -229,22 +249,24 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     }
     if (type === "bill") {
         return (
-            <td className="flex items-center justify-start space-x-4 p-2">
+            <td className="flex items-center justify-start space-x-4 p-2 text-sm xl:text-base">
                 {checkbox}
-                {(() => {
-                    switch (iconType) {
-                        case "electricity":
-                            return <RoundedIcon icon={<FaPlug className='text-white text-2xl' />} color="yellow" />;
-                        case "water":
-                            return <RoundedIcon icon={<CiDroplet className='text-white text-2xl' />} color="lightBlue" />;
-                        case "heating":
-                            return <RoundedIcon icon={<FaTemperatureFull className='text-white text-2xl' />} color="red" />;
-                        case "phone":
-                            return <RoundedIcon icon={<IoMdPhonePortrait className='text-white text-2xl' />} color="darkBlue" />;
-                        case "other":
-                            return <RoundedIcon icon={<IoDocumentTextOutline className='text-white text-2xl' />} color="amber" />;
-                    }
-                })()}
+                <div className="text-white text-xl xl:text-2xl">
+                    {(() => {
+                        switch (iconType) {
+                            case "electricity":
+                                return <RoundedIcon icon={<FaPlug />} color="yellow" />;
+                            case "water":
+                                return <RoundedIcon icon={<CiDroplet />} color="lightBlue" />;
+                            case "heating":
+                                return <RoundedIcon icon={<FaTemperatureFull />} color="red" />;
+                            case "phone":
+                                return <RoundedIcon icon={<IoMdPhonePortrait />} color="darkBlue" />;
+                            case "other":
+                                return <RoundedIcon icon={<IoDocumentTextOutline />} color="amber" />;
+                        }
+                    })()}
+                </div>
                 <div>
                     <p>{t(text)}</p>
                 </div>
@@ -253,7 +275,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
     }
     if (type === "transaction") {
         return (
-            <td className="flex items-center justify-start space-x-4 p-2">
+            <td className="flex items-center justify-start space-x-4 p-2 text-sm xl:text-base">
                 <div>
                     <p className='text-blue-800'>{t(`${reference}`)}</p>
                     <p>{t(`${document}`)}</p>
@@ -292,7 +314,7 @@ const RoundedIcon: React.FC<RoundedIconProps> = ({ icon, color }) => {
     };
 
     return (
-        <div className={`w-12 h-12 ${colorMap[color] || 'bg-gray-400'} rounded-full flex items-center justify-center`}>
+        <div className={`w-8 h-8 xl:w-12 xl:h-12 ${colorMap[color] || 'bg-gray-400'} rounded-full flex items-center justify-center`}>
             {icon}
         </div>
     );
@@ -306,8 +328,8 @@ interface TableButtonProps {
 }
 export const TableButton: React.FC<TableButtonProps> = ({ icon, text, display, onClick }) => {
     return (
-        <button onClick={onClick} className={`${display} font-bold p-3 mx-2 block rounded hover:cursor-pointer`}>
-            {icon && <span className="pr-2 text-xl">{icon}</span>}
+        <button onClick={onClick} className={`text-xs xl:text-base ${display} font-bold p-3 mx-2 block rounded hover:cursor-pointer`}>
+            {icon && <span className="pr-2">{icon}</span>}
             {text}
         </button>
     );
@@ -341,7 +363,7 @@ export const ActionTooltip: React.FC<ActionTooltipProps> = ({ text }) => {
 
 export const Table = <T extends withId>({ tableHead, tableData, items }: TableProps<T>) => {
     return (
-        <table className='w-full border-2 border-gray-300 border-collapse'>
+        <table className='w-full border-2 border-gray-300 border-collapse overflow-x-scroll xl:text-base'>
             <thead>
                 <tr className="bg-gray-100">
                     {tableHead}
@@ -368,9 +390,9 @@ export const TotalSum: React.FC<TotalSumProps> = ({ text, totalAmount }) => {
     const { t } = useTranslation();
 
     return (
-        <div className='bg-gray-100 text-center px-10 py-5 w-1/3'>
-            <p>{t(text)}</p>
-            <h2 className='text-blue-800 text-2xl font-bold'>{totalAmount}</h2>
+        <div className='flex flex-col items-center justify-between px-5 py-2 bg-gray-100 text-center w-1/3 xl:px-10 xl:py-5'>
+            <p className='text-sm xl:text-base'>{t(text)}</p>
+            <h2 className='text-base text-blue-800 font-bold text-sm xl:text-2xl'>{totalAmount}</h2>
         </div>
     );
 };

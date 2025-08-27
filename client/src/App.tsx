@@ -8,6 +8,7 @@ import { Dashboard } from './Dashboard';
 import { ErrorProvider, useError } from './context/ErrorContext';
 import { ClientProvider } from './context/ClientContext';
 import { PositionProvider } from './context/PositionContext';
+import { ScreenHeightProvider } from './context/ScreenHeightContext';
 import { getIsAuthErrorActive, registerErrorHandler } from './utils/errorHandler';
 import { useEffect } from "react";
 
@@ -72,7 +73,9 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <ClientProvider>
               <PositionProvider>
-                <Dashboard />
+                <ScreenHeightProvider>
+                  <Dashboard />
+                </ScreenHeightProvider>
               </PositionProvider>
             </ClientProvider>
           </ProtectedRoute>
