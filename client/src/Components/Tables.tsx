@@ -40,7 +40,6 @@ export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick, getPos
     return (
         <div className="mt-5 border-x-2 border-t-2 border-gray-300 w-full">
             <div id="section" className="pl-3 flex items-center justify-between">
-
                 <h2 className="px-4 py-2 font-bold text-base xl:text-lg">{title}</h2>
 
                 <div className="flex items-center justify-center">

@@ -75,6 +75,7 @@ const RenderCollapsible: React.FC<RenderSidebarComponentProps> = ({ item, itemKe
 const RenderMultiLevel: React.FC<RenderSidebarComponentProps> = ({ item, itemKey }) => {
     const { t } = useTranslation();
 
+const RenderMultiLevel: React.FC<RenderSidebarComponentProps> = ({ item, itemKey }) => {
     return (
         <>
             {item.multiLevelItems?.map((child, i: number) => (
