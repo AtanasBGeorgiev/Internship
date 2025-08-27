@@ -30,13 +30,12 @@ import { useProtectedFetch } from "./Components/ProtectedRequests";
 import { SidebarMenu } from "./Components/Sidebar";
 import { renderIcon } from "./utils/iconMap";
 import { getUserRole } from "./services/authService";
-import { logout } from "./utils/errorHandler";
 
 const DashboardHeader: React.FC = () => {
     const { t } = useTranslation();
 
     const handleLogout = () => {
-        logout();
+        localStorage.removeItem('jwtToken');
     };
 
     return (
@@ -80,9 +79,7 @@ const DashboardHeader: React.FC = () => {
 export function Dashboard() {
     const [message, setMessage] = useState<string | null>(null);
     const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
-    const [netCardsAvaiability, setNetCardsAvaiability] = useState<string>("0");
-    const [currentBalance, setCurrentBalance] = useState<string>("0");
-    const [totalNetFunds, setTotalNetFunds] = useState<string>("0");
+
     const { t } = useTranslation();
 
     //account hook
@@ -155,45 +152,35 @@ export function Dashboard() {
         }
     }, [userData, userError, adminData, adminError, userRole]);
 
-    // Calculate values when data changes
-    useEffect(() => {
-        const calculateValues = async () => {
-            try {
-                const netCards = await CalculateNetCardAvaiability({
-                    collection: cards,
-                    balanceKey: "balance",
-                    liabilitiesKey: "liabilities",
-                    currencyKey: "currency",
-                    returnType: "string"
-                });
-                setNetCardsAvaiability(netCards as string);
+    let netCardsAvaiability = CalculateNetCardAvaiability({
+        collection: cards,
+        exRateEUR: new Decimal(0.511292),
+        exRateUSD: new Decimal(0.589365),
+        balanceKey: "balance",
+        liabilitiesKey: "liabilities",
+        currencyKey: "currency",
+        returnType: "string"
+    }) as string;
 
-                const current = await CalculateCurrentBalance({
-                    collection: accounts,
-                    currentBalanceKey: "currentBalance",
-                    currencyKey: "currency",
-                    returnType: "string"
-                });
-                setCurrentBalance(current as string);
+    let currentBalance = CalculateCurrentBalance({
+        collection: accounts,
+        exRateEUR: new Decimal(0.511292),
+        exRateUSD: new Decimal(0.589365),
+        currentBalanceKey: "currentBalance",
+        currencyKey: "currency",
+        returnType: "string"
+    }) as string;
 
-                const total = await CalculateTotalNetFunds({
-                    collection: accounts,
-                    feesDueKey: "feesDue",
-                    currencyKey: "currency",
-                    netCardAvaiability: new Decimal((netCards as string)?.replace(/\s/g, "") || "0"),
-                    currentBalance: new Decimal((current as string)?.replace(/\s/g, "") || "0"),
-                    returnType: "string"
-                });
-                setTotalNetFunds(total as string);
-            } catch (error) {
-                console.error('Error calculating values:', error);
-            }
-        };
-
-        if (cards.length > 0 || accounts.length > 0) {
-            calculateValues();
-        }
-    }, [cards, accounts]);
+    let totalNetFunds = CalculateTotalNetFunds({
+        collection: accounts,
+        exRateEUR: new Decimal(0.511292),
+        exRateUSD: new Decimal(0.589365),
+        feesDueKey: "feesDue",
+        currencyKey: "currency",
+        netCardAvaiability: new Decimal(netCardsAvaiability?.replace(/\s/g, "") || "0"),
+        currentBalance: new Decimal(currentBalance?.replace(/\s/g, "") || "0"),
+        returnType: "string"
+    });
 
     return (
         <>
