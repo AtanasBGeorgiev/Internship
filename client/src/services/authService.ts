@@ -65,6 +65,7 @@ export const getUserData = async (): Promise<string[]> => {
         }
         const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic];
         return data;
+
     } catch (error) {
         handleAuthError('Invalid token format. Please log in again.');
         throw new Error('Invalid token format!');
@@ -78,7 +79,7 @@ export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
         handleAuthError('Authentication required. Please log in.');
         throw new Error('No token!');
     }
-
+  
     try {
         const response = await api.get<T>(endpoint);
         return response.data;

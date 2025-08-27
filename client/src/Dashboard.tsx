@@ -17,7 +17,6 @@ export function Dashboard() {
         };
         fetchUserRole();
     }, []);
-
     console.log(userRole);
     return (
         <>
@@ -34,4 +33,5 @@ export function Dashboard() {
             </div>
         </>
     );
-}
+<
+};
