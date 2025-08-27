@@ -83,6 +83,7 @@ export function Dashboard() {
     const [netCardsAvaiability, setNetCardsAvaiability] = useState<string>("0");
     const [currentBalance, setCurrentBalance] = useState<string>("0");
     const [totalNetFunds, setTotalNetFunds] = useState<string>("0");
+            
     const { t } = useTranslation();
 
     //account hook
