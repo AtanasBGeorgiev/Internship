@@ -17,6 +17,7 @@ import { FaUnlockKeyhole } from "react-icons/fa6";
 import { RiBankCardLine } from "react-icons/ri";
 import { CiShoppingTag } from "react-icons/ci";
 import { IoNotificationsSharp } from "react-icons/io5";
+import { MdMenuBook } from "react-icons/md";
 
 import Decimal from "decimal.js";
 import { CalculateNetCardAvaiability, CalculateCurrentBalance, CalculateTotalNetFunds } from "../Components/Calculations";
@@ -32,11 +33,13 @@ import { logout } from "../utils/errorHandler";
 import { SetModule, SetTransactionModule } from "./Module";
 import { ModuleManaging } from "./ModuleManaging";
 import { ProfileMenuBusiness } from "./ProfileMenuBusiness";
+import { Tutorial } from "./Tutorial";
 
 export const UserDashboardHeader: React.FC = () => {
     const { t } = useTranslation();
 
     const [moduleManaging, setModuleManaging] = useState(false);
+    const [showTutorial, setShowTutorial] = useState(false);
 
     const handleLogout = () => {
         logout();
@@ -46,21 +49,28 @@ export const UserDashboardHeader: React.FC = () => {
         setModuleManaging(false);
     };
 
+    const onCloseTutorial = () => {
+        setShowTutorial(false);
+    };
+
     return (
         <>
             {moduleManaging && <ModuleManaging modules={[]} onClose={onCloseModuleManaging} />}
+            {showTutorial && <Tutorial onClose={onCloseTutorial} />}
 
             <div className="h-20 border-b-2 border-gray-300 lg:h-15">
                 <nav className="text-center h-20 px-2 lg:h-15">
                     <div className="h-full flex items-center justify-between relative">
-                        <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 sm:w-40 sm:h-10 ml-5" />
-                        <div className="hidden lg:flex items-center justify-between lg:justify-center space-x-5">
+                    <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("МЕНЮ")} />
+                        <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 lg:w-40 lg:h-10 ml-5" />
+                        <div className="flex items-center justify-between justify-center space-x-5">
                             <LangSwitcher english={t("ENGLISH")} bulgarian={t("БЪЛГАРСКИ")} />
                             <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")} />
                             <NavbarLink icons={["IoNotificationsSharp"].map(icon => renderIcon(icon))} text={t("ИЗВЕСТИЯ")} />
-                            <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")}
+                            <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")} width="min-w-70"
                                 tooltipText={
                                     <div className="max-h-70 overflow-y-auto scrollbar-thin">
+                                        <NavbarHelpContact text={t("Упътване")} icon={<MdMenuBook />} onClick={() => setShowTutorial(true)} />
                                         <NavbarHelpContact text={t("Лични данни")} icon={<FaUserAlt />} />
                                         <NavbarHelpContact text={t("Общи настройки")} icon={<FaPencil />} />
                                         <NavbarHelpContact text={t("Управление на модули")} icon={<FaPencil />} onClick={() => setModuleManaging(true)} />
@@ -235,7 +245,7 @@ export function UserDashboard() {
             <ShowMessage message={message} messageType={messageType} />
 
             <div id="userBankData" className="p-5">
-                <div className="flex text-center justify-center space-x-8 w-full h-30">
+                <div className="flex text-center justify-center space-x-8 w-full xl:h-30">
                     <TotalSum text="Нетна разполагаема наличност по сметки и депозити:" totalAmount={`${totalNetFunds} BGN`} />
                     <TotalSum text="Общо текущо салдо по сметки и депозити:" totalAmount={`${currentBalance} BGN`} />
                     <TotalSum text="Обща нетна разполагаемост по картови сметки:" totalAmount={`${netCardsAvaiability} BGN`} />
@@ -260,7 +270,7 @@ export function UserDashboard() {
                     condition={t("до 3 валути")} countLimit={3} typeCollection="currencies" onClose={() => setShowModuleCurrencies(false)} />}
 
                 {/*Bank accounts */}
-                <SectionHead title={t("СМЕТКИ")} onClick={() => setShowModuleAccounts(true)} />
+                <SectionHead title={t("СМЕТКИ")} onClick={() => setShowModuleAccounts(true)} getPosition={true} />
 
                 <Table
                     tableHead={
@@ -280,7 +290,7 @@ export function UserDashboard() {
                             <TableData text={`${account.type}`} type="accountInfo"
                                 cardNum={`${account.accountNumber}`} alignment="left"
                                 display="text-blue-800 hover:cursor-pointer hover:underline"
-                                icon={<IoListCircleSharp className='text-blue-800 text-3xl' />} />
+                                icon={<IoListCircleSharp className='text-blue-800 text-2xl xl:text-3xl' />} />
                             <TableData text={`${account.currency}`} />
                             <TableData amount={account.avaiability} alignment="right" />
                             <TableData amount={account.openingBalance} alignment="right" />
@@ -296,7 +306,6 @@ export function UserDashboard() {
                             } />
                         </>
                     )} />
-
 
                 {/*Payments */}
                 <SectionHead title={t("ЗА ПОДПИС")} onClick={() => setShowModulePayments(true)} />
@@ -339,7 +348,6 @@ export function UserDashboard() {
                     <TableButton icon={<SiJsonwebtokens />} display="bg-blue-800 text-white flex items-center" text={t("ТОКЕН")} />
                     <TableButton icon={<RxCross2 />} display="bg-white flex items-center" text={t("ОТКАЖЕТЕ")} />
                 </div>
-
 
                 {/*Cards */}
                 <SectionHead title={t("КАРТИ")} onClick={() => setShowModuleCards(true)} />

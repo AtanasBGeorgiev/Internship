@@ -7,6 +7,7 @@ import { Footer } from './Components/Footer';
 import { Dashboard } from './Dashboard';
 import { ErrorProvider, useError } from './context/ErrorContext';
 import { ClientProvider } from './context/ClientContext';
+import { PositionProvider } from './context/PositionContext';
 import { getIsAuthErrorActive, registerErrorHandler } from './utils/errorHandler';
 import { useEffect } from "react";
 
@@ -24,6 +25,7 @@ const GlobalErrorBanner = () => {
   );
 }
 
+//if there is an error,the content of protected page is hidden
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthErrorActive = getIsAuthErrorActive();
 
@@ -69,7 +71,9 @@ const AppRoutes = () => {
         <Route path="/Dashboard" element={
           <ProtectedRoute>
             <ClientProvider>
-              <Dashboard />
+              <PositionProvider>
+                <Dashboard />
+              </PositionProvider>
             </ClientProvider>
           </ProtectedRoute>
         } />

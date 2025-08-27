@@ -106,7 +106,7 @@ export async function CalculateTotalNetFunds<T>({ collection, feesDueKey, curren
         let totalNetFunds = new Decimal(0);
         totalNetFunds = netCardAvaiability.plus(currentBalance);
         const exchangeRates = await getExchangeRates();
-        
+
         for (let i = 0; i < collection.length; i++) {
             const item = collection[i];
             const currency = item[currencyKey] as string;
@@ -129,5 +129,11 @@ export async function CalculateTotalNetFunds<T>({ collection, feesDueKey, curren
     }
 }
 
-
-
+type CalculateTopDistanceProps = {
+    top: number;
+    bottom: number;
+    modalHeight: number;
+};
+export function CalculateTopDistance({ top, bottom, modalHeight }: CalculateTopDistanceProps) {
+    return (top + bottom - modalHeight) / 2;
+};
