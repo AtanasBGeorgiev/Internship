@@ -6,8 +6,8 @@ const router = Router();
 router.post('/post', (req: Request, res: Response, next: NextFunction) => {
     console.log('POST /notification received!');
     try {
-        const { userId, type, title, message, date, isRead, isDeleted } = req.body;
-        const notification = new Notification({ userId, type, title, message, date, isRead, isDeleted });
+        const { userId, type, title_bg, message_bg, title_en, message_en, date, isRead, isDeleted } = req.body;
+        const notification = new Notification({ userId, type, title_bg, message_bg, title_en, message_en, date, isRead, isDeleted });
 
         notification.save();
         return res.status(201).json(notification);
@@ -26,11 +26,17 @@ router.get('/get', async (req: Request, res: Response, next: NextFunction) => {
             return res.status(400).json({ error: 'userId is required' });
         }
 
+        // Get language preference from request headers
+        const language = req.headers['accept-language'] || 'bg'; // Default to Bulgarian if no language specified
+
         const notifications = await Notification.find({ userId, isDeleted: false }).select('-__v').lean();
 
-        const cleanedNotifications = notifications.map(({ _id, date, ...rest }: any) => ({
+        const cleanedNotifications = notifications.map(({ _id, date, title_bg, title_en, message_bg, message_en, ...rest }: any) => ({
             id: _id.toString(),
             date: date ? date.toISOString().split('T')[0].replace(/-/g, '/') : "",
+            // Return appropriate language version based on user preference
+            title: language === 'en' ? title_en : title_bg,
+            message: language === 'en' ? message_en : message_bg,
             ...rest
         }));
         const countUnread = notifications.filter(notif => !notif.isRead).length;

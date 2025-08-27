@@ -19,6 +19,8 @@ router.post('/Login', loginLimiter, async (req: Request, res: Response, next: Ne
             return res.status(401).json({ errorKey: 'errors.wrongUsername' });
         }
 
+        const id = user._id.toString();
+
         //user.password have to be string but the compiler doesn't know that and we have to check the type
         //as string means i am sure that the password is a string
         const passwordMatch = await bcrypt.compare(password, user.password as string);
@@ -30,13 +32,17 @@ router.post('/Login', loginLimiter, async (req: Request, res: Response, next: Ne
         //generate JWT token
         const SECRET_KEY = process.env.JWT_SECRET as string;
         //header default
+        console.log("User object:", user);
         const token = jwt.sign(
-            { userId: user._id, role: user.role, username: username },//payload
+            {
+                userId: id, role: user.role, username: username,
+                nameCyrillic: user.nameCyrillic, nameLatin: user.nameLatin
+            },//payload
             SECRET_KEY,//signature
             { expiresIn: '0.5h' }
         );
 
-        console.log(`Успешен вход за потребител: ${username}`);
+        console.log(`Successfull login for user: ${username}`);
         //send token to client
         return res.status(200).json({ messageKey: 'success.login', token });
 

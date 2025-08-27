@@ -96,6 +96,10 @@ router.get('/getPreferredTables', async (req: Request, res: Response, next: Next
 
     try {
         const userId = req.query.userId;
+        
+        // Get language preference from request headers
+        const language = req.headers['accept-language'] || 'bg'; // Default to Bulgarian if no language specified
+        
         const preferredTables = await PreferredTable.findOne({ userId: userId });
 
         if (!preferredTables || !preferredTables.tables || preferredTables.tables.length === 0) {
@@ -108,11 +112,20 @@ router.get('/getPreferredTables', async (req: Request, res: Response, next: Next
         // Extract tableIds from the tables array: [{ tableId: "id1" }, { tableId: "id2" }]
         const tableIds = preferredTables.tables.map((table: any) => table.tableId);
 
-        const tableNames = await Table.find({ _id: { $in: tableIds } }).select("name _id").lean();
+        const tableNames = await Table.find({ _id: { $in: tableIds } }).select("name_bg name_en _id").lean();
 
-        // Sort tableNames to match the order of tableIds
+        // Sort tableNames to match the order of tableIds and return appropriate language version
         const orderedTableNames = tableIds
-            .map(id => tableNames.find(t => t._id.toString() === id.toString()))
+            .map(id => {
+                const table = tableNames.find(t => t._id.toString() === id.toString());
+                if (table) {
+                    return {
+                        _id: table._id,
+                        name: language === 'en' ? table.name_en : table.name_bg
+                    };
+                }
+                return null;
+            })
             .filter(Boolean);
 
         return res.status(200).json({

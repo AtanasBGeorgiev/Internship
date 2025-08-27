@@ -6,9 +6,9 @@ const router = Router();
 // GET /api/currency - Get all currencies
 router.get('/getAllCurencies', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const currencyDocument = await Currency.findOne({}).lean();
+        const currencies = await Currency.find({}).lean();
 
-        if (!currencyDocument) {
+        if (!currencies || currencies.length === 0) {
             return res.status(200).json({
                 success: true,
                 message: 'No currencies found',
@@ -17,7 +17,7 @@ router.get('/getAllCurencies', async (req: Request, res: Response, next: NextFun
         }
 
         // Create a dictionary of currencies and their reverse rates
-        const dictionary = (currencyDocument.data || []).reduce((acc: Record<string, number>, item: any) => {
+        const dictionary = currencies.reduce((acc: Record<string, number>, item: any) => {
             acc[item.currency] = item.reverseRate;
             return acc;
         }, {});
@@ -32,48 +32,55 @@ router.get('/getAllCurencies', async (req: Request, res: Response, next: NextFun
     }
 });
 
-// POST /api/currency - Create or update currency array
+// POST Create or update currency
 router.post('/postCurrency', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { data: currenciesData } = req.body;
+        const { currency, perUnit, exchangeRate, reverseRate, name_bg, name_en } = req.body;
 
-        // Check if data exists and is an array
-        if (!currenciesData || !Array.isArray(currenciesData)) {
+        const countryMap: Record<string, string> = {
+            EUR: 'eu', AUD: 'au', BRL: 'br', CAD: 'ca', CHF: 'ch',
+            CNY: 'cn', CZK: 'cz', DKK: 'dk', GBP: 'gb', HKD: 'hk',
+            HUF: 'hu', IDR: 'id', ILS: 'il', INR: 'in', ISK: 'is',
+            JPY: 'jp', KRW: 'kr', MXN: 'mx', MYR: 'my', NOK: 'no',
+            NZD: 'nz', PHP: 'ph', PLN: 'pl', RON: 'ro', SEK: 'se',
+            SGD: 'sg', THB: 'th', TRY: 'tr', USD: 'us', ZAR: 'za'
+        };
+
+        const countryCode = countryMap[currency];
+        if (!countryCode) {
             return res.status(400).json({
                 success: false,
-                message: 'Request body must have a data array of currencies'
+                message: 'Invalid currency'
             });
         }
 
-        // Validation for each currency in the array
-        for (const currencyData of currenciesData) {
-            if (!currencyData.currency || currencyData.reverseRate === undefined) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Each currency must have currency and reverseRate fields'
-                });
-            }
-        }
+        const flagURL = `https://flagcdn.com/w320/${countryCode}.png`;
 
-        // Check if currency document already exists
-        let currencyDocument = await Currency.findOne({});
+        // Check if currency already exists
+        let existingCurrency = await Currency.findOne({ currency });
 
-        if (currencyDocument) {
-            // Update existing document
-            currencyDocument.data = currenciesData as any;
-            await currencyDocument.save();
+        if (existingCurrency) {
+            // Update existing currency
+            existingCurrency.perUnit = perUnit;
+            existingCurrency.exchangeRate = exchangeRate;
+            existingCurrency.reverseRate = reverseRate;
+            existingCurrency.name_bg = name_bg;
+            existingCurrency.name_en = name_en;
+            existingCurrency.flagURL = flagURL;
+            await existingCurrency.save();
         } else {
-            // Create new document
-            currencyDocument = new Currency({
-                data: currenciesData
+            // Create new currency
+            const newCurrency = new Currency({
+                currency, perUnit, exchangeRate,
+                reverseRate, name_bg, name_en, flagURL
             });
-            await currencyDocument.save();
+            await newCurrency.save();
         }
 
         return res.status(201).json({
             success: true,
-            message: `${currenciesData.length} currencies saved successfully`,
-            data: currencyDocument
+            message: `Currency ${currency} saved successfully`,
+            data: existingCurrency || { currency, perUnit, exchangeRate, reverseRate, name_bg, name_en, flagURL }
         });
     } catch (error) {
         next(error);

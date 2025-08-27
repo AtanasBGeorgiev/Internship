@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import Account from "../models/Account";
+import Deposit from "../models/Deposit";
 
 const router = Router();
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const account = new Account(req.body);
-        await account.save();
-        res.status(201).json({ success: 'New account!', account });
+        const deposit = new Deposit(req.body);
+        await deposit.save();
+        res.status(201).json({ success: 'New deposit!', deposit });
     } catch (error) {
         next(error);
     }

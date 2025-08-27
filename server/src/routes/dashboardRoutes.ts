@@ -15,8 +15,6 @@ import PreferredDeposit from "../models/Preferences/PreferredDeposit";
 import Currency from "../models/Currency";
 import PreferredCurrency from "../models/Preferences/PreferredCurrency";
 import PreferredTransaction from "../models/Preferences/PreferredTransaction";
-import mongoose from 'mongoose';
-
 
 const router = Router();
 
@@ -24,6 +22,8 @@ const router = Router();
 //req and res are handler functions which are executed after the middleware function
 router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // Get language preference from request headers
+    const language = req.headers['accept-language'] || 'bg'; // Default to Bulgarian if no language specified
 
     const user = (req as any).user;
 
@@ -33,8 +33,9 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
     const accounts = await Account.find({ _id: { $in: preferredAccountsIDS?.itemsID } }).select('-__v').lean();
 
     //works only with js objects
-    const cleanedAccounts = accounts.map(({ _id, ...rest }) => ({
+    const cleanedAccounts = accounts.map(({ _id, name_bg, name_en, ...rest }) => ({
       id: _id.toString(),
+      name: language === 'en' ? name_en : name_bg,
       ...rest
     }));
 
@@ -54,8 +55,10 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
     const payments = await Payment.find({ _id: { $in: preferredPaymentsIDS?.itemsID } }).select('-__v').lean();
 
-    const cleanedPayments = payments.map(({ _id, ...rest }) => ({
+    const cleanedPayments = payments.map(({ _id, remmiterName_bg, remmiterName_en, beneficiaryName_bg, beneficiaryName_en, ...rest }) => ({
       id: _id.toString(),
+      remmiterName: language === 'en' ? remmiterName_en : remmiterName_bg,
+      beneficiaryName: language === 'en' ? beneficiaryName_en : beneficiaryName_bg,
       ...rest
     }));
 
@@ -64,31 +67,35 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
     const liabilities = await Liability.find({ _id: { $in: preferredLiabilitiesIDS?.itemsID } }).select('-__v').lean();
 
-    const cleanedLiabilities = liabilities.map(({ _id, Date, ...rest }) => ({
+    const cleanedLiabilities = liabilities.map(({ _id, Date, name_bg, name_en, ...rest }) => ({
       id: _id.toString(),
       Date: Date ? Date.toISOString().split('T')[0].replace(/-/g, '/') : "",
+      name: language === 'en' ? name_en : name_bg,
       ...rest
     }));
 
     const preferredTransactionsIDS = await PreferredTransaction.findOne({ userId: user.userId }).select('itemsID').lean();
 
     const transactions = await Transaction.find({
+      userId: user.userId,
       $or: [{ accountID: { $in: preferredTransactionsIDS?.itemsID } },
       { depositID: { $in: preferredTransactionsIDS?.itemsID } }]
     }).select('-__v').lean();
 
     // Sort by date (newest first) and limit to 5
     const sortedTransactions = transactions
-        .sort((a, b) => {
-            const dateA = a.date ? new Date(a.date).getTime() : 0;
-            const dateB = b.date ? new Date(b.date).getTime() : 0;
-            return dateB - dateA; // newest first
-        })
-        .slice(0, 5);
+      .sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        return dateB - dateA; // newest first
+      })
+      .slice(0, 5);
 
-    const cleanedTransactions = sortedTransactions.map(({ _id, date, ...rest }) => ({
+    const cleanedTransactions = sortedTransactions.map(({ _id, date, reference_bg, reference_en, beneficiaryRemmiter_bg, beneficiaryRemmiter_en, ...rest }) => ({
       id: _id.toString(),
       date: date ? date.toISOString().split('T')[0].replace(/-/g, '/') : "",
+      reference: language === 'en' ? reference_en : reference_bg,
+      beneficiaryRemmiter: language === 'en' ? beneficiaryRemmiter_en : beneficiaryRemmiter_bg,
       ...rest
     }));
 
@@ -97,10 +104,11 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
     const credits = await Credit.find({ _id: { $in: preferredCreditsIDS?.itemsID } }).select('-__v').lean();
 
-    const cleanedCredits = credits.map(({ _id, installmentDueDate, maturity, ...rest }) => ({
+    const cleanedCredits = credits.map(({ _id, installmentDueDate, maturity, name_bg, name_en, ...rest }) => ({
       id: _id.toString(),
       installmentDueDate: installmentDueDate ? installmentDueDate.toISOString().split('T')[0].replace(/-/g, '/') : "",
       maturity: maturity ? maturity.toISOString().split('T')[0].replace(/-/g, '/') : "",
+      name: language === 'en' ? name_en : name_bg,
       ...rest
     }));
 
@@ -109,9 +117,10 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
     const deposits = await Deposit.find({ _id: { $in: preferredDepositsIDS?.itemsID } }).select('-__v').lean();
 
-    const cleanedDeposits = deposits.map(({ _id, maturityDate, ...rest }) => ({
+    const cleanedDeposits = deposits.map(({ _id, maturityDate, name_bg, name_en, ...rest }) => ({
       id: _id.toString(),
       maturityDate: maturityDate ? maturityDate.toISOString().split('T')[0].replace(/-/g, '/') : "",
+      name: language === 'en' ? name_en : name_bg,
       ...rest
     }));
 
@@ -120,8 +129,9 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
     const currencies = await Currency.find({ _id: { $in: preferredCurrenciesIDS?.itemsID } }).select('-__v').lean();
 
-    const cleanedCurrencies = currencies.map(({ _id, ...rest }) => ({
+    const cleanedCurrencies = currencies.map(({ _id, name_bg, name_en, ...rest }) => ({
       id: _id.toString(),
+      name: language === 'en' ? name_en : name_bg,
       ...rest
     }));
 
@@ -145,6 +155,9 @@ router.get('/UserDashboard', async (req: Request, res: Response, next: NextFunct
 
 router.get('/Module/:modelType', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // Get language preference from request headers
+    const language = req.headers['accept-language'] || 'bg'; // Default to Bulgarian if no language specified
+
     const user = (req as any).user;
     const { modelType } = req.params;
 
@@ -153,13 +166,15 @@ router.get('/Module/:modelType', async (req: Request, res: Response, next: NextF
       const accounts = await Account.find({ userId: user.userId }).select('-__v').lean();
       const deposits = await Deposit.find({ userId: user.userId }).select('-__v').lean();
 
-      const cleanedAccounts = accounts.map(({ _id, ...rest }: any) => ({
+      const cleanedAccounts = accounts.map(({ _id, name_bg, name_en, ...rest }: any) => ({
         id: _id.toString(),
+        name: language === 'en' ? name_en : name_bg, // Return appropriate language version
         ...rest
       }));
 
-      const cleanedDeposits = deposits.map(({ _id, ...rest }: any) => ({
+      const cleanedDeposits = deposits.map(({ _id, name_bg, name_en, ...rest }: any) => ({
         id: _id.toString(),
+        name: language === 'en' ? name_en : name_bg, // Return appropriate language version
         ...rest
       }));
 
@@ -198,10 +213,39 @@ router.get('/Module/:modelType', async (req: Request, res: Response, next: NextF
       items = await Model.find({ userId: user.userId }).select('-__v').lean();
     }
 
-    const cleanedItems = items.map(({ _id, ...rest }: any) => ({
-      id: _id.toString(),
-      ...rest
-    }));
+
+    let cleanedItems: any;
+    if (Model === Currency || Model === Deposit || Model === Credit || Model === Account || Model === Liability) {
+      // Handle currencies with language-specific names
+      cleanedItems = items.map(({ _id, name_bg, name_en, ...rest }: any) => ({
+        id: _id.toString(),
+        name: language === 'en' ? name_en : name_bg,
+        ...rest
+      }));
+    } else if (Model === Transaction) {
+      // Handle transactions with language-specific fields
+      cleanedItems = items.map(({ _id, date, reference_bg, reference_en, beneficiaryRemmiter_bg, beneficiaryRemmiter_en, ...rest }: any) => ({
+        id: _id.toString(),
+        date: date ? date.toISOString().split('T')[0].replace(/-/g, '/') : "",
+        reference: language === 'en' ? reference_en : reference_bg,
+        beneficiaryRemmiter: language === 'en' ? beneficiaryRemmiter_en : beneficiaryRemmiter_bg,
+        ...rest
+      }));
+    } else if (Model === Payment) {
+      // Handle payments with language-specific names
+      cleanedItems = items.map(({ _id, remmiterName_bg, remmiterName_en, beneficiaryName_bg, beneficiaryName_en, ...rest }: any) => ({
+        id: _id.toString(),
+        remmiterName: language === 'en' ? remmiterName_en : remmiterName_bg, // Return appropriate language version
+        beneficiaryName: language === 'en' ? beneficiaryName_en : beneficiaryName_bg, // Return appropriate language version
+        ...rest
+      }));
+    } else {
+      // Handle other models normally
+      cleanedItems = items.map(({ _id, ...rest }: any) => ({
+        id: _id.toString(),
+        ...rest
+      }));
+    }
 
     return res.status(200).json({
       message: `${modelType} for ${user.username}`,
@@ -211,10 +255,6 @@ router.get('/Module/:modelType', async (req: Request, res: Response, next: NextF
   catch (error) {
     next(error);
   }
-});
-
-router.get('/AdminDashboard', async (req: Request, res: Response, next: NextFunction) => {
-
 });
 
 export default router;
