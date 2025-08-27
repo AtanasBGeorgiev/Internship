@@ -1,0 +1,101 @@
+[
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Разпл. сметка физ. лица",
+    "name_en": "Checking Account - Individuals",
+    "accountNumber": "915010BGNOVWVT",
+    "currency": "BGN",
+    "avaiability": 50150000,
+    "openingBalance": 49620000,
+    "currentBalance": 50150000,
+    "feesDue": 2.33
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Лична сметка - за харчене",
+    "name_en": "Personal Account - Spending",
+    "accountNumber": "91501004592159",
+    "currency": "EUR",
+    "avaiability": 10000,
+    "openingBalance": 12000,
+    "currentBalance": 10000,
+    "feesDue": 3.33
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Свободна разпл. сметка",
+    "name_en": "Free Checking Account",
+    "accountNumber": "915010BGNOWQDF",
+    "currency": "BGN",
+    "avaiability": 25000,
+    "openingBalance": 28000,
+    "currentBalance": 25000,
+    "feesDue": 3.5
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Сметка за черни дни",
+    "name_en": "Rainy Day Account",
+    "accountNumber": "915010GNORSTU",
+    "currency": "BGN",
+    "avaiability": 3000,
+    "openingBalance": 2800,
+    "currentBalance": 3000,
+    "feesDue": 2.8
+  },
+  {
+    "userId": "6890bb5e0974857345641f62",
+    "name_bg": "Разпл. сметка физ. лица",
+    "name_en": "Checking Account - Individuals",
+    "accountNumber": "915010045924AB",
+    "currency": "USD",
+    "avaiability": 13420.85,
+    "openingBalance": 10000,
+    "currentBalance": 13420.85,
+    "feesDue": 4.4
+  },
+  {
+    "userId": "6890bb5e0974857345641f61",
+    "name_bg": "Разпл. сметка физ. лица",
+    "name_en": "Checking Account - Individuals",
+    "accountNumber": "91501004592444",
+    "currency": "USD",
+    "avaiability": 0.01,
+    "openingBalance": 100,
+    "currentBalance": 0.01,
+    "feesDue": 2.74
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Сметка за черни дни",
+    "name_en": "Rainy Day Account",
+    "accountNumber": "915010GNORSTU",
+    "currency": "BGN",
+    "avaiability": 3000,
+    "openingBalance": 2800,
+    "currentBalance": 3000,
+    "feesDue": 2.8
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Разпл. сметка физ. лица",
+    "name_en": "Checking Account - Individuals",
+    "accountNumber": "915010045924AB",
+    "currency": "USD",
+    "avaiability": 13420.85,
+    "openingBalance": 10000,
+    "currentBalance": 13420.85,
+    "feesDue": 4.4
+  },
+  {
+    "userId": "6895c2626b58dfe73344c833",
+    "name_bg": "Разпл. сметка физ. лица",
+    "name_en": "Checking Account - Individuals",
+    "accountNumber": "91501004592444",
+    "currency": "USD",
+    "avaiability": 0.01,
+    "openingBalance": 100,
+    "currentBalance": 0.01,
+    "feesDue": 2.74
+  }
+]
