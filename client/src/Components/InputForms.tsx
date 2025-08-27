@@ -2,6 +2,7 @@ import type { FieldError, UseFormRegisterReturn } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 
 import { Arrow } from './Common';
+import { useTranslation } from 'react-i18next';
 
 interface InputProps {
     id: string;
@@ -91,12 +92,13 @@ interface FormFieldWithIconProps {
 
 export const FormFieldWithIcon: React.FC<FormFieldWithIconProps> = ({ id, label, type = "text", required = true, icon,
     isVisible = "hidden", register, error }) => {
+    const { t } = useTranslation();
     return (
         <>
             <label htmlFor={id} className="text-xs md:text-base flex items-center w-full">
                 <span className="text-red-500">*</span> {label}:
                 <span className={`${isVisible} text-xs text-gray-700 ml-auto`}>
-                    <span className="text-red-500">*</span> Задължителни полета
+                    <span className="text-red-500">*</span> {t("Задължителни полета")}
                 </span>
             </label>
 

@@ -1,6 +1,6 @@
 export type Account = {
     id: string;
-    type: string;
+    name: string;
     accountNumber: string;
     currency: string;
     avaiability: string;

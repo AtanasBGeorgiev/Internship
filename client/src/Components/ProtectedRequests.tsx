@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { protectedFetch } from "../services/authService";
 import { showGlobalError, logout } from "../utils/errorHandler";
 
-export function useProtectedFetch<T = unknown>(endpoint: string | null) {
+export function useProtectedFetch<T = unknown>(endpoint: string | null, dependencies: any[] = []) {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,6 +19,7 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null) {
                 console.log("Endpoint is null or empty, skipping fetch");
                 setError(null); // Clear any previous errors
                 setData(null); // Clear any previous data
+                setIsLoading(false);
                 return;
             }
             else {
@@ -26,6 +30,8 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null) {
                 }
 
                 try {
+                    setIsLoading(true);
+                    setError(null);
                     const result = await protectedFetch<T>(endpoint);
                     setData(result);
                 }
@@ -36,16 +42,18 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null) {
                         // Let the centralized logout handle this
                         logout();
                     } else {
-                        setError("Failed to load data. Please try again.");
-                        showGlobalError("Failed to load data. Please try again.");
+                        setError(t("errors.failedToLoadData"));
+                        showGlobalError("errors.failedToLoadData");
                         console.error("Non-token error:", err);
                     }
+                } finally {
+                    setIsLoading(false);
                 }
             }
         };
 
         fetchData();
-    }, [endpoint, navigate]);
+    }, [endpoint, navigate, ...dependencies]);
 
-    return { data, error };
+    return { data, error, isLoading };
 };

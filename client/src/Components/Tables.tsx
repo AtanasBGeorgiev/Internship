@@ -40,6 +40,7 @@ export const SectionHead: React.FC<SectionHeadProps> = ({ title, onClick, getPos
     return (
         <div className="mt-5 border-x-2 border-t-2 border-gray-300 w-full">
             <div id="section" className="pl-3 flex items-center justify-between">
+
                 <h2 className="px-4 py-2 font-bold text-base xl:text-lg">{title}</h2>
 
                 <div className="flex items-center justify-center">
@@ -145,6 +146,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
 
         return (
             <td className={`text-sm xl:text-base border border-gray-300 px-2 text-${alignment} ${display} ${displaySign}`}>
+                <span className="pr-1">{checkbox}</span>
                 {text.length > 0 ? text : icon ? icon : amount} {showRate ? `%` : ""}
                 {isDate && (
                     <div className="w-9/10">
@@ -158,7 +160,7 @@ export const TableData: React.FC<TableDataProps> = ({ type = "td", display = "",
                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-gray-300 rounded 
                         p-2 z-10 text-center text-xs xl:text-sm w-30 font-bold text-black hidden group-hover:block">
                                     <Arrow position="bottom" />
-                                    <p>Остават {remainingDays > 0 ? remainingDays : 0} дни</p>
+                                    <p>{t("Остават")} {remainingDays > 0 ? remainingDays : 0} {t("дни")}</p>
                                 </div>
                             </div>
                         </div>
@@ -328,7 +330,7 @@ interface TableButtonProps {
 }
 export const TableButton: React.FC<TableButtonProps> = ({ icon, text, display, onClick }) => {
     return (
-        <button onClick={onClick} className={`text-xs xl:text-base ${display} font-bold p-3 mx-2 block rounded hover:cursor-pointer`}>
+        <button onClick={onClick} className={`text-xs ${display} font-bold p-3 mx-2 block rounded hover:cursor-pointer`}>
             {icon && <span className="pr-2">{icon}</span>}
             {text}
         </button>

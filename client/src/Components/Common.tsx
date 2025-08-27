@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
+import { updateLanguagePreference } from "../api/axiosInstance";
+import { saveLanguagePreference } from "../i18n";
 
 interface LangSwitcherProps {
     fontSize?: string;
@@ -14,12 +16,22 @@ export const LangSwitcher: React.FC<LangSwitcherProps> = ({ fontSize = "text-lg"
     // switches the language
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
+        // Update API headers with new language preference
+        updateLanguagePreference(lng);
+        // Save language preference to localStorage
+        saveLanguagePreference(lng);
     };
 
     //switches the language if globally is switched
     useEffect(() => {
         //switcher
-        const onLangChanged = (lng: string) => setLang(lng);
+        const onLangChanged = (lng: string) => {
+            setLang(lng);
+            // Update API headers when language changes globally
+            updateLanguagePreference(lng);
+            // Save language preference to localStorage
+            saveLanguagePreference(lng);
+        };
         //event listener for changes
         i18n.on('languageChanged', onLangChanged);
 
@@ -73,11 +85,34 @@ interface MessageProps {
     message: string | null;
     messageType: "success" | "error" | null;
 }
+interface SetMessageProps {
+    message: string | null;
+    messageType: "success" | "error" | null;
+    setMessage: (message: string | null) => void;
+    setMessageType: (messageType: "success" | "error" | null) => void;
+};
+export function SetMessage({ message, messageType, setMessage, setMessageType }: SetMessageProps) {
+    setMessage(message);
+    setMessageType(messageType);
+    hideMessage(setMessage, setMessageType);
+};
 export const ShowMessage: React.FC<MessageProps> = ({ message, messageType }) => {
     if (message) {
         return (
             <div className={`p-3 m-3 rounded ${messageType === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                 }`}>
+                {message}
+            </div>
+        );
+    }
+};
+interface ErrorMessageProps {
+    message: string;
+};
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
+    if (message) {
+        return (
+            <div className="p-4 text-red-600 bg-red-100 rounded">
                 {message}
             </div>
         );
@@ -120,3 +155,13 @@ export const Arrow: React.FC<ArrowProps> = ({ bgColor = "bg-white", borderColor 
         );
     }
 };
+
+export const Loading: React.FC = () => {
+    const { t } = useTranslation();
+    return (
+        <div className="w-120 p-2 text-left">
+            <p className="text-gray-500 pl-2">{t("Зарежданe...")}</p>
+        </div>
+    );
+};
+

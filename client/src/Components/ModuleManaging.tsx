@@ -144,6 +144,7 @@ export const ModuleManaging: React.FC<ModuleManagingProps> = ({ onClose }) => {
     };
 
     const handleDragOver = (e: React.DragEvent) => {
+        //stop the default behavior of the browser which does not allow drag and drop
         e.preventDefault();
         e.dataTransfer.dropEffect = "move";
     };
@@ -248,9 +249,7 @@ export const ModuleManaging: React.FC<ModuleManagingProps> = ({ onClose }) => {
         }
     };
 
-    if (loading) {
-        return <Loading />;
-    }
+    loading && <Loading />;
 
     return (
         <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
@@ -283,7 +282,8 @@ export const ModuleManaging: React.FC<ModuleManagingProps> = ({ onClose }) => {
                             description={table.description} order={table.order || 0}
                             isSelected={selectedModules.includes(table.id)}
                             isDragging={draggedModule === table.id}
-                            isDropTarget={!!draggedModule && draggedModule !== table.id}
+                            //target is when the module is dragged and the id is not the same as the target
+                            isDropTarget={!!draggedModule && draggedModule !== table.id}//!! - converts draggedModule to boolean
                             checkbox={
                                 <TableCheckbox checkedCondition={selectedModules.includes(table.id)}
                                     onChange={() => handleCheckboxChange(table.id)} />

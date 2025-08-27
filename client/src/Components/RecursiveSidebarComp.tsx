@@ -10,9 +10,11 @@ export interface SectionToolTipProps {
 }
 
 export const SectionToolTip: React.FC<SectionToolTipProps> = ({ title, contacts }) => {
+    const { t } = useTranslation();
+    
     return (
         <div>
-            <h1 className="text-sm p-2 text-gray-500">{title}</h1>
+            <h1 className="text-sm p-2 text-gray-500">{t(title)}</h1>
             {contacts}
         </div>
     );
@@ -24,12 +26,13 @@ interface MoreInfoProps {
 }
 
 export const MoreInfo: React.FC<MoreInfoProps> = ({ pText, tooltip }) => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
 
     return (
         <>
-            <p onClick={() => setIsOpen(!isOpen)} className="w-full py-1 flex items-center justify-between pl-3 text-sm text-gray-700 hover:cursor-pointer relative">{pText}
-                <IoTriangle className={`text-gray-400 ${isOpen ? "rotate-180" : "rotate-90"}`} />
+            <p onClick={() => setIsOpen(!isOpen)} className="text-xs xl:text-base w-full py-1 flex items-center justify-between pl-3 text-sm text-gray-700 hover:cursor-pointer relative">{t(pText)}
+                <IoTriangle className={`text-sm xl:text-base text-gray-400 ${isOpen ? "rotate-180" : "rotate-90"}`} />
             </p>
             {isOpen && (
                 <>
@@ -102,7 +105,6 @@ export interface MenuItem {
     buttonItem?: Button;
 }
 
-// Import MultiLevelSidebar from experiment.tsx
 export const MultiLevelSidebar: React.FC<MultiLevelSidebarProps> = ({ href = "", title, label, icons, fontSize = "text-lg", onClick,
     hover = "hover:bg-gray-200", position = "left-full top-0", groupClass = "group", level = 0, nextLevel }) => {
 
@@ -117,10 +119,10 @@ export const MultiLevelSidebar: React.FC<MultiLevelSidebarProps> = ({ href = "",
     return (
         <>
             {title && (
-                <h1 className="text-sm p-2 text-gray-500">{t(title)}</h1>
+                <h1 className="text-xs xl:text-sm p-2 text-gray-500">{t(title)}</h1>
             )}
 
-            <div className={`w-full relative ${groupClass} flex items-center justify-between space-x-2 py-2 px-3 ${hover}`}>
+            <div className={`text-sm xl:text-base w-full relative ${groupClass} flex items-center justify-between space-x-2 py-2 px-3 ${hover}`}>
                 <div className="flex items-center space-x-2">
                     {nextLevel && nextLevel.length > 0 && (
                         <div className={`absolute ${position} z-50 bg-white border-2 border-gray-300 hidden ${groupClass}-hover:block min-w-70 shadow-lg rounded-md`}>
@@ -140,7 +142,7 @@ export const MultiLevelSidebar: React.FC<MultiLevelSidebarProps> = ({ href = "",
                             ))}
                         </span>)}
 
-                    <Link onClick={onClick} to={href} className={`${fontSize} text-black ${groupClass}-hover:text-blue-800`}>
+                    <Link onClick={onClick} to={href} className={`text-sm xl:text-lg text-black ${groupClass}-hover:text-blue-800`}>
                         {t(label)}
                     </Link>
                 </div>
