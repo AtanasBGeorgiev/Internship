@@ -1,7 +1,8 @@
 import api from "../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { showGlobalError, handleAuthError } from "../utils/errorHandler";
-import { type BusinessClient, type Notification, type NotificationResponse } from "../Components/ModelTypes";
+import { type BusinessClient, type NotificationResponse, type TableModel, type TableNames, type User } from "../Components/ModelTypes";
+import i18n from "../i18n";
 
 export interface loginData {
     username: string;
@@ -42,12 +43,13 @@ interface JWTPayload {
     exp: number;
     username: string;
     nameCyrillic: string;
+    nameLatin: string;
 }
 
 export const getUserData = async (): Promise<string[]> => {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
-        handleAuthError('Authentication required. Please log in.');
+        handleAuthError('errors.authenticationRequired');
         throw new Error('No token!');
     }
 
@@ -55,18 +57,18 @@ export const getUserData = async (): Promise<string[]> => {
         const decodedToken = jwtDecode<JWTPayload>(token);
 
         if (decodedToken.exp < Date.now() / 1000) {
-            handleAuthError('Your session has expired. Please log in again.');
+            handleAuthError('errors.sessionExpiredLoginAgain');
             throw new Error('Token expired!');
         }
 
         if (!decodedToken.role) {
-            handleAuthError('Invalid token. Please log in again.');
+            handleAuthError('errors.invalidTokenLoginAgain');
             throw new Error('Invalid token!');
         }
-        const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic];
+        const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic,decodedToken.nameLatin];
         return data;
     } catch (error) {
-        handleAuthError('Invalid token format. Please log in again.');
+        handleAuthError('errors.invalidTokenFormat');
         throw new Error('Invalid token format!');
     }
 };
@@ -75,14 +77,15 @@ export const getUserData = async (): Promise<string[]> => {
 export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
-        handleAuthError('Authentication required. Please log in.');
+        handleAuthError('errors.authenticationRequired');
         throw new Error('No token!');
     }
+
     try {
         const response = await api.get<T>(endpoint);
         return response.data;
     } catch (error) {
-        showGlobalError('Failed to fetch data');
+        showGlobalError('errors.failedToFetchData');
         // Let the axios interceptor handle the error
         throw error;
     }
@@ -96,18 +99,12 @@ export interface SidebarResponse {
 }
 
 export const fetchSidebarMenu = async (): Promise<any[]> => {
-    try {
-        const response = await api.get<SidebarResponse>('/api/sidebar');
+    const response = await protectedFetch<SidebarResponse>('/api/sidebar');
 
-        if (response.data.success) {
-            return response.data.data;
-        } else {
-            throw new Error(response.data.message || 'Failed to fetch sidebar menu');
-        }
-    } catch (error) {
-        showGlobalError('Failed to fetch sidebar menu');
-        // Let the axios interceptor handle the error
-        throw error;
+    if (response.success) {
+        return response.data;
+    } else {
+        throw new Error(response.message || 'errors.failedToFetchSidebarMenu');
     }
 };
 
@@ -115,13 +112,7 @@ interface CurrencyResponse {
     data: Record<string, number>;
 };
 export const getCurrencies = async (): Promise<CurrencyResponse> => {
-    try {
-        const response = await api.get<CurrencyResponse>('/api/currency/getAllCurencies');
-        return response.data;
-    } catch (error) {
-        showGlobalError('Failed to fetch currencies');
-        throw error;
-    }
+    return await protectedFetch<CurrencyResponse>('/api/currency/getAllCurencies');
 };
 
 export const postPreferrence = async (userId: string, itemsID: string[], itemType: string) => {
@@ -129,29 +120,17 @@ export const postPreferrence = async (userId: string, itemsID: string[], itemTyp
         const response = await api.post(`/api/preferences/postPreferrence/${itemType}`, { userId, itemsID });
         return response.data;
     } catch (error) {
-        showGlobalError('Failed to post preferrence');
+        showGlobalError('errors.failedToPostPreference');
         throw error;
     }
 };
 
 export const fetchBusinessClients = async (): Promise<BusinessClient[]> => {
-    try {
-        const response = await api.get<BusinessClient[]>('/api/businessClient/get');
-        return response.data;
-    } catch (error) {
-        showGlobalError('Failed to fetch business clients');
-        throw error;
-    }
+    return await protectedFetch<BusinessClient[]>('/api/businessClient/get');
 };
 
 export const getNotifications = async (userId: string): Promise<NotificationResponse> => {
-    try {
-        const response = await api.get<NotificationResponse>(`/api/notification/get?userId=${userId}`);
-        return response.data;
-    } catch (error) {
-        showGlobalError('Failed to fetch notifications');
-        throw error;
-    }
+    return await protectedFetch<NotificationResponse>(`/api/notification/get?userId=${userId}`);
 };
 
 export const RemoveNotification = async (notificationId: string) => {
@@ -159,7 +138,73 @@ export const RemoveNotification = async (notificationId: string) => {
         const response = await api.put(`/api/notification/update/${notificationId}`);
         return response.data;
     } catch (error) {
-        showGlobalError('Failed to remove notification');
+        showGlobalError('errors.failedToRemoveNotification');
         throw error;
+    }
+};
+
+export const fetchUsers = async (): Promise<User[]> => {
+    return await protectedFetch<User[]>('/api/admin/getUsers');
+};
+
+export const updateRole = async (ids: string[]) => {
+    try {
+        const response = await api.put('/api/admin/updateRole', ids);
+        return response.data;
+    } catch (error) {
+        showGlobalError('errors.failedToUpdateRole');
+        throw error;
+    }
+};
+
+export const fetchTables = async (role: string): Promise<TableModel[]> => {
+    return await protectedFetch<TableModel[]>(`/api/table/get?role=${role}`);
+};
+
+export const postPreferredTable = async (userId: string, tables: string[]) => {
+    try {
+        // Transform tables array to match schema: [{ tableId: string }]
+        const tablesData = tables.map(tableId => ({ tableId }));
+        const response = await api.post('/api/preferences/postPreferredTable', { userId, tables: tablesData });
+        return response.data;
+    } catch (error) {
+        showGlobalError('errors.failedToPostPreferredTable');
+        throw error;
+    }
+};
+
+export const fetchPreferredTables = async (userId: string): Promise<{ message: string; tableNames: TableNames[] }> => {
+    return await protectedFetch<{ message: string; tableNames: TableNames[] }>(`/api/preferences/getPreferredTables?userId=${userId}`);
+};
+
+export const updateTableOrder = async (userId: string, tables: { id: string, order: number }[]) => {
+    try {
+        const response = await api.put('/api/table/updatePreferredOrder', { userId, tables });
+        return response.data;
+    } catch (error) {
+        showGlobalError('errors.failedToUpdateTableOrder');
+        throw error;
+    }
+};
+
+export const getTableOrder = async (userId: string): Promise<{ tableId: string, order: number }[]> => {
+    return await protectedFetch<{ tableId: string; order: number }[]>(`/api/table/getPreferredOrder/${userId}`);
+};
+
+export const getUserNamesByLanguage = (userRoleData: string[], language: string): string => {
+    if (language === 'bg') {
+        return userRoleData[3]; // nameCyrillic (Bulgarian)
+    } else {
+        return userRoleData[4]; // nameLatin (English)
+    }
+};
+
+export const updateUserNames = async (setUserNames: (names: string) => void) => {
+    try {
+        const names = await getUserData();
+        const currentLanguage = i18n.language || 'bg';
+        setUserNames(getUserNamesByLanguage(names, currentLanguage));
+    } catch (err) {
+        console.error('Error updating user names:', err);
     }
 };
