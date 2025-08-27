@@ -1,15 +1,16 @@
-import React, { createContext, useContext, useState,type ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { type BusinessClient } from '../Components/ModelTypes';
 
 interface ClientContextType {
     selectedClient: BusinessClient | null;
     setSelectedClient: (client: BusinessClient | null) => void;
-}
+};
 
 const ClientContext = createContext<ClientContextType | undefined>(undefined);
 
 export const useClientContext = () => {
     const context = useContext(ClientContext);
+    //the context is undefined when is used outside of the provider
     if (context === undefined) {
         throw new Error('useClientContext must be used within a ClientProvider');
     }
@@ -17,7 +18,7 @@ export const useClientContext = () => {
 };
 
 interface ClientProviderProps {
-    children: ReactNode;
+    children: React.ReactNode;
 }
 
 export const ClientProvider: React.FC<ClientProviderProps> = ({ children }) => {
