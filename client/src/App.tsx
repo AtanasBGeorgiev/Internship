@@ -45,46 +45,48 @@ const AppRoutes = () => {
   }, [setError]);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <GlobalErrorBanner />
-      <Routes>
-        {/*The login form is displayed first when the app is started. */}
-        <Route path="/" element={
-          <>
-            <Header />
-            <LoginForm />
-            <LoginFooter />
-          </>
-        } />
-        <Route path="/Login" element={
-          <>
-            <Header />
-            <LoginForm />
-            <LoginFooter />
-          </>
-        } />
-        <Route path="/Register" element={
-          <>
-            <Header />
-            <RegisterForm />
-          </>
-        } />
-        <Route path="/Dashboard" element={
-          <ProtectedRoute>
-            <ClientProvider>
-              <PositionProvider>
-                <ScreenHeightProvider>
-                  <Dashboard />
-                </ScreenHeightProvider>
-              </PositionProvider>
-            </ClientProvider>
-          </ProtectedRoute>
-        } />
-      </Routes>
-      <Footer />
-    </>
+      <div className="flex-1">
+        <Routes>
+          {/*The login form is displayed first when the app is started. */}
+          <Route path="/" element={
+            <>
+              <Header />
+              <LoginForm />
+              <LoginFooter />
+            </>
+          } />
+          <Route path="/Login" element={
+            <>
+              <Header />
+              <LoginForm />
+              <LoginFooter />
+            </>
+          } />
+          <Route path="/Register" element={
+            <>
+              <Header />
+              <RegisterForm />
+            </>
+          } />
+          <Route path="/Dashboard" element={
+            <ProtectedRoute>
+              <ClientProvider>
+                <PositionProvider>
+                  <ScreenHeightProvider>
+                    <Dashboard />
+                  </ScreenHeightProvider>
+                </PositionProvider>
+              </ClientProvider>
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </div>
+      <Footer /> {/* Footer will always be at bottom */}
+    </div>
   )
-}
+};
 
 const App: React.FC = () => {
   return (

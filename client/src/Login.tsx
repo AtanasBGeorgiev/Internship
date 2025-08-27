@@ -13,6 +13,7 @@ import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
 import { ContactInfo } from "./Components/Navbar";
 import { FooterLink } from "./Components/Footer";
 import { login } from "./services/authService";
+import { showGlobalError } from "./utils/errorHandler";
 
 type FormValues = {
   username: string;
@@ -89,9 +90,9 @@ export const LoginForm: React.FC = () => {
             <p>2015-02-02</p>
           </div>
           <div className="bg-gray-100 flex items-center justify-center p-2">
-            <FooterLink displayProps="text-gray-600 pr-1 border-r-1 border-gray-400 hover:text-blue-800 hover:underline"
+            <FooterLink displayProps="text-xs sm:text-sm xl:text-base text-gray-600 pr-1 border-r-1 border-gray-400 hover:text-blue-800 hover:underline"
               icon={<IoDocumentLockOutline />} text={t("Съвети за сигурност")} />
-            <FooterLink displayProps="text-gray-600 pl-1 hover:text-blue-800 hover:underline"
+            <FooterLink displayProps="text-xs sm:text-sm pr-2 xl:text-base text-gray-600 pl-1 hover:text-blue-800 hover:underline"
               icon={<BiSolidMessageError />} text={t("Съобщения за грешка")} />
           </div>
         </div>
@@ -127,7 +128,7 @@ export const LoginFooter: React.FC = () => {
   return (
     <div id="wrapper" className="w-full text-center text-gray-600 bg-gray-50 p-5">
       <div className="w-9/10 md:w-7/10 mx-auto">
-        <p className="text-black sm:text-basic md:text-lg">{t("За всички въпроси нашите служители Ви очакват на:")}</p>
+        <p className="text-black sm:text-base md:text-lg">{t("За всички въпроси нашите служители Ви очакват на:")}</p>
         <div className="text-xs sm:text-base md:text-lg p-2 grid grid-cols-1 justify-items-center justify-center xl:flex">
           <ContactInfo icon={<FaPhone />} text={t("Телефон")} spanText="0700 12 777" moreText={t(" (денонощно)*")} />
           <ContactInfo icon={<FaEnvelope />} text={t("E-mail")} spanText="e-bank@fibank.bg" />
