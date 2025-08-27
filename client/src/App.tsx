@@ -6,6 +6,7 @@ import { Header } from './Components/Header';
 import { Footer } from './Components/Footer';
 import { Dashboard } from './Dashboard';
 import { ErrorProvider, useError } from './context/ErrorContext';
+import { ClientProvider } from './context/ClientContext';
 import { getIsAuthErrorActive, registerErrorHandler } from './utils/errorHandler';
 import { useEffect } from "react";
 
@@ -16,7 +17,7 @@ const GlobalErrorBanner = () => {
   if (!error) return null;
 
   return (
-    <div className="bg-red-500 text-white p-3">
+    <div className="bg-red-500 text-white p-3 text-center">
       {error}
       <button onClick={() => setError(null)} className="ml-3">X</button>
     </div>
@@ -67,7 +68,9 @@ const AppRoutes = () => {
         } />
         <Route path="/Dashboard" element={
           <ProtectedRoute>
-            <Dashboard />
+            <ClientProvider>
+              <Dashboard />
+            </ClientProvider>
           </ProtectedRoute>
         } />
       </Routes>

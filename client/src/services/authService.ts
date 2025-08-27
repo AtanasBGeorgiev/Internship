@@ -1,6 +1,7 @@
 import api from "../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { showGlobalError, handleAuthError } from "../utils/errorHandler";
+import { type BusinessClient } from "../Components/ModelTypes";
 
 export interface loginData {
     username: string;
@@ -14,7 +15,6 @@ export const login = async (data: loginData): Promise<LoginResponse> => {
     const response = await api.post('/login/Login', data);
     return response.data;
 };
-
 
 export interface RegisterData {
     egn: string;
@@ -37,12 +37,14 @@ export const registerUser = async (data: RegisterData): Promise<RegisterResponse
 };
 
 interface JWTPayload {
-    id: string;
+    userId: string;
     role: string;
     exp: number;
+    username: string;
+    nameCyrillic: string;
 }
 
-export const getUserRole = async (): Promise<string> => {
+export const getUserData = async (): Promise<string[]> => {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
         handleAuthError('Authentication required. Please log in.');
@@ -61,8 +63,9 @@ export const getUserRole = async (): Promise<string> => {
             handleAuthError('Invalid token. Please log in again.');
             throw new Error('Invalid token!');
         }
+        const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic];
+        return data;
 
-        return decodedToken.role as string;
     } catch (error) {
         handleAuthError('Invalid token format. Please log in again.');
         throw new Error('Invalid token format!');
@@ -76,7 +79,7 @@ export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
         handleAuthError('Authentication required. Please log in.');
         throw new Error('No token!');
     }
-    
+  
     try {
         const response = await api.get<T>(endpoint);
         return response.data;
@@ -119,6 +122,26 @@ export const getCurrencies = async (): Promise<CurrencyResponse> => {
         return response.data;
     } catch (error) {
         showGlobalError('Failed to fetch currencies');
+        throw error;
+    }
+};
+
+export const postPreferrence = async (userId: string, itemsID: string[], itemType: string) => {
+    try {
+        const response = await api.post(`/api/preferences/postPreferrence/${itemType}`, { userId, itemsID });
+        return response.data;
+    } catch (error) {
+        showGlobalError('Failed to post preferrence');
+        throw error;
+    }
+};
+
+export const fetchBusinessClients = async (): Promise<BusinessClient[]> => {
+    try {
+        const response = await api.get<BusinessClient[]>('/api/businessClient/get');
+        return response.data;
+    } catch (error) {
+        showGlobalError('Failed to fetch business clients');
         throw error;
     }
 };
