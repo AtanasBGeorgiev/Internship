@@ -14,7 +14,8 @@ README.md #Project documentation
 
 2.How to run the project
 a)Start Cursor IDE
-b)Open the project folder
+b)Open the project folder 
+
 c)Open the Terminal
 d)navigate to project folder location if is not done automatically
 e)FIRST navigate to cerver folder.(execute cd server)
@@ -24,3 +25,4 @@ g)SECOND open new Terminal and navigate to client folder (execute cd client)
 h)to run the frontent execute:
   npm run dev
 j)in the terminal will be displayed a link. Copy it and open in a browser
+
