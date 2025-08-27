@@ -46,6 +46,8 @@ protectedRoutes.use('/account', accountRoutes);
 
 protectedRoutes.use('/card', cardRoutes);
 
+protectedRoutes.use('/currency', currencyRoutes);
+
 app.use('/api', verifyToken, protectedRoutes);
 
 //Mandatory after all routes
