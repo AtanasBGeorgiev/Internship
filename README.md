@@ -30,7 +30,7 @@ README.md #Project documentation
 - MongoDB (local installation or MongoDB Atlas)  
 - npm or yarn  
 
-4.Setup and run the project   
+5.Setup and run the project   
 
 ### 1. Clone the Project
 
@@ -143,3 +143,4 @@ npm run build    # Build for production
 npm run preview  # Preview production build
 npm run lint     # Code quality check
 ```
+
