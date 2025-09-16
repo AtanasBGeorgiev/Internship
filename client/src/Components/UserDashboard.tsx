@@ -85,7 +85,7 @@ export const DashboardHeader: React.FC = () => {
             <div className="h-20 border-b-2 border-gray-300 lg:h-15">
                 <nav className="text-center h-20 px-2 lg:h-15">
                     <div className="h-full flex items-center justify-center space-x-2 xl:space-x-0 xl:justify-between relative">
-                        <NavbarMenu text={t("МЕНЮ")} hideBreakpoint="xl" content={
+                        <NavbarMenu text={t("МЕНЮ")} hideBreakpoint="xl" opacity="80" content={
                             <div className="w-1/5">
                                 <SidebarMenu />
                             </div>

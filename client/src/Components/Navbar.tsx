@@ -285,8 +285,9 @@ interface NavbarMenuProps {
     content?: React.ReactNode;
     text?: string;
     hideBreakpoint?: string;
+    opacity?: string;
 };
-export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hideBreakpoint }) => {
+export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hideBreakpoint, opacity = "100" }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { height } = useScreenHeight();
     console.log("height2", height);
@@ -313,7 +314,7 @@ export const NavbarMenu: React.FC<NavbarMenuProps> = ({ data, content, text, hid
 
             {/* Mobile menu */}
             {isOpen && (
-                <div className={`${hideBreakpoint}:hidden absolute top-full left-0 w-full h-668 bg-white/80 z-50 pb-4 space-y-2 shadow-lg`}
+                <div className={`${hideBreakpoint}:hidden absolute top-full left-0 w-full h-668 bg-white/${opacity} z-50 pb-4 space-y-2 shadow-lg`}
                 >
                     {content ? content : <NavbarContent data={data as MenuItem[]} />}
                 </div>
