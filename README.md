@@ -15,8 +15,10 @@
 
  2.Technologies
  -	Frontend	Framework:	React.js	(with	TypeScript)
- -	Styling:	Tailwind	CSS	-	Routing:	React	Router	v7
- -	API	Communication:	Axios	-	Build	Tool:	Vite
+ -	Styling:	Tailwind	CSS
+ -	Routing:	React	Router	v7
+ -	API	Communication:	Axios
+ -	Build	Tool:	Vite
  -	Backend:	Node.js	with	Express
  -	Database:	MongoDB
 
@@ -143,5 +145,6 @@ npm run build    # Build for production
 npm run preview  # Preview production build
 npm run lint     # Code quality check
 ```
+
 
 
