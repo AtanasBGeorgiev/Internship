@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { SidebarMenu } from "./Components/Sidebar";
 import { getUserData } from "./services/authService";
-import { UserDashboard, DashboardHeader } from "./Components/UserDashboard";
+import { UserDashboard } from "./Components/UserDashboard";
+import { DashboardHeader } from "./Components/Header";
 import { useScreenHeight } from "./context/ScreenHeightContext";
 
 export function Dashboard() {
