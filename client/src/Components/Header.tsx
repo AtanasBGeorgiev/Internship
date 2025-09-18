@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+
+import { FaPenNib, FaUserAlt } from "react-icons/fa";
+import { IoIosListBox, IoMdPhonePortrait } from "react-icons/io";
+import { FaPencil } from "react-icons/fa6";
+import { BsSafeFill } from "react-icons/bs";
+import { FaLock } from "react-icons/fa6";
+import { FaRegNewspaper } from "react-icons/fa";
+import { FaUnlockKeyhole } from "react-icons/fa6";
+import { RiBankCardLine } from "react-icons/ri";
+import { CiShoppingTag } from "react-icons/ci";
+import { IoNotificationsSharp } from "react-icons/io5";
+import { MdMenuBook } from "react-icons/md";
 
 import { NavbarLink, NavbarMenu, NavbarHelpContact } from "./Navbar";
 import { Arrow, LangSwitcher } from "./Common";
 import { renderIcon } from "../utils/iconMap";
+import { getUserData, getNotifications } from "../services/authService";
+import { logout } from "../utils/errorHandler";
+import { ModuleManaging } from "./ModuleManaging";
+import { Tutorial } from "./Tutorial";
+import { ProfileMenuBusiness } from "./ProfileMenuBusiness";
+import { NotificationsMenu } from "./Notifications";
+import { SidebarMenu } from "./Sidebar";
+import { NavProfile } from "./Navbar";	
 
 const Content: React.FC = () => {
     const { t } = useTranslation();
@@ -80,5 +101,107 @@ export const Header: React.FC = () => {
                 </div>
             </nav>
         </div>
+    );
+}
+
+export const DashboardHeader: React.FC = () => {
+    const { t } = useTranslation();
+
+    const [moduleManaging, setModuleManaging] = useState(false);
+    const [showTutorial, setShowTutorial] = useState(false);
+    const [countNotif, setCountNotif] = useState<number>(0);
+    const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
+
+    useEffect(() => {
+        const fetchCountNotif = async () => {
+            try {
+                setIsLoadingNotifications(true);
+                const userData = await getUserData();
+                const data = await getNotifications(userData[0]);
+                console.log("countUnread", data.countUnread);
+                setCountNotif(data.countUnread);
+            } catch (error) {
+                console.error("Failed to fetch notifications:", error);
+                setCountNotif(0);
+            } finally {
+                setIsLoadingNotifications(false);
+            }
+        }
+        fetchCountNotif();
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+    };
+
+    const onCloseModuleManaging = () => {
+        setModuleManaging(false);
+    };
+
+    const onCloseTutorial = () => {
+        setShowTutorial(false);
+    };
+
+    return (
+        <>
+            {moduleManaging && <ModuleManaging onClose={onCloseModuleManaging} />}
+            {showTutorial && <Tutorial onClose={onCloseTutorial} />}
+
+            <div className="h-20 border-b-2 border-gray-300 lg:h-15">
+                <nav className="text-center h-20 px-2 lg:h-15">
+                    <div className="h-full flex items-center justify-center space-x-2 xl:space-x-0 xl:justify-between relative">
+                        <NavbarMenu text={t("МЕНЮ")} hideBreakpoint="xl" opacity="80" content={
+                            <div className="w-1/5">
+                                <SidebarMenu />
+                            </div>
+                        } />
+
+                        <img src="icon-fibank-logo3.jpg" alt="logo" className="w-24 h-6 xl:w-40 xl:h-10 ml-5" />
+                        <div className="flex items-center justify-between justify-center space-x-5">
+                            <LangSwitcher english={"ENGLISH"} bulgarian={"БЪЛГАРСКИ"} />
+                            <NavbarLink icons={["MdMessage"].map(icon => renderIcon(icon))} text={t("СЪОБЩЕНИЯ")}
+                                displayIconProps="text-2xl" count={2} />
+                            <NavbarLink icons={["IoNotificationsSharp"].map(icon => renderIcon(icon))} text={t("ИЗВЕСТИЯ")}
+                                displayIconProps="text-2xl" count={isLoadingNotifications ? 0 : countNotif}
+                                tooltipText={
+                                    <div>
+                                        <Arrow position="top" />
+                                        <NotificationsMenu />
+                                    </div>
+                                }
+                            />
+                            <NavbarLink icons={["IoSettingsSharp"].map(icon => renderIcon(icon))} text={t("НАСТРОЙКИ")} width="min-w-70"
+                                tooltipText={
+                                    <div className="max-h-70 overflow-y-auto scrollbar-thin">
+                                        <Arrow position="top" />
+                                        <NavbarHelpContact text={t("Упътване")} icon={<MdMenuBook />} onClick={() => setShowTutorial(true)} />
+                                        <NavbarHelpContact text={t("Лични данни")} icon={<FaUserAlt />} />
+                                        <NavbarHelpContact text={t("Общи настройки")} icon={<FaPencil />} />
+                                        <NavbarHelpContact text={t("Управление на модули")} icon={<FaPencil />} onClick={() => setModuleManaging(true)} />
+                                        <NavbarHelpContact text={t("Настройки на сметка")} icon={<IoIosListBox />} />
+                                        <NavbarHelpContact text={t("Настройки на депозит")} icon={<BsSafeFill />} />
+                                        <NavbarHelpContact text={t("Настройки на карта")} icon={<RiBankCardLine />} />
+                                        <NavbarHelpContact text={t("3D сигурност на карти")} icon={<RiBankCardLine />} />
+                                        <NavbarHelpContact text={t("Промяна на парола")} icon={<FaLock />} />
+                                        <NavbarHelpContact text={t("Регистриране на сертификат")} icon={<FaRegNewspaper />} />
+                                        <NavbarHelpContact text={t("Регистрирани на КЕП")} icon={<FaPenNib />} />
+                                        <hr></hr>
+                                        <NavbarHelpContact text={t("Деблокиране на Token")} icon={<FaUnlockKeyhole />} />
+                                        <NavbarHelpContact text={t("Промяна ПИН Token")} icon={<CiShoppingTag />} />
+                                        <NavbarHelpContact text={t("E-mail и SMS известяване")} icon={<IoNotificationsSharp />} />
+                                        <NavbarHelpContact text={t("SMS известяване за карти")} icon={<RiBankCardLine />} />
+                                        <NavbarHelpContact text={t("Мобилно приложение Fibank")} icon={<IoMdPhonePortrait />} />
+                                    </div>
+                                } />
+                            <NavProfile img="profile-picture.jpg" tooltip={
+                                <ProfileMenuBusiness />
+                            } />
+                            <NavbarLink icons={["IoMdLogOut"].map(icon => renderIcon(icon))} text={t("ИЗХОД")}
+                                onClick={() => handleLogout()} href={"/Login"} type="logout" displayIconProps="-rotate-90" />
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </>
     );
 }
