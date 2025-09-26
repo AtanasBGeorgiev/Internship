@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { FormField, ButtonForm } from "./Components/InputForms";
-import { Arrow, ShowMessage, SetMessage} from "./Components/Common";
+import { Arrow, ShowMessage, SetMessage } from "./Components/Common";
 import { getPasswordStrength, getStrengthColor, getStrengthLabel } from "./Components/PasswordVerification";
 import { registerUser } from "./services/authService";
 
@@ -69,7 +69,7 @@ export const RegisterForm: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div id="personal-data" className="border-t-2 border-b-2 border-gray-300 p-5">
             <p className="text-sm text-gray-700 pb-3"><span className="text-red-500">*</span> {t("Задължителни полета")}</p>
-            <div id="display-grid" className="grid grid-cols-2 gap-4 text-xs md:text-base">
+            <div id="display-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs md:text-base">
               <FormField id="egn" label={t("ЕГН")} register={register("egn", {
                 required: t("Невалидно ЕГН!"),
                 pattern: { value: /^[0-9]{10}$/, message: t("Невалидно ЕГН!") }
@@ -121,7 +121,7 @@ export const RegisterForm: React.FC = () => {
             </div>
           </div>
 
-          <div id="user-data" className="p-5 grid grid-cols-2 gap-4 text-xs md:text-base">
+          <div id="user-data" className="p-5 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 text-xs md:text-base">
             <FormField id="username" label={t("Потребителско име:")}
               register={register("username", {
                 required: t("Символи на кирилица не са позволени!"),
@@ -157,17 +157,15 @@ export const RegisterForm: React.FC = () => {
                 </>
               }
             />
-            <div className="col-span-2 grid grid-cols-2 gap-4">
-              <div></div>
-              <div>
-                <div className="h-2 rounded bg-gray-200 mt-1 overflow-hidden">
-                  <div
-                    className={`h-2 transition-all duration-300 ${getStrengthColor(passwordStrength)}`}
-                    style={{ width: `${(passwordStrength / 4) * 100}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs md:text-sm mt-1">{getStrengthLabel(passwordStrength)}</p>
+            <div></div>
+            <div>
+              <div className="h-2 rounded bg-gray-200 mt-1 overflow-hidden">
+                <div
+                  className={`h-2 transition-all duration-300 ${getStrengthColor(passwordStrength)}`}
+                  style={{ width: `${(passwordStrength / 4) * 100}%` }}
+                ></div>
               </div>
+              <p className="text-xs md:text-sm mt-1">{getStrengthLabel(passwordStrength)}</p>
             </div>
             <FormField id="confirm-password" label={t("Повторете паролата:")} type="password"
               register={register("confirmPassword", {
