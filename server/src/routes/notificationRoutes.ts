@@ -17,7 +17,7 @@ router.post('/post', (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-router.get('/get', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/getNotifications', async (req: Request, res: Response, next: NextFunction) => {
     console.log('GET /notification received!');
     try {
         const { userId } = req.query;

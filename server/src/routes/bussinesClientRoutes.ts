@@ -12,7 +12,7 @@ router.post("/post", async (req: Request, res: Response, next: NextFunction) => 
     return res.status(201).json(businessClient);
 });
 
-router.get("/get", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/getBusinessClients", async (req: Request, res: Response, next: NextFunction) => {
     // Get language preference from request headers
     const language = req.headers['accept-language'] || 'bg';
     
