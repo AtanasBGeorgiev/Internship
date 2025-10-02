@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SidebarMenu } from "./Components/Sidebar";
-import { getUserData } from "./services/authService";
 import { UserDashboard } from "./Components/UserDashboard";
 import { DashboardHeader } from "./Components/Header";
 import { useScreenHeight } from "./context/ScreenHeightContext";
@@ -10,26 +9,22 @@ import { useScreenHeight } from "./context/ScreenHeightContext";
 export function Dashboard() {
     const { t } = useTranslation();
 
-    const [userRole, setUserRole] = useState<string | null>(null);
     const { height, setHeight } = useScreenHeight();
 
+    const hasRun = useRef(false);
+
     useEffect(() => {
+        if (hasRun.current)
+            return;
+        hasRun.current = true;
+
         //412 is the height of the footer	
         const height = document.documentElement.scrollHeight;
         setHeight(height);
-    }, [height]);
+        console.log("Height1", height);
 
-    console.log("height", height);
-
-    useEffect(() => {
-        const fetchUserRole = async () => {
-            const data = await getUserData();
-            setUserRole(data[1]);//data[1] is the role
-        };
-        fetchUserRole();
     }, []);
 
-    console.log(userRole);
     return (
         <>
             {<DashboardHeader />}
