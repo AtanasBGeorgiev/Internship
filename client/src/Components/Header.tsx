@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 import { FaPenNib, FaUserAlt } from "react-icons/fa";
 import { IoIosListBox, IoMdPhonePortrait } from "react-icons/io";
@@ -113,14 +114,19 @@ export const DashboardHeader: React.FC = () => {
     const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
 
     useEffect(() => {
+        const controller = new AbortController();
         const fetchCountNotif = async () => {
             try {
                 setIsLoadingNotifications(true);
                 const userData = await getUserData();
-                const data = await getNotifications(userData[0]);
+                const data = await getNotifications(userData[0], { signal: controller.signal });
                 console.log("countUnread", data.countUnread);
                 setCountNotif(data.countUnread);
             } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log("The fetch count notifications request was canceled.");
+                    return;
+                }
                 console.error("Failed to fetch notifications:", error);
                 setCountNotif(0);
             } finally {
@@ -128,6 +134,10 @@ export const DashboardHeader: React.FC = () => {
             }
         }
         fetchCountNotif();
+
+        return () => {
+            controller.abort();
+        }
     }, []);
 
     const handleLogout = () => {

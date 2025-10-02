@@ -61,6 +61,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Don't log cancellation errors - they're expected when using AbortController
+        if (axios.isCancel(error)) {
+            return Promise.reject(error);
+        }
+
         console.error('Axios error:', error.response || error.message);
 
        

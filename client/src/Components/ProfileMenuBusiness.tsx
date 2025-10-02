@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { MdPerson, MdSearch } from "react-icons/md";
 import { type BusinessClient } from "./ModelTypes";
 import { fetchBusinessClients, getUserData } from "../services/authService";
@@ -8,6 +9,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { IoTriangle } from "react-icons/io5";
 import { usePosition } from "../context/PositionContext";
 import { getUserNamesByLanguage, updateUserNames } from '../services/authService';
+import axios from 'axios';
 
 export const ClientsContainer = ({ name, onClick }: { name: string, onClick: () => void }) => {
     return (
@@ -87,18 +89,32 @@ export const ProfileMenuBusiness = () => {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchData = async () => {
-            const clients = await fetchBusinessClients();
-            const names = await getUserData();
-            console.log("getUserData result:", names);
-            console.log("names[3]:", names[3]);
-            setBusinessClients(clients);
-            
-            // Set user names based on current language
-            const currentLanguage = i18n.language || 'bg';
-            setUserNames(getUserNamesByLanguage(names, currentLanguage));
+            try {
+                const clients = await fetchBusinessClients({ signal: controller.signal });
+                const names = await getUserData();
+               
+                setBusinessClients(clients);
+                console.log("clients", clients);
+                setUserNames(getUserNamesByLanguage(names, i18n.language || 'bg'));
+                console.log("getUserData result:", names);
+                console.log("names[3]:", names[3]);
+            } catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("The business request was canceled.");
+                    return;
+                }
+            }
         };
+
         fetchData();
+
+        return () => {
+            controller.abort();
+        }
+
     }, [i18n.language]);
 
     useEffect(() => {
@@ -116,9 +132,9 @@ export const ProfileMenuBusiness = () => {
     return (
         <div className="w-70 text-left">
             <UserAndClient userNames={userNames} selectedclient={selectedClient?.name || ""} />
-            
-            <SearchBar title={t("Изберете друг клиент")} placeholder={t("Търсете по име клиент...")} searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} />
+
+            <SearchBar title={t("Изберете друг клиент")} placeholder={t("Търсете по име клиент...")} searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm} />
 
             <div className="overflow-y-auto max-h-[180px] 
                     scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">

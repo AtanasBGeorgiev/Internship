@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { renderIcon } from '../utils/iconMap';
 import { useTranslation } from 'react-i18next';
@@ -101,11 +102,11 @@ const RecursiveMenu: React.FC<RecursiveMenuProps> = ({ items }) => {
 
                 switch (item.type) {
                     case "button":
-                        return <RenderButton item={item} itemKey={itemKey} />;
+                        return <RenderButton key={itemKey} item={item} itemKey={itemKey} />;
                     case "multi-level":
-                        return <RenderMultiLevel item={item} itemKey={itemKey} />;
+                        return <RenderMultiLevel key={itemKey} item={item} itemKey={itemKey} />;
                     case "collapsible":
-                        return <RenderCollapsible item={item} itemKey={itemKey} />;
+                        return <RenderCollapsible key={itemKey} item={item} itemKey={itemKey} />;
                     default:
                         return null;
                 }
@@ -125,20 +126,27 @@ export const SidebarMenu: React.FC = () => {
     const { selectedClient } = useClientContext();
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchMenu = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const menuData = await fetchSidebarMenu();
+                const menuData = await fetchSidebarMenu({ signal: controller.signal });
                 setMenu(menuData);
                 const userRoleData = await getUserData();
                 setUserRole(userRoleData[1]);
-                
+                console.log("Sidebar fetch");
+
                 // Set user names based on current language
                 const currentLanguage = i18n.language || 'bg';
                 setUserNames(getUserNamesByLanguage(userRoleData, currentLanguage));
             } catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("The request was canceled.");
+                    return;
+                }
                 console.error('Error fetching sidebar menu:', err);
                 setError(t('errors.failedToLoadSidebarMenu'));
                 showGlobalError('errors.failedToLoadSidebarMenu');
@@ -148,6 +156,10 @@ export const SidebarMenu: React.FC = () => {
         };
 
         fetchMenu();
+
+        return () => {
+            controller.abort();
+        };
     }, []);
 
     // Update user names when language changes

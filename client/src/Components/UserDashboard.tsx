@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 import Decimal from "decimal.js";
 
 import { AdminDashboard } from "./AdminDashboard";
@@ -36,16 +37,33 @@ export function UserDashboard() {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchTableNames = async () => {
-            setLoading(true);
-            const userData = await getUserData();
-            setRole(userData[1]);
-            const data = await fetchPreferredTables(userData[0]);
-            console.log("tableNames", data);
-            setTableNames(data.tableNames.map(table => ({ name: table.name })));
-            setLoading(false);
-        }
+            try {
+                setLoading(true);
+                const userData = await getUserData();
+                setRole(userData[1]);
+                const data = await fetchPreferredTables(userData[0], { signal: controller.signal });
+                console.log("tableNames", data);
+                setTableNames(data.tableNames.map(table => ({ name: table.name })));
+                setLoading(false);
+            } catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("The fetch table names request was canceled.");
+                    return;
+                }
+                console.error("Error fetching table names:", err);
+                setLoading(false);
+            }
+        };
+
         fetchTableNames();
+
+        return () => {
+            controller.abort();
+        }
+
     }, []);
 
     //account hook
