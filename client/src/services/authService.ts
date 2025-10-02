@@ -1,5 +1,7 @@
 import api from "../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
+import axios, { type AxiosRequestConfig } from 'axios';
+
 import { showGlobalError, handleAuthError } from "../utils/errorHandler";
 import { type BusinessClient, type NotificationResponse, type TableModel, type TableNames, type User } from "../Components/ModelTypes";
 import i18n from "../i18n";
@@ -65,7 +67,7 @@ export const getUserData = async (): Promise<string[]> => {
             handleAuthError('errors.invalidTokenLoginAgain');
             throw new Error('Invalid token!');
         }
-        const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic,decodedToken.nameLatin];
+        const data = [decodedToken.userId, decodedToken.role, decodedToken.username, decodedToken.nameCyrillic, decodedToken.nameLatin];
         return data;
     } catch (error) {
         handleAuthError('errors.invalidTokenFormat');
@@ -74,7 +76,7 @@ export const getUserData = async (): Promise<string[]> => {
 };
 
 //fetch data of each type
-export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
+export const protectedFetch = async<T>(endpoint: string, config: AxiosRequestConfig = {}): Promise<T> => {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
         handleAuthError('errors.authenticationRequired');
@@ -82,9 +84,13 @@ export const protectedFetch = async<T>(endpoint: string): Promise<T> => {
     }
 
     try {
-        const response = await api.get<T>(endpoint);
+        const response = await api.get<T>(endpoint, config);
         return response.data;
     } catch (error) {
+        if (axios.isCancel(error)) {
+            console.log("The request was canceled.");
+            throw error;
+        }
         showGlobalError('errors.failedToFetchData');
         // Let the axios interceptor handle the error
         throw error;
@@ -98,8 +104,12 @@ export interface SidebarResponse {
     data: any[];
 }
 
-export const fetchSidebarMenu = async (): Promise<any[]> => {
-    const response = await protectedFetch<SidebarResponse>('/api/sidebar');
+interface SignalProp {
+    signal?: AbortSignal
+};
+
+export const fetchSidebarMenu = async ({ signal }: SignalProp = {}): Promise<any[]> => {
+    const response = await protectedFetch<SidebarResponse>('/api/sidebar', { signal });
 
     if (response.success) {
         return response.data;
@@ -125,12 +135,12 @@ export const postPreferrence = async (userId: string, itemsID: string[], itemTyp
     }
 };
 
-export const fetchBusinessClients = async (): Promise<BusinessClient[]> => {
-    return await protectedFetch<BusinessClient[]>('/api/businessClient/get');
+export const fetchBusinessClients = async (config: AxiosRequestConfig = {}): Promise<BusinessClient[]> => {
+    return await protectedFetch<BusinessClient[]>('/api/businessClient/getBusinessClients', config);
 };
 
-export const getNotifications = async (userId: string): Promise<NotificationResponse> => {
-    return await protectedFetch<NotificationResponse>(`/api/notification/get?userId=${userId}`);
+export const getNotifications = async (userId: string, config: AxiosRequestConfig = {}): Promise<NotificationResponse> => {
+    return await protectedFetch<NotificationResponse>(`/api/notification/getNotifications?userId=${userId}`, config);
 };
 
 export const RemoveNotification = async (notificationId: string) => {
@@ -173,8 +183,8 @@ export const postPreferredTable = async (userId: string, tables: string[]) => {
     }
 };
 
-export const fetchPreferredTables = async (userId: string): Promise<{ message: string; tableNames: TableNames[] }> => {
-    return await protectedFetch<{ message: string; tableNames: TableNames[] }>(`/api/preferences/getPreferredTables?userId=${userId}`);
+export const fetchPreferredTables = async (userId: string, config: AxiosRequestConfig = {}): Promise<{ message: string; tableNames: TableNames[] }> => {
+    return await protectedFetch<{ message: string; tableNames: TableNames[] }>(`/api/preferences/getPreferredTables?userId=${userId}`, config);
 };
 
 export const updateTableOrder = async (userId: string, tables: { id: string, order: number }[]) => {
