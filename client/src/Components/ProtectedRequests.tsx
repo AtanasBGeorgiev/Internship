@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { protectedFetch } from "../services/authService";
 import { showGlobalError, logout } from "../utils/errorHandler";
+import axios from 'axios';
 
 export function useProtectedFetch<T = unknown>(endpoint: string | null, dependencies: any[] = []) {
     const [data, setData] = useState<T | null>(null);
@@ -13,6 +14,8 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null, dependen
     const { t } = useTranslation();
 
     useEffect(() => {
+        const controller = new AbortController();
+
         const fetchData = async () => {
             // Check if endpoint is null or empty
             if (!endpoint) {
@@ -32,10 +35,14 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null, dependen
                 try {
                     setIsLoading(true);
                     setError(null);
-                    const result = await protectedFetch<T>(endpoint);
+                    const result = await protectedFetch<T>(endpoint, { signal: controller.signal });
                     setData(result);
                 }
                 catch (err: any) {
+                    if (axios.isCancel(err)) {
+                        console.log("The request was canceled.");
+                        return;
+                    }
                     console.error("Protected fetch error:", err.message);
 
                     if (err.message === "No token" || err.message === "TOKEN_EXPIRED" || err.message === "INVALID_TOKEN") {
@@ -53,6 +60,10 @@ export function useProtectedFetch<T = unknown>(endpoint: string | null, dependen
         };
 
         fetchData();
+
+        return () => {
+            controller.abort();
+        }
     }, [endpoint, navigate, ...dependencies]);
 
     return { data, error, isLoading };
