@@ -13,7 +13,6 @@ import { Announcment, hideMessage, ShowMessage } from "./Components/Common";
 import { ContactInfo } from "./Components/Navbar";
 import { FooterLink } from "./Components/Footer";
 import { login } from "./services/authService";
-import { showGlobalError } from "./utils/errorHandler";
 
 type FormValues = {
   username: string;
