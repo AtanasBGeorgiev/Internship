@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import { MdPerson, MdSearch } from "react-icons/md";
 import { type BusinessClient } from "./ModelTypes";
-import { fetchBusinessClients, getUserData } from "../services/authService";
+import { getUserData } from "../services/authService";
+import { fetchBusinessClients } from "../services/businessClientService";
 import { useClientContext } from "../context/ClientContext";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoTriangle } from "react-icons/io5";
 import { usePosition } from "../context/PositionContext";
-import { getUserNamesByLanguage, updateUserNames } from '../services/authService';
+import { getUserNamesByLanguage, updateUserNames } from '../utils/userUtils';
 import axios from 'axios';
 
 export const ClientsContainer = ({ name, onClick }: { name: string, onClick: () => void }) => {

@@ -7,7 +7,7 @@ import { useProtectedFetch } from "./ProtectedRequests";
 import { ShowMessage, SetMessage } from "./Common";
 import { useTranslation } from "react-i18next";
 import type { User } from "./ModelTypes";
-import { updateRole } from "../services/authService";
+import { updateRole } from "../services/userService";
 import { SearchBar } from "./ProfileMenuBusiness";
 
 interface ModuleProps {

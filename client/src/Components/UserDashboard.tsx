@@ -11,7 +11,8 @@ import { useSelectableList } from "../Components/Checkboxes";
 import { useProtectedFetch } from "../Components/ProtectedRequests";
 import { ShowMessage, Loading } from "./Common";
 import { SetModule, SetTransactionModule } from "./Module";
-import { getUserData, fetchPreferredTables } from "../services/authService";
+import { getUserData } from "../services/authService";
+import { fetchPreferredTables } from "../services/tableService";
 import { BankAccountsTable, PaymentsTable, CardsTable, LiabilitiesTable, TransactionsTable, CreditsTable, DepositsTable, CurrenciesTable } from "./DashTables";
 
 export function UserDashboard() {
