@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { getCurrencies } from "../services/authService";
+import { getCurrencies } from "../services/currencyService";
 import { showGlobalError } from "../utils/errorHandler";
 
 export async function getExchangeRates(): Promise<Record<string, number>> {

@@ -5,7 +5,8 @@ import { IoCloseSharp, IoListCircleSharp } from "react-icons/io5";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { BsSafeFill } from "react-icons/bs";
 
-import { getUserData, postPreferrence } from "../services/authService";
+import { getUserData } from "../services/authService";
+import { postPreference } from "../services/preferenceService";
 import { useProtectedFetch } from "./ProtectedRequests";
 import { ShowMessage, SetMessage } from "./Common";
 import { Table, TableData, TableButton } from "./Tables";
@@ -81,7 +82,7 @@ export const SetModule = <T extends { id: string }>({ heading, tableHeads, condi
         }
 
         //send the selected items to the server
-        postPreferrence(id, selectedItems, typeCollection);
+        postPreference(id, selectedItems, typeCollection);
 
         SetMessage({ message: t("Успешно запазени!"), messageType: "success", setMessage, setMessageType });
 
@@ -276,7 +277,7 @@ export const SetTransactionModule: React.FC<ModuleProps> = ({ heading, tableHead
         try {
             const itemsID = [...selectedAccounts, ...selectedDeposits];
             // Send both selected accounts and deposits into an array
-            await postPreferrence(id, itemsID, typeCollection);
+            await postPreference(id, itemsID, typeCollection);
 
             SetMessage({ message: t("Успешно запазени!"), messageType: "success", setMessage, setMessageType });
 

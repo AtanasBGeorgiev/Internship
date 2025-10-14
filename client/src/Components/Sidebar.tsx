@@ -9,13 +9,14 @@ import { IoMdChatboxes } from 'react-icons/io';
 
 import { type MenuItem, MoreInfo, sanitizeStyle, MultiLevelSidebar } from './RecursiveSidebarComp';
 import { showGlobalError } from '../utils/errorHandler';
-import { fetchSidebarMenu, getUserData } from '../services/authService';
+import { getUserData } from '../services/authService';
+import { fetchSidebarMenu } from '../services/sidebarService';
 import { UserAndClient } from './ProfileMenuBusiness';
 import { useClientContext } from '../context/ClientContext';
 import { usePosition } from '../context/PositionContext';
 import { NavbarHelpContact } from './Navbar';
 import { Loading, ErrorMessage } from './Common';
-import { getUserNamesByLanguage, updateUserNames } from '../services/authService';
+import { getUserNamesByLanguage, updateUserNames } from '../utils/userUtils';
 
 interface RenderSidebarComponentProps {
     item: MenuItem;

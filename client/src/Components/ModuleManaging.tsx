@@ -8,7 +8,12 @@ import { FaArrowsAltV } from "react-icons/fa";
 
 import { TableButton } from "./Tables";
 import { type TableModel, type TableNames } from "./ModelTypes";
-import { fetchTables, getUserData, postPreferredTable, updateTableOrder, getTableOrder, fetchPreferredTables } from "../services/authService";
+import { getUserData } from "../services/authService";
+import { fetchTables } from "../services/tableService";
+import { postPreferredTable } from "../services/tableService";
+import { updateTableOrder } from "../services/tableService";
+import { getTableOrder } from "../services/tableService";
+import { fetchPreferredTables } from "../services/tableService";
 import { Arrow, Loading, ShowMessage, SetMessage } from "./Common";
 import { moduleIconMap } from "../utils/iconMap";
 import { GroupCheckbox, TableCheckbox } from "./Checkboxes";

@@ -6,7 +6,9 @@ import { MdCreditCard } from "react-icons/md";
 import { SiJsonwebtokens } from "react-icons/si";
 import { TbBaselineDensityMedium, TbXboxXFilled } from "react-icons/tb";
 
-import { getNotifications, getUserData, RemoveNotification } from "../services/authService";
+import { getUserData } from "../services/authService";
+import { getNotifications } from "../services/notificationService";
+import { RemoveNotification } from "../services/notificationService";
 import { type Notification } from "./ModelTypes";
 import { FaHandHoldingDollar } from "react-icons/fa6";
 import { Arrow, ErrorMessage, Loading } from "./Common";
@@ -126,6 +128,7 @@ export const NotificationsMenu: React.FC = () => {
             setIsLoading(true);
             try {
                 const data = await getNotifications(userID);
+                console.log("notifications", data);
                 setNotifications(data.notifications);
                 setCountUnread(data.countUnread);
             } catch (error) {

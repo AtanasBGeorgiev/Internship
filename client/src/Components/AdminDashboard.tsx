@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 
-import { Table, TableData, SectionHead } from "./Tables";
 import { type TableNames, type User } from "./ModelTypes";
-import { fetchUsers} from "../services/authService";
+import { fetchUsers } from "../services/userService";
 import { AdminRoleModule } from "./AdminRoleModule";
 import { Loading, ErrorMessage } from "./Common";
+import { UsersTable } from "./DashTables";
 
 interface AdminDashboardProps {
     showModule: boolean;
@@ -39,41 +39,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ showModule, setS
     isLoading && <Loading />;
 
     error && <ErrorMessage message={t("Грешка при зареждане на потребители")} />
-           
+
     return (
         <>
             {showModule && <AdminRoleModule onClose={() => setShowModule(false)} />}
 
             {tableNames.some(table => table.name.includes("Потребители") || table.name.includes("Users")) &&
-                <>
-                    <SectionHead title={t("ПОТРЕБИТЕЛИ")} onClick={ShowModule} />
-                    <Table
-                        tableHead={
-                            <>
-                                <TableData type="th" text={t("Име на Кирилица")} />
-                                <TableData type="th" text={t("Име на Латиница")} />
-                                <TableData type="th" text={t("ЕГН")} />
-                                <TableData type="th" text={t("Паспорт")} />
-                                <TableData type="th" text={t("Телефон")} />
-                                <TableData type="th" text={t("Имейл")} />
-                                <TableData type="th" text={t("Адрес")} />
-                                <TableData type="th" text={t("Роля")} />
-                            </>
-                        }
-                        items={users}
-                        tableData={(user) => (
-                            <>
-                                <TableData text={`${user.nameCyrillic}`} display="p-2" />
-                                <TableData text={`${user.nameLatin}`} />
-                                <TableData text={`${user.egn}`} />
-                                <TableData text={`${user?.passport}`} />
-                                <TableData text={`${user.phone}`} />
-                                <TableData text={`${user.email}`} />
-                                <TableData text={`${user.address}`} />
-                                <TableData text={`${user.role}`} />
-                            </>
-                        )} />
-                </>
+                <UsersTable users={users} ShowModule={ShowModule} />
             }
         </>
     );
