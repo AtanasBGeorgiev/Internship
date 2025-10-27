@@ -9,11 +9,12 @@ import type { Account, Payment, Card, Liability, Transaction, Credit, Deposit, C
 import { TotalSum } from "../Components/Tables";
 import { useSelectableList } from "../Components/Checkboxes";
 import { useProtectedFetch } from "../Components/ProtectedRequests";
-import { ShowMessage, Loading } from "./Common";
+import { ShowMessage } from "./Common";
 import { SetModule, SetTransactionModule } from "./Module";
 import { getUserData } from "../services/authService";
 import { fetchPreferredTables } from "../services/tableService";
 import { BankAccountsTable, PaymentsTable, CardsTable, LiabilitiesTable, TransactionsTable, CreditsTable, DepositsTable, CurrenciesTable } from "./DashTables";
+import { useLoading } from "../context/LoadingContext";
 
 export function UserDashboard() {
     const [message, setMessage] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export function UserDashboard() {
     const [showModuleCurrencies, setShowModuleCurrencies] = useState(false);
     const [showModuleAdmin, setShowModuleAdmin] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+    const { setLoading } = useLoading();
     const [netCardsAvaiability, setNetCardsAvaiability] = useState<string>("0");
     const [currentBalance, setCurrentBalance] = useState<string>("0");
     const [totalNetFunds, setTotalNetFunds] = useState<string>("0");
@@ -193,7 +194,6 @@ export function UserDashboard() {
     return (
         <>
             <ShowMessage message={message} messageType={messageType} />
-            {loading && <Loading />}
 
             <div id="userBankData" className="p-5">
                 <div className="flex text-center justify-center space-x-8 w-full xl:h-30">

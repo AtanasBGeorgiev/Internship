@@ -11,7 +11,8 @@ import { getNotifications } from "../services/notificationService";
 import { RemoveNotification } from "../services/notificationService";
 import { type Notification } from "./ModelTypes";
 import { FaHandHoldingDollar } from "react-icons/fa6";
-import { Arrow, ErrorMessage, Loading } from "./Common";
+import { Arrow, ErrorMessage } from "./Common";
+import { useLoading } from "../context/LoadingContext";
 
 interface NotificationProps {
     notifiaction: Notification;
@@ -106,7 +107,7 @@ export const NotificationsMenu: React.FC = () => {
     const [countUnread, setCountUnread] = useState<number>(0);
 
     const [error, setError] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const {setLoading} = useLoading();
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -125,7 +126,7 @@ export const NotificationsMenu: React.FC = () => {
         if (!userID) return;
 
         const fetchNotifications = async () => {
-            setIsLoading(true);
+            setLoading(true);
             try {
                 const data = await getNotifications(userID);
                 console.log("notifications", data);
@@ -135,7 +136,7 @@ export const NotificationsMenu: React.FC = () => {
                 setError(t("errors.failedToFetchNotificationsLocal"));
                 console.error("Error fetching notifications:", error);
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
         fetchNotifications();
@@ -151,8 +152,6 @@ export const NotificationsMenu: React.FC = () => {
     };
 
     error && <ErrorMessage message={error} />
-
-    isLoading && <Loading />;
 
     return (
         <div className="w-120 p-2 text-left">
