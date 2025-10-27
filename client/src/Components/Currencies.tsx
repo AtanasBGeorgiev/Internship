@@ -5,7 +5,7 @@ import { type Currency } from "./ModelTypes";
 import { AdminRoleModule } from "./AdminRoleModule";
 import { Table, TableData, SectionHead } from "./Tables";
 import { useProtectedFetch } from "./ProtectedRequests";
-import { ShowMessage, Loading } from "./Common";
+import { ShowMessage} from "./Common";
 
 export const Currencies: React.FC = () => {
     const { t } = useTranslation();
@@ -16,7 +16,7 @@ export const Currencies: React.FC = () => {
     const [currencies, setCurrencies] = useState<Currency[]>([]);
     const [showMidule, setShowMidule] = useState<boolean>(false);
 
-    const { data: currenciesData, error: currenciesError, isLoading } = useProtectedFetch<Currency[]>
+    const { data: currenciesData, error: currenciesError } = useProtectedFetch<Currency[]>
         ('/api/currency/getAllCurencies');
 
     useEffect(() => {
@@ -33,8 +33,6 @@ export const Currencies: React.FC = () => {
     const ShowModule = () => {
         setShowMidule(true);
     };
-
-    isLoading && <Loading />;
 
     return (
         <div id="wrapper" className="grid grid-cols-12 bg-gray-100 py-5 xl:p-5">

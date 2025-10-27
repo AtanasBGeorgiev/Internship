@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { type TableNames, type User } from "./ModelTypes";
 import { fetchUsers } from "../services/userService";
 import { AdminRoleModule } from "./AdminRoleModule";
-import { Loading, ErrorMessage } from "./Common";
+import { ErrorMessage } from "./Common";
 import { UsersTable } from "./DashTables";
+import { useLoading } from "../context/LoadingContext";
 
 interface AdminDashboardProps {
     showModule: boolean;
@@ -17,26 +18,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ showModule, setS
     const { t } = useTranslation();
 
     const [users, setUsers] = useState<User[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { setLoading} = useLoading();
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUsersData = async () => {
             try {
-                setIsLoading(true);
+                setLoading(true);
                 setError(null);
                 const users = await fetchUsers();
                 setUsers(users.slice(0, 10));
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch users');
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
         fetchUsersData();
     }, []);
-
-    isLoading && <Loading />;
 
     error && <ErrorMessage message={t("Грешка при зареждане на потребители")} />
 

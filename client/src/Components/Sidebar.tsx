@@ -15,8 +15,9 @@ import { UserAndClient } from './ProfileMenuBusiness';
 import { useClientContext } from '../context/ClientContext';
 import { usePosition } from '../context/PositionContext';
 import { NavbarHelpContact } from './Navbar';
-import { Loading, ErrorMessage } from './Common';
+import { ErrorMessage } from './Common';
 import { getUserNamesByLanguage, updateUserNames } from '../utils/userUtils';
+import { useLoading } from '../context/LoadingContext';
 
 interface RenderSidebarComponentProps {
     item: MenuItem;
@@ -120,7 +121,7 @@ const RecursiveMenu: React.FC<RecursiveMenuProps> = ({ items }) => {
 export const SidebarMenu: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [menu, setMenu] = useState<MenuItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { setLoading } = useLoading();
     const [error, setError] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<string | null>(null);
     const [userNames, setUserNames] = useState<string>("");
@@ -167,10 +168,6 @@ export const SidebarMenu: React.FC = () => {
     useEffect(() => {
         updateUserNames(setUserNames);
     }, [i18n.language]);
-
-    if (loading) {
-        return <Loading />;
-    }
 
     error && <ErrorMessage message={error} />
 

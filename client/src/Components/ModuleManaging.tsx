@@ -14,9 +14,10 @@ import { postPreferredTable } from "../services/tableService";
 import { updateTableOrder } from "../services/tableService";
 import { getTableOrder } from "../services/tableService";
 import { fetchPreferredTables } from "../services/tableService";
-import { Arrow, Loading, ShowMessage, SetMessage } from "./Common";
+import { Arrow, ShowMessage, SetMessage } from "./Common";
 import { moduleIconMap } from "../utils/iconMap";
 import { GroupCheckbox, TableCheckbox } from "./Checkboxes";
+import { useLoading } from "../context/LoadingContext";
 
 interface ModuleManagingProps {
     onClose: () => void;
@@ -33,7 +34,7 @@ export const ModuleManaging: React.FC<ModuleManagingProps> = ({ onClose }) => {
     const [tableNames, setTableNames] = useState<TableNames[]>([]);
     const [message, setMessage] = useState<string | null>(null);
     const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -253,8 +254,6 @@ export const ModuleManaging: React.FC<ModuleManagingProps> = ({ onClose }) => {
             SetMessage({ message: t("Грешка при запазване на оригиналната подредба!"), messageType: "error", setMessage, setMessageType });
         }
     };
-
-    loading && <Loading />;
 
     return (
         <div className="fixed inset-0 bg-white/80 z-50 flex items-center justify-center">
