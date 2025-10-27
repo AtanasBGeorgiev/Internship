@@ -11,6 +11,7 @@ import { PositionProvider } from './context/PositionContext';
 import { ScreenHeightProvider } from './context/ScreenHeightContext';
 import { getIsAuthErrorActive, registerErrorHandler } from './utils/errorHandler';
 import { useEffect } from "react";
+import { LoadingProvider, useLoading } from "./context/LoadingContext";
 
 const GlobalErrorBanner = () => {
   //access the error and setError functions from the context
@@ -25,6 +26,18 @@ const GlobalErrorBanner = () => {
     </div>
   );
 }
+
+const GlobalLoading = () => {
+  const { loading, loadingMessage } = useLoading();
+
+  if (!loading) return null;
+
+  return (
+    <div className="z-50 h-16 bg-yellow-400 text-black flex items-center justify-center">
+      {loadingMessage}
+    </div>
+  );
+};
 
 //if there is an error,the content of protected page is hidden
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -47,6 +60,7 @@ const AppRoutes = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <GlobalErrorBanner />
+      <GlobalLoading />
       <div className="flex-1">
         <Routes>
           {/*The login form is displayed first when the app is started. */}
@@ -90,9 +104,11 @@ const AppRoutes = () => {
 
 const App: React.FC = () => {
   return (
-    <ErrorProvider>
-      <AppRoutes />
-    </ErrorProvider>
+    <LoadingProvider>
+      <ErrorProvider>
+        <AppRoutes />
+      </ErrorProvider>
+    </LoadingProvider>
   );
 }
 
