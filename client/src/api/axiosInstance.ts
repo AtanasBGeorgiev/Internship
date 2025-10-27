@@ -69,6 +69,12 @@ api.interceptors.response.use(
         console.error('Axios error:', error.response || error.message);
 
        
+        // Handle 401 Unauthorized
+        if (error.response?.status === 401) {
+            handleAuthError("errors.authenticationRequired");
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 403) {
             handleAuthError("errors.accessForbidden");
             return Promise.reject(error);
